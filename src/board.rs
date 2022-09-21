@@ -1,8 +1,9 @@
 use std::fmt;
 
+#[path = "./field.rs"]
 mod field;
-use self::field::Field;
-use self::field::PositionedField;
+use field::Field;
+use field::PositionedField;
 
 pub struct Board {
     fields: Vec<Vec<Field>>,
