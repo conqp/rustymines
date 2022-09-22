@@ -32,7 +32,7 @@ impl Board {
             let mut x = 0;
 
             for field in line.iter_mut() {
-                fields.push(PositionedField::new(field, x, y));
+                fields.push(PositionedField::new(x, y, field));
                 x += 1;
             }
 
