@@ -28,14 +28,18 @@ impl Board {
     pub fn fields(&mut self) -> Vec<PositionedField> {
         let mut fields = Vec::new();
         let mut y = 0;
+
         for line in self.fields.iter_mut() {
             let mut x = 0;
+
             for field in line.iter_mut() {
                 fields.push(PositionedField::new(field, x, y));
                 x += 1;
             }
+
             y += 1;
         }
+
         fields
     }
 
