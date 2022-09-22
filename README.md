@@ -1,2 +1,2 @@
-# battleship
-Battleship implementation in Rust
+# rustymines
+Mine sweeping game written in Rust.
