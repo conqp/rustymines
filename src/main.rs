@@ -7,6 +7,6 @@ fn main() {
     field.set_mine();
 
     for mut field in board.fields() {
-        println!("Field: {:#?}", field.field());
+        println!("Field: {:#?}", field);
     }
 }
