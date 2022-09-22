@@ -7,9 +7,9 @@ pub struct Field {
 
 #[derive(Debug)]
 pub struct PositionedField<'a> {
-    field: &'a mut Field,
     x: usize,
     y: usize,
+    field: &'a mut Field,
 }
 
 impl Field {
@@ -39,11 +39,11 @@ impl Field {
 }
 
 impl PositionedField<'_> {
-    pub fn new(field: &mut Field, x: usize, y: usize) -> PositionedField {
+    pub fn new(x: usize, y: usize, field: &mut Field) -> PositionedField {
         PositionedField {
-            field: field,
             x: x,
             y: y,
+            field: field,
         }
     }
 
