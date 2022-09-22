@@ -1,11 +1,11 @@
-use std::fmt;
-
+#[derive(Debug)]
 pub struct Field {
     mine: bool,
     visited: bool,
     flagged: bool,
 }
 
+#[derive(Debug)]
 pub struct PositionedField<'a> {
     field: &'a mut Field,
     x: usize,
@@ -38,16 +38,6 @@ impl Field {
     }
 }
 
-impl fmt::Debug for Field {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Field")
-            .field("mine", &self.mine)
-            .field("visited", &self.visited)
-            .field("flagged", &self.flagged)
-            .finish()
-    }
-}
-
 impl PositionedField<'_> {
     pub fn new(field: &mut Field, x: usize, y: usize) -> PositionedField {
         PositionedField {
@@ -67,15 +57,5 @@ impl PositionedField<'_> {
 
     pub fn y(&self) -> usize {
         self.y
-    }
-}
-
-impl fmt::Debug for PositionedField<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("PositionedField")
-            .field("field", &self.field)
-            .field("x", &self.x)
-            .field("y", &self.y)
-            .finish()
     }
 }

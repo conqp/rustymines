@@ -1,10 +1,9 @@
-use std::fmt;
-
 #[path = "./field.rs"]
 mod field;
 use field::Field;
 use field::PositionedField;
 
+#[derive(Debug)]
 pub struct Board {
     fields: Vec<Vec<Field>>,
     mines: u8,
@@ -42,15 +41,6 @@ impl Board {
 
     pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
         &mut self.fields[y][x]
-    }
-}
-
-impl fmt::Debug for Board {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Board")
-            .field("fields", &self.fields)
-            .field("mines", &self.mines)
-            .finish()
     }
 }
 
