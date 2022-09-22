@@ -1,4 +1,3 @@
-#[path = "./field.rs"]
 mod field;
 use field::Field;
 use field::PositionedField;
