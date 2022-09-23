@@ -1,7 +1,6 @@
-mod board;
-use board::Board;
+mod game;
+use game::Game;
 
 fn main() {
-    let mut board = Board::new(3, 4, 5);
-    board.test();
+    let mut game = Game::new(3, 4, 5);
 }

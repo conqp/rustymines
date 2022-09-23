@@ -9,7 +9,7 @@ pub struct Board {
     mines: u8,
 }
 
-pub enum GameState {
+pub enum MoveResult {
     Continue,
     Won,
     Lost,
@@ -24,21 +24,21 @@ impl Board {
         }
     }
 
-    pub fn visit(&mut self, x: usize, y: usize) -> GameState {
-        let optional_field = self.field(x, y);
+    pub fn visit(&mut self, x: u8, y: u8) -> MoveResult {
+        let optional_field = self.field_mut(x, y);
 
         if optional_field.is_some() {
             let field = optional_field.unwrap();
 
             if field.has_mine() {
                 field.visit();
-                GameState::Lost
+                MoveResult::Lost
             } else {
                 self.visit_field(x, y);
-                GameState::Continue
+                MoveResult::Continue
             }
         } else {
-            GameState::InvalidMove
+            MoveResult::InvalidMove
         }
     }
 
@@ -57,12 +57,12 @@ impl Board {
         self.visit(2, 3);
     }
 
-    fn width(&self) -> usize {
-        self.fields[0].len()
+    fn width(&self) -> u8 {
+        self.fields[0].len() as u8
     }
 
-    fn height(&self) -> usize {
-        self.fields.len()
+    fn height(&self) -> u8 {
+        self.fields.len() as u8
     }
 
     fn fields(&self) -> impl Iterator<Item = &Field> {
@@ -73,59 +73,64 @@ impl Board {
         self.fields.iter_mut().flat_map(|line| line)
     }
 
-    fn positioned_fields(&self) -> impl Iterator<Item = (usize, usize, &Field)> {
-        self.fields
-            .iter()
-            .enumerate()
-            .flat_map(|(y, line)| line.iter().enumerate().map(move |(x, field)| (x, y, field)))
+    fn field(&self, x: u8, y: u8) -> Option<&Field> {
+        if self.width() < x || self.height() < y {
+            None
+        } else {
+            Some(&self.fields[y as usize][x as usize])
+        }
     }
 
-    fn positioned_fields_mut(&mut self) -> impl Iterator<Item = (usize, usize, &mut Field)> {
-        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
-            line.iter_mut()
+    fn field_mut(&mut self, x: u8, y: u8) -> Option<&mut Field> {
+        if self.width() < x || self.height() < y {
+            None
+        } else {
+            Some(&mut self.fields[y as usize][x as usize])
+        }
+    }
+
+    fn positioned_fields(&self) -> impl Iterator<Item = (u8, u8, &Field)> {
+        self.fields.iter().enumerate().flat_map(|(y, line)| {
+            line.iter()
                 .enumerate()
-                .map(move |(x, field)| (x, y, field))
+                .map(move |(x, field)| (x as u8, y as u8, field))
         })
     }
 
-    fn positioned_field(&self, x: usize, y: usize) -> (usize, usize, &Field) {
-        (x, y, &self.fields[y][x])
+    fn positioned_fields_mut(&mut self) -> impl Iterator<Item = (u8, u8, &mut Field)> {
+        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
+            line.iter_mut()
+                .enumerate()
+                .map(move |(x, field)| (x as u8, y as u8, field))
+        })
     }
 
-    fn positioned_field_mut(&mut self, x: usize, y: usize) -> (usize, usize, &mut Field) {
-        (x, y, &mut self.fields[y][x])
+    fn positioned_field(&self, x: u8, y: u8) -> (u8, u8, &Field) {
+        (x, y, self.field(x, y).unwrap())
     }
 
-    fn neighbors(&self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &Field)> {
+    fn positioned_field_mut(&mut self, x: u8, y: u8) -> (u8, u8, &mut Field) {
+        (x, y, self.field_mut(x, y).unwrap())
+    }
+
+    fn neighbors(&self, x: u8, y: u8) -> impl Iterator<Item = (u8, u8, &Field)> {
         self.positioned_fields()
             .filter(move |(other_x, other_y, _)| {
                 is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
             })
     }
 
-    fn neighbors_mut(
-        &mut self,
-        x: usize,
-        y: usize,
-    ) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+    fn neighbors_mut(&mut self, x: u8, y: u8) -> impl Iterator<Item = (u8, u8, &mut Field)> {
         self.positioned_fields_mut()
             .filter(move |(other_x, other_y, _)| {
                 is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
             })
     }
 
-    fn neighboring_mines(&self, x: usize, y: usize) -> usize {
+    fn neighboring_mines(&self, x: u8, y: u8) -> usize {
         self.neighbors(x, y)
             .filter(|(_, _, field)| field.has_mine())
             .count()
-    }
-
-    fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
-        if self.width() < x || self.height() < y {
-            None
-        } else {
-            Some(&mut self.fields[y][x])
-        }
     }
 
     fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
@@ -148,21 +153,27 @@ impl Board {
 
     fn neighbors_without_mines_mut(
         &mut self,
-        x: usize,
-        y: usize,
-    ) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+        x: u8,
+        y: u8,
+    ) -> impl Iterator<Item = (u8, u8, &mut Field)> {
         self.neighbors_mut(x, y)
             .filter(|(_, _, field)| !field.has_mine())
     }
 
-    fn visit_field(&mut self, x: usize, y: usize) {
-        let field = self.fields[y][x];
+    fn visit_field(&mut self, x: u8, y: u8) {
+        let optional_field = self.field(x, y);
+
+        if !optional_field.is_some() {
+            return;
+        }
+
+        let field = optional_field.unwrap();
 
         if field.has_mine() || field.visited() {
             return;
         }
 
-        self.fields[y][x].visit();
+        self.field_mut(x, y).unwrap().visit();
 
         if self.neighboring_mines(x, y) != 0 {
             let mut positions_to_visit = Vec::new();
@@ -195,14 +206,14 @@ fn make_line(width: u8) -> Vec<Field> {
     columns
 }
 
-fn is_neighbor(dx: usize, dy: usize) -> bool {
+fn is_neighbor(dx: u8, dy: u8) -> bool {
     is_adjunct(dx) && is_adjunct(dy) && !same_field(dx, dy)
 }
 
-fn is_adjunct(offset: usize) -> bool {
+fn is_adjunct(offset: u8) -> bool {
     offset == 0 || offset == 1
 }
 
-fn same_field(dx: usize, dy: usize) -> bool {
+fn same_field(dx: u8, dy: u8) -> bool {
     dx == 0 && dy == 0
 }
