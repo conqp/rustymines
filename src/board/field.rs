@@ -47,15 +47,15 @@ impl PositionedField<'_> {
         }
     }
 
-    pub fn field(&mut self) -> &mut Field {
-        self.field
-    }
-
     pub fn x(&self) -> usize {
         self.x
     }
 
     pub fn y(&self) -> usize {
         self.y
+    }
+
+    pub fn field(&mut self) -> &mut Field {
+        self.field
     }
 }

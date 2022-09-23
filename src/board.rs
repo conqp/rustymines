@@ -26,21 +26,29 @@ impl Board {
         self.fields.len()
     }
 
-    pub fn fields(&mut self) -> Vec<&mut Field> {
-        self.fields.iter_mut().flat_map(|line| line).collect()
+    pub fn fields(&mut self) -> impl Iterator<Item = &mut Field> {
+        self.fields.iter_mut().flat_map(|line| line)
     }
 
-    pub fn positioned_fields(&mut self) -> Vec<PositionedField> {
-        self.fields
-            .iter_mut()
-            .enumerate()
-            .flat_map(|(y, line)| {
-                line.iter_mut()
-                    .enumerate()
-                    .map(move |(x, field)| PositionedField::new(x, y, field))
-            })
-            .collect()
+    pub fn positioned_fields(&mut self) -> impl Iterator<Item = PositionedField> {
+        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
+            line.iter_mut()
+                .enumerate()
+                .map(move |(x, field)| PositionedField::new(x, y, field))
+        })
     }
+
+    /*
+    pub fn neighbors(&mut self, field: &PositionedField) -> impl Iterator<Item=&mut PositionedField> {
+        self.positioned_fields()
+            .filter(|other| {
+                other.x() == field.x() - 1
+                    || other.x() == field.x() + 1
+                    || other.y() == field.y() - 1
+                    || other.y() == field.y() + 1
+            })
+    }
+    */
 
     pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
         &mut self.fields[y][x]
