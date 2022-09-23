@@ -14,7 +14,7 @@ fn main() {
         println!("Field: {:#?}", positioned_field);
     }
 
-    for neighbor in board.neighbors(1, 2) {
+    for neighbor in board.neighbors(2, 3) {
         println!("Neighbor: {:#?}", neighbor);
     }
 }
