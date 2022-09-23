@@ -38,17 +38,17 @@ impl Board {
         })
     }
 
-    pub fn neighbors<'a>(
-        &'a mut self,
-        field: &'a PositionedField,
-    ) -> impl Iterator<Item = PositionedField> {
-        self.positioned_fields().filter(|other| {
-            other.x().abs_diff(field.x()) == 1 || other.y().abs_diff(field.y()) == 1
-        })
+    pub fn neighbors(&mut self, x: usize, y: usize) -> impl Iterator<Item = PositionedField> {
+        self.positioned_fields()
+            .filter(move |other| is_neighbor(other.x().abs_diff(x), other.y().abs_diff(y)))
     }
 
     pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
         &mut self.fields[y][x]
+    }
+
+    pub fn positioned_field(&mut self, x: usize, y: usize) -> PositionedField {
+        PositionedField::new(x, y, &mut self.fields[y][x])
     }
 
     fn fields_to_mine(&mut self) -> Vec<&mut Field> {
@@ -85,4 +85,16 @@ fn make_line(width: u8) -> Vec<Field> {
     }
 
     columns
+}
+
+fn is_neighbor(dx: usize, dy: usize) -> bool {
+    is_adjunct(dx) && is_adjunct(dy) && !same_field(dx, dy)
+}
+
+fn is_adjunct(offset: usize) -> bool {
+    offset == 0 || offset == 1
+}
+
+fn same_field(dx: usize, dy: usize) -> bool {
+    dx == 0 && dy == 0
 }
