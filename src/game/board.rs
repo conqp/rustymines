@@ -22,9 +22,9 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: u8, height: u8, mines: u8) -> Self {
+    pub fn new(width: usize, height: usize, mines: u8) -> Self {
         Self {
-            fields: Grid::new(width.into(), height.into(), Field::new),
+            fields: Grid::new(width, height, Field::new),
             mines: mines,
             initialized: false,
         }

@@ -15,7 +15,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: u8, height: u8, mines: u8) -> Self {
+    pub fn new(width: usize, height: usize, mines: u8) -> Self {
         Self {
             board: Board::new(width, height, mines),
             state: GameState::Running,
