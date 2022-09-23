@@ -29,10 +29,12 @@ impl Board {
 
         if optional_field.is_some() {
             let field = optional_field.unwrap();
-            field.visit();
+
             if field.has_mine() {
+                field.visit();
                 GameState::Lost
             } else {
+                self.visit_field(x, y);
                 GameState::Continue
             }
         } else {
@@ -52,6 +54,7 @@ impl Board {
         }
 
         println!("Neighboring mines: {:#?}", self.neighboring_mines(2, 3));
+        self.visit(2, 3);
     }
 
     fn width(&self) -> usize {
