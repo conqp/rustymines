@@ -3,11 +3,8 @@ use board::Board;
 use board::BoardError;
 use board::MoveResult;
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum GameState {
-    Running,
-    Over,
-}
+mod state;
+use state::GameState;
 
 #[derive(Debug)]
 pub struct Game {
