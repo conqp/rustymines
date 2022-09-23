@@ -2,7 +2,6 @@ use rand::{seq::IteratorRandom, thread_rng};
 
 mod field;
 use field::Field;
-use field::PositionedField;
 
 #[derive(Debug)]
 pub struct Board {
@@ -67,17 +66,30 @@ impl Board {
         self.fields.iter_mut().flat_map(|line| line)
     }
 
-    fn positioned_fields(&mut self) -> impl Iterator<Item = PositionedField> {
-        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
-            line.iter_mut()
+    fn positioned_fields(&self) -> impl Iterator<Item = (usize, usize, &Field)> {
+        self.fields.iter().enumerate().flat_map(|(y, line)| {
+            line.iter()
                 .enumerate()
-                .map(move |(x, field)| PositionedField::new(x, y, field))
+                .map(move |(x, field)| (x, y, field))
         })
     }
 
-    fn neighbors(&mut self, x: usize, y: usize) -> impl Iterator<Item = PositionedField> {
+    fn positioned_fields_mut(&mut self) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
+            line.iter_mut()
+                .enumerate()
+                .map(move |(x, field)| (x, y, field))
+        })
+    }
+
+    fn neighbors(&self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &Field)> {
         self.positioned_fields()
-            .filter(move |other| is_neighbor(other.x().abs_diff(x), other.y().abs_diff(y)))
+            .filter(move |(other_x, other_y, _)| is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y)))
+    }
+
+    fn neighbors_mut(&mut self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+        self.positioned_fields_mut()
+            .filter(move |(other_x, other_y, _)| is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y)))
     }
 
     fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
@@ -88,8 +100,12 @@ impl Board {
         }
     }
 
-    fn positioned_field(&mut self, x: usize, y: usize) -> PositionedField {
-        PositionedField::new(x, y, &mut self.fields[y][x])
+    fn positioned_field(&self, x: usize, y: usize) -> (usize, usize, &Field) {
+        (x, y, &self.fields[y][x])
+    }
+
+    fn positioned_field_mut(&mut self, x: usize, y: usize) -> (usize, usize, &mut Field) {
+        (x, y, &mut self.fields[y][x])
     }
 
     fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
