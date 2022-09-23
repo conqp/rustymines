@@ -161,7 +161,7 @@ impl Board {
     }
 
     fn visit_field(&mut self, x: u8, y: u8) {
-        let optional_field = self.field(x, y);
+        let optional_field = self.field_mut(x, y);
 
         if !optional_field.is_some() {
             return;
@@ -173,7 +173,7 @@ impl Board {
             return;
         }
 
-        self.field_mut(x, y).unwrap().visit();
+        field.visit();
 
         if self.neighboring_mines(x, y) != 0 {
             let mut positions_to_visit = Vec::new();
