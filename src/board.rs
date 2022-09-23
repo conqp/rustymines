@@ -1,5 +1,4 @@
 use rand::{seq::IteratorRandom, thread_rng};
-use std::collections::HashMap;
 
 mod field;
 use field::Field;
