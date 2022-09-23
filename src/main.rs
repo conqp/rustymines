@@ -14,4 +14,10 @@ fn main() {
     for positioned_field in board.positioned_fields() {
         println!("Field: {:#?}", positioned_field);
     }
+
+    board.populate_mines();
+
+    for positioned_field in board.positioned_fields() {
+        println!("Field: {:#?}", positioned_field);
+    }
 }

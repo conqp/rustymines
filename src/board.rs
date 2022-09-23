@@ -1,4 +1,4 @@
-use rand::seq::SliceRandom;
+use rand::{seq::IteratorRandom, thread_rng};
 
 mod field;
 use field::Field;
@@ -46,14 +46,20 @@ impl Board {
         &mut self.fields[y][x]
     }
 
-    /*
-    fn populate_mines(&mut self) {
-        let fields = self.fields();
-        let fields_to_mine: Vec<_> = fields
-            .choose_multiple(&mut rand::thread_rng(), self.mines.into())
-            .collect();
+    fn fields_to_mine(&mut self) -> Vec<&mut Field> {
+        let mines = self.mines as usize;
+        self.fields()
+            .into_iter()
+            .choose_multiple(&mut thread_rng(), mines)
+            .into_iter()
+            .collect()
     }
-    */
+
+    pub fn populate_mines(&mut self) {
+        for field in self.fields_to_mine() {
+            field.set_mine();
+        }
+    }
 }
 
 fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
