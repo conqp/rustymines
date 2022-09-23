@@ -10,6 +10,13 @@ pub struct Board {
     mines: u8,
 }
 
+pub enum GameState {
+    CONTINUE,
+    WON,
+    LOST,
+    INVALID_MOVE,
+}
+
 impl Board {
     pub fn new(width: u8, height: u8, mines: u8) -> Board {
         Board {
@@ -43,12 +50,32 @@ impl Board {
             .filter(move |other| is_neighbor(other.x().abs_diff(x), other.y().abs_diff(y)))
     }
 
-    pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
-        &mut self.fields[y][x]
+    pub fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
+        if self.width() < x || self.height() < y {
+            None
+        } else {
+            Some(&mut self.fields[y][x])
+        }
     }
 
     pub fn positioned_field(&mut self, x: usize, y: usize) -> PositionedField {
         PositionedField::new(x, y, &mut self.fields[y][x])
+    }
+
+    pub fn visit(&mut self, x: usize, y: usize) -> GameState {
+        let optional_field = self.field(x, y);
+
+        if optional_field.is_some() {
+            let field = optional_field.unwrap();
+            field.visit();
+            if field.has_mine() {
+                GameState::LOST
+            } else {
+                GameState::CONTINUE
+            }
+        } else {
+            GameState::INVALID_MOVE
+        }
     }
 
     fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
@@ -59,7 +86,7 @@ impl Board {
             .into_iter()
     }
 
-    pub fn populate_mines(&mut self) {
+    fn populate_mines(&mut self) {
         for field in self.fields_to_mine() {
             field.set_mine();
         }
