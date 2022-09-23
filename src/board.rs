@@ -1,3 +1,5 @@
+use rand::seq::SliceRandom;
+
 mod field;
 use field::Field;
 use field::PositionedField;
@@ -24,27 +26,34 @@ impl Board {
         self.fields.len()
     }
 
-    pub fn fields(&mut self) -> Vec<PositionedField> {
-        let mut fields = Vec::new();
-        let mut y = 0;
+    fn fields(&mut self) -> Vec<&mut Field> {
+        self.fields.iter_mut().flat_map(|line| line).collect()
+    }
 
-        for line in self.fields.iter_mut() {
-            let mut x = 0;
-
-            for field in line.iter_mut() {
-                fields.push(PositionedField::new(x, y, field));
-                x += 1;
-            }
-
-            y += 1;
-        }
-
-        fields
+    pub fn positioned_fields(&mut self) -> Vec<PositionedField> {
+        self.fields
+            .iter_mut()
+            .enumerate()
+            .flat_map(|(y, line)| {
+                line.iter_mut()
+                    .enumerate()
+                    .map(move |(x, field)| PositionedField::new(x, y, field))
+            })
+            .collect()
     }
 
     pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
         &mut self.fields[y][x]
     }
+
+    /*
+    fn populate_mines(&mut self) {
+        let fields = self.fields();
+        let fields_to_mine: Vec<_> = fields
+            .choose_multiple(&mut rand::thread_rng(), self.mines.into())
+            .collect();
+    }
+    */
 }
 
 fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
