@@ -11,10 +11,10 @@ pub struct Board {
 }
 
 pub enum GameState {
-    CONTINUE,
-    WON,
-    LOST,
-    INVALID_MOVE,
+    Continue,
+    Won,
+    Lost,
+    InvalidMove,
 }
 
 impl Board {
@@ -69,12 +69,12 @@ impl Board {
             let field = optional_field.unwrap();
             field.visit();
             if field.has_mine() {
-                GameState::LOST
+                GameState::Lost
             } else {
-                GameState::CONTINUE
+                GameState::Continue
             }
         } else {
-            GameState::INVALID_MOVE
+            GameState::InvalidMove
         }
     }
 
