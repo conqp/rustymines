@@ -5,10 +5,12 @@ use field::Field;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
+    AlreadyVisited,
     Continue,
-    Won,
+    FieldFlagged,
+    InvalidPosition,
     Lost,
-    InvalidMove,
+    Won,
 }
 
 #[derive(Debug)]
@@ -32,7 +34,7 @@ impl Board {
     pub fn visit(&mut self, x: u8, y: u8) -> MoveResult {
         let result = self.make_move(x, y);
 
-        if result == MoveResult::Lost || result == MoveResult::InvalidMove {
+        if result == MoveResult::Lost || result == MoveResult::InvalidPosition {
             result
         } else if self.all_mines_cleared() {
             MoveResult::Won
@@ -48,13 +50,13 @@ impl Board {
             let field = optional_field.unwrap();
 
             if field.visited() {
-                MoveResult::InvalidMove
+                MoveResult::AlreadyVisited
             } else {
                 field.toggle_flag();
                 MoveResult::Continue
             }
         } else {
-            MoveResult::InvalidMove
+            MoveResult::InvalidPosition
         }
     }
 
@@ -125,7 +127,7 @@ impl Board {
         let optional_field = self.field_mut(x, y);
 
         if !optional_field.is_some() {
-            return MoveResult::InvalidMove;
+            return MoveResult::InvalidPosition;
         }
 
         let field = optional_field.unwrap();
@@ -134,8 +136,12 @@ impl Board {
             return MoveResult::Lost;
         }
 
-        if field.visited() || field.flagged() {
-            return MoveResult::InvalidMove;
+        if field.visited() {
+            return MoveResult::AlreadyVisited;
+        }
+
+        if field.flagged() {
+            return MoveResult::FieldFlagged;
         }
 
         field.visit();
@@ -163,7 +169,7 @@ impl Board {
             self.visit_neighbors(x, y);
             MoveResult::Continue
         } else {
-            MoveResult::InvalidMove
+            MoveResult::InvalidPosition
         }
     }
 
@@ -175,12 +181,9 @@ impl Board {
         }
     }
 
-    fn clear_fields(&self) -> impl Iterator<Item = &Field> {
-        self.fields().filter(|field| !field.has_mine())
-    }
-
     fn all_mines_cleared(&self) -> bool {
-        self.clear_fields().count() == self.total_fields() - self.mines as usize
+        self.fields().filter(|field| field.visited()).count()
+            == self.total_fields() - self.mines as usize
     }
 }
 
