@@ -67,11 +67,10 @@ impl Board {
     }
 
     fn positioned_fields(&self) -> impl Iterator<Item = (usize, usize, &Field)> {
-        self.fields.iter().enumerate().flat_map(|(y, line)| {
-            line.iter()
-                .enumerate()
-                .map(move |(x, field)| (x, y, field))
-        })
+        self.fields
+            .iter()
+            .enumerate()
+            .flat_map(|(y, line)| line.iter().enumerate().map(move |(x, field)| (x, y, field)))
     }
 
     fn positioned_fields_mut(&mut self) -> impl Iterator<Item = (usize, usize, &mut Field)> {
@@ -84,12 +83,20 @@ impl Board {
 
     fn neighbors(&self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &Field)> {
         self.positioned_fields()
-            .filter(move |(other_x, other_y, _)| is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y)))
+            .filter(move |(other_x, other_y, _)| {
+                is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
+            })
     }
 
-    fn neighbors_mut(&mut self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+    fn neighbors_mut(
+        &mut self,
+        x: usize,
+        y: usize,
+    ) -> impl Iterator<Item = (usize, usize, &mut Field)> {
         self.positioned_fields_mut()
-            .filter(move |(other_x, other_y, _)| is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y)))
+            .filter(move |(other_x, other_y, _)| {
+                is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
+            })
     }
 
     fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
