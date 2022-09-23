@@ -151,6 +151,25 @@ impl Board {
         self.neighbors_mut(x, y)
             .filter(|(_, _, field)| !field.has_mine())
     }
+
+    fn visit_field(&mut self, x: usize, y: usize) {
+        let field = self.fields[y][x];
+
+        if field.has_mine() || field.visited() {
+            return;
+        }
+
+        self.fields[y][x].visit();
+
+        if self.neighboring_mines(x, y) != 0 {
+            let mut positions_to_visit = Vec::new();
+            self.neighbors(x, y)
+                .for_each(|(x, y, _)| positions_to_visit.push((x, y)));
+            positions_to_visit
+                .into_iter()
+                .for_each(|(x, y)| self.visit_field(x, y));
+        }
+    }
 }
 
 fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
