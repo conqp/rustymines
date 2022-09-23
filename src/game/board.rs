@@ -21,7 +21,9 @@ pub struct Board {
 impl Board {
     pub fn new(width: u8, height: u8, mines: u8) -> Board {
         Board {
-            fields: gen_fields(width, height),
+            fields: (0..height)
+                .map(move |_| (0..width).map(|_| Field::new()).collect())
+                .collect(),
             mines: mines,
             initialized: false,
         }
@@ -180,12 +182,6 @@ impl Board {
     fn all_mines_cleared(&self) -> bool {
         self.clear_fields().count() == self.total_fields() - self.mines as usize
     }
-}
-
-fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
-    (0..height)
-        .map(move |_| (0..width).map(|_| Field::new()).collect())
-        .collect()
 }
 
 fn is_neighbor(dx: u8, dy: u8) -> bool {
