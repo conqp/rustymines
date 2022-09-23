@@ -1,5 +1,6 @@
 mod board;
 use board::Board;
+use board::BoardError;
 use board::MoveResult;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -15,10 +16,19 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8) -> Self {
-        Self {
-            board: Board::new(width, height, mines),
-            state: GameState::Running,
+    pub fn new(width: usize, height: usize, mines: u8) -> (Option<Self>, BoardError) {
+        let (board, error) = Board::new(width, height, mines);
+
+        if board.is_some() {
+            (
+                Some(Self {
+                    board: board.unwrap(),
+                    state: GameState::Running,
+                }),
+                BoardError::OK,
+            )
+        } else {
+            (None, error)
         }
     }
 
