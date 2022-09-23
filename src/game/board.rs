@@ -3,12 +3,7 @@ use rand::{seq::IteratorRandom, thread_rng};
 mod field;
 use field::Field;
 
-#[derive(Debug)]
-pub struct Board {
-    fields: Vec<Vec<Field>>,
-    mines: u8,
-}
-
+#[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
     Continue,
     Won,
@@ -16,44 +11,49 @@ pub enum MoveResult {
     InvalidMove,
 }
 
+#[derive(Debug)]
+pub struct Board {
+    fields: Vec<Vec<Field>>,
+    mines: u8,
+    initialized: bool,
+}
+
 impl Board {
     pub fn new(width: u8, height: u8, mines: u8) -> Board {
         Board {
             fields: gen_fields(width, height),
             mines: mines,
+            initialized: false,
         }
     }
 
     pub fn visit(&mut self, x: u8, y: u8) -> MoveResult {
+        let result = self.make_move(x, y);
+
+        if result == MoveResult::Lost || result == MoveResult::InvalidMove {
+            result
+        } else if self.all_mines_cleared() {
+            MoveResult::Won
+        } else {
+            MoveResult::Continue
+        }
+    }
+
+    pub fn toggle_flag(&mut self, x: u8, y: u8) -> MoveResult {
         let optional_field = self.field_mut(x, y);
 
         if optional_field.is_some() {
             let field = optional_field.unwrap();
 
-            if field.has_mine() {
-                field.visit();
-                MoveResult::Lost
+            if field.visited() {
+                MoveResult::InvalidMove
             } else {
-                self.visit_free_field(x, y)
+                field.toggle_flag();
+                MoveResult::Continue
             }
         } else {
             MoveResult::InvalidMove
         }
-    }
-
-    pub fn test(&mut self) {
-        self.populate_mines();
-
-        for positioned_field in self.positioned_fields() {
-            println!("Field: {:#?}", positioned_field);
-        }
-
-        for neighbor in self.neighbors(2, 3) {
-            println!("Neighbor: {:#?}", neighbor);
-        }
-
-        println!("Neighboring mines: {:#?}", self.neighboring_mines(2, 3));
-        self.visit(2, 3);
     }
 
     fn width(&self) -> u8 {
@@ -76,14 +76,6 @@ impl Board {
         self.fields.iter_mut().flat_map(|line| line)
     }
 
-    fn field(&self, x: u8, y: u8) -> Option<&Field> {
-        if self.width() < x || self.height() < y {
-            None
-        } else {
-            Some(&self.fields[y as usize][x as usize])
-        }
-    }
-
     fn field_mut(&mut self, x: u8, y: u8) -> Option<&mut Field> {
         if self.width() < x || self.height() < y {
             None
@@ -100,31 +92,8 @@ impl Board {
         })
     }
 
-    fn positioned_fields_mut(&mut self) -> impl Iterator<Item = (u8, u8, &mut Field)> {
-        self.fields.iter_mut().enumerate().flat_map(|(y, line)| {
-            line.iter_mut()
-                .enumerate()
-                .map(move |(x, field)| (x as u8, y as u8, field))
-        })
-    }
-
-    fn positioned_field(&self, x: u8, y: u8) -> (u8, u8, &Field) {
-        (x, y, self.field(x, y).unwrap())
-    }
-
-    fn positioned_field_mut(&mut self, x: u8, y: u8) -> (u8, u8, &mut Field) {
-        (x, y, self.field_mut(x, y).unwrap())
-    }
-
     fn neighbors(&self, x: u8, y: u8) -> impl Iterator<Item = (u8, u8, &Field)> {
         self.positioned_fields()
-            .filter(move |(other_x, other_y, _)| {
-                is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
-            })
-    }
-
-    fn neighbors_mut(&mut self, x: u8, y: u8) -> impl Iterator<Item = (u8, u8, &mut Field)> {
-        self.positioned_fields_mut()
             .filter(move |(other_x, other_y, _)| {
                 is_neighbor(other_x.abs_diff(x), other_y.abs_diff(y))
             })
@@ -136,65 +105,71 @@ impl Board {
             .count()
     }
 
-    fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
+    fn populate_mines(&mut self) {
         let mines = self.mines as usize;
         self.fields_mut()
-            .into_iter()
+            .filter(|field| !field.visited())
             .choose_multiple(&mut thread_rng(), mines)
             .into_iter()
+            .for_each(|field| field.set_mine())
     }
 
-    fn populate_mines(&mut self) {
-        for field in self.fields_to_mine() {
-            field.set_mine();
-        }
+    fn initialize(&mut self) {
+        self.populate_mines();
+        self.initialized = true;
     }
 
-    fn mined_fields(&self) -> impl Iterator<Item = &Field> {
-        self.fields().into_iter().filter(|field| field.has_mine())
-    }
-
-    fn neighbors_without_mines_mut(
-        &mut self,
-        x: u8,
-        y: u8,
-    ) -> impl Iterator<Item = (u8, u8, &mut Field)> {
-        self.neighbors_mut(x, y)
-            .filter(|(_, _, field)| !field.has_mine())
-    }
-
-    fn visit_field(&mut self, x: u8, y: u8) {
+    fn visit_field(&mut self, x: u8, y: u8) -> MoveResult {
         let optional_field = self.field_mut(x, y);
 
         if !optional_field.is_some() {
-            return;
+            return MoveResult::InvalidMove;
         }
 
         let field = optional_field.unwrap();
 
-        if field.has_mine() || field.visited() {
-            return;
+        if field.has_mine() {
+            return MoveResult::Lost;
+        }
+
+        if field.visited() || field.flagged() {
+            return MoveResult::InvalidMove;
         }
 
         field.visit();
+        self.visit_neighbors(x, y);
+        MoveResult::Continue
+    }
 
+    fn visit_neighbors(&mut self, x: u8, y: u8) {
         if self.neighboring_mines(x, y) != 0 {
             let mut positions_to_visit = Vec::new();
             self.neighbors(x, y)
                 .for_each(|(x, y, _)| positions_to_visit.push((x, y)));
             positions_to_visit
                 .into_iter()
-                .for_each(|(x, y)| self.visit_field(x, y));
+                .for_each(|(x, y)| _ = self.visit_field(x, y));
         }
     }
 
-    fn visit_free_field(&mut self, x: u8, y: u8) -> MoveResult {
-        self.visit_field(x, y);
+    fn first_move(&mut self, x: u8, y: u8) -> MoveResult {
+        let optional_field = self.field_mut(x, y);
 
-        if self.all_mines_cleared() {
-            MoveResult::Won
-        } else {
+        if optional_field.is_some() {
+            optional_field.unwrap().visit();
+            self.initialize();
+            self.visit_neighbors(x, y);
             MoveResult::Continue
+        } else {
+            MoveResult::InvalidMove
+        }
+    }
+
+    fn make_move(&mut self, x: u8, y: u8) -> MoveResult {
+        if !self.initialized {
+            self.first_move(x, y)
+        } else {
+            self.visit_field(x, y)
         }
     }
 

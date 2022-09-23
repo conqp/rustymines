@@ -14,19 +14,27 @@ impl Field {
         }
     }
 
+    pub fn has_mine(&self) -> bool {
+        self.mine
+    }
+
     pub fn set_mine(&mut self) {
         self.mine = true;
     }
 
-    pub fn has_mine(&self) -> bool {
-        self.mine
+    pub fn visited(&self) -> bool {
+        self.visited
     }
 
     pub fn visit(&mut self) {
         self.visited = true;
     }
 
-    pub fn visited(&self) -> bool {
-        self.visited
+    pub fn flagged(&self) -> bool {
+        self.flagged
+    }
+
+    pub fn toggle_flag(&mut self) {
+        self.flagged = !self.flagged;
     }
 }
