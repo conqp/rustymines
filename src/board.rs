@@ -1,4 +1,5 @@
 use rand::{seq::IteratorRandom, thread_rng};
+use std::collections::HashMap;
 
 mod field;
 use field::Field;
@@ -149,15 +150,8 @@ impl Board {
         y: usize,
     ) -> impl Iterator<Item = (usize, usize, &mut Field)> {
         self.neighbors_mut(x, y)
-            .filter(|(x, y, field)| !field.has_mine())
+            .filter(|(_, _, field)| !field.has_mine())
     }
-
-    /*
-    fn visit_neighbors_recursively(&mut self, x: usize, y: usize) {
-        let &mut field = self.fields[y][x];
-        self.neighbors_without_mines().
-    }
-    */
 }
 
 fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
