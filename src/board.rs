@@ -43,10 +43,7 @@ impl Board {
         field: &'a PositionedField,
     ) -> impl Iterator<Item = PositionedField> {
         self.positioned_fields().filter(|other| {
-            other.x() == field.x() - 1
-                || other.x() == field.x() + 1
-                || other.y() == field.y() - 1
-                || other.y() == field.y() + 1
+            other.x().abs_diff(field.x()) == 1 || other.y().abs_diff(field.y()) == 1
         })
     }
 
