@@ -2,11 +2,13 @@ mod board;
 use board::Board;
 use board::MoveResult;
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum GameState {
     Running,
     Over,
 }
 
+#[derive(Debug)]
 pub struct Game {
     board: Board,
     state: GameState,
