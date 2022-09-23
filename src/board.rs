@@ -56,6 +56,8 @@ impl Board {
         for neighbor in self.neighbors(2, 3) {
             println!("Neighbor: {:#?}", neighbor);
         }
+
+        println!("Neighbors: {:#?}", self.count_neightbors(2, 3));
     }
 
     fn fields(&self) -> impl Iterator<Item = &Field> {
@@ -81,6 +83,14 @@ impl Board {
         })
     }
 
+    fn positioned_field(&self, x: usize, y: usize) -> (usize, usize, &Field) {
+        (x, y, &self.fields[y][x])
+    }
+
+    fn positioned_field_mut(&mut self, x: usize, y: usize) -> (usize, usize, &mut Field) {
+        (x, y, &mut self.fields[y][x])
+    }
+
     fn neighbors(&self, x: usize, y: usize) -> impl Iterator<Item = (usize, usize, &Field)> {
         self.positioned_fields()
             .filter(move |(other_x, other_y, _)| {
@@ -99,20 +109,16 @@ impl Board {
             })
     }
 
+    fn count_neightbors(&self, x: usize, y: usize) -> usize {
+        self.neighbors(x, y).count()
+    }
+
     fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
         if self.width() < x || self.height() < y {
             None
         } else {
             Some(&mut self.fields[y][x])
         }
-    }
-
-    fn positioned_field(&self, x: usize, y: usize) -> (usize, usize, &Field) {
-        (x, y, &self.fields[y][x])
-    }
-
-    fn positioned_field_mut(&mut self, x: usize, y: usize) -> (usize, usize, &mut Field) {
-        (x, y, &mut self.fields[y][x])
     }
 
     fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
