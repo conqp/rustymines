@@ -51,13 +51,12 @@ impl Board {
         PositionedField::new(x, y, &mut self.fields[y][x])
     }
 
-    fn fields_to_mine(&mut self) -> Vec<&mut Field> {
+    fn fields_to_mine(&mut self) -> impl Iterator<Item = &mut Field> {
         let mines = self.mines as usize;
         self.fields()
             .into_iter()
             .choose_multiple(&mut thread_rng(), mines)
             .into_iter()
-            .collect()
     }
 
     pub fn populate_mines(&mut self) {
