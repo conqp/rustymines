@@ -34,8 +34,7 @@ impl Board {
                 field.visit();
                 MoveResult::Lost
             } else {
-                self.visit_field(x, y);
-                MoveResult::Continue
+                self.visit_free_field(x, y)
             }
         } else {
             MoveResult::InvalidMove
@@ -63,6 +62,10 @@ impl Board {
 
     fn height(&self) -> u8 {
         self.fields.len() as u8
+    }
+
+    fn total_fields(&self) -> usize {
+        self.width() as usize * self.height() as usize
     }
 
     fn fields(&self) -> impl Iterator<Item = &Field> {
@@ -183,6 +186,24 @@ impl Board {
                 .into_iter()
                 .for_each(|(x, y)| self.visit_field(x, y));
         }
+    }
+
+    fn visit_free_field(&mut self, x: u8, y: u8) -> MoveResult {
+        self.visit_field(x, y);
+
+        if self.all_mines_cleared() {
+            MoveResult::Won
+        } else {
+            MoveResult::Continue
+        }
+    }
+
+    fn clear_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields().filter(|field| !field.has_mine())
+    }
+
+    fn all_mines_cleared(&self) -> bool {
+        self.clear_fields().count() == self.total_fields() - self.mines as usize
     }
 }
 

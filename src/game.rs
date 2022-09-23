@@ -19,5 +19,7 @@ impl Game {
         }
     }
 
-    pub fn visit(&mut self, x: u8, y: u8) {}
+    pub fn visit(&mut self, x: u8, y: u8) {
+        self.board.visit(x, y);
+    }
 }
