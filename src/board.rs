@@ -49,6 +49,8 @@ impl Board {
     }
 
     pub fn test(&mut self) {
+        self.populate_mines();
+
         for positioned_field in self.positioned_fields() {
             println!("Field: {:#?}", positioned_field);
         }
@@ -57,7 +59,7 @@ impl Board {
             println!("Neighbor: {:#?}", neighbor);
         }
 
-        println!("Neighbors: {:#?}", self.count_neightbors(2, 3));
+        println!("Neighboring mines: {:#?}", self.neighboring_mines(2, 3));
     }
 
     fn fields(&self) -> impl Iterator<Item = &Field> {
@@ -109,8 +111,10 @@ impl Board {
             })
     }
 
-    fn count_neightbors(&self, x: usize, y: usize) -> usize {
-        self.neighbors(x, y).count()
+    fn neighboring_mines(&self, x: usize, y: usize) -> usize {
+        self.neighbors(x, y)
+            .filter(|(_, _, field)| field.has_mine())
+            .count()
     }
 
     fn field(&mut self, x: usize, y: usize) -> Option<&mut Field> {
