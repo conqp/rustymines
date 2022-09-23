@@ -26,7 +26,7 @@ impl Board {
         self.fields.len()
     }
 
-    fn fields(&mut self) -> Vec<&mut Field> {
+    pub fn fields(&mut self) -> Vec<&mut Field> {
         self.fields.iter_mut().flat_map(|line| line).collect()
     }
 
