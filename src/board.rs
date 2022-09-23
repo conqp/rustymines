@@ -142,6 +142,22 @@ impl Board {
     fn mined_fields(&self) -> impl Iterator<Item = &Field> {
         self.fields().into_iter().filter(|field| field.has_mine())
     }
+
+    fn neighbors_without_mines_mut(
+        &mut self,
+        x: usize,
+        y: usize,
+    ) -> impl Iterator<Item = (usize, usize, &mut Field)> {
+        self.neighbors_mut(x, y)
+            .filter(|(x, y, field)| !field.has_mine())
+    }
+
+    /*
+    fn visit_neighbors_recursively(&mut self, x: usize, y: usize) {
+        let &mut field = self.fields[y][x];
+        self.neighbors_without_mines().
+    }
+    */
 }
 
 fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
