@@ -21,8 +21,8 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: u8, height: u8, mines: u8) -> Board {
-        Board {
+    pub fn new(width: u8, height: u8, mines: u8) -> Self {
+        Self {
             fields: (0..height)
                 .map(move |_| (0..width).map(|_| Field::new()).collect())
                 .collect(),

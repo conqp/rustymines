@@ -6,8 +6,8 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new() -> Field {
-        Field {
+    pub fn new() -> Self {
+        Self {
             mine: false,
             visited: false,
             flagged: false,
