@@ -38,17 +38,17 @@ impl Board {
         })
     }
 
-    /*
-    pub fn neighbors(&mut self, field: &PositionedField) -> impl Iterator<Item=&mut PositionedField> {
-        self.positioned_fields()
-            .filter(|other| {
-                other.x() == field.x() - 1
-                    || other.x() == field.x() + 1
-                    || other.y() == field.y() - 1
-                    || other.y() == field.y() + 1
-            })
+    pub fn neighbors<'a>(
+        &'a mut self,
+        field: &'a PositionedField,
+    ) -> impl Iterator<Item = PositionedField> {
+        self.positioned_fields().filter(|other| {
+            other.x() == field.x() - 1
+                || other.x() == field.x() + 1
+                || other.y() == field.y() - 1
+                || other.y() == field.y() + 1
+        })
     }
-    */
 
     pub fn field(&mut self, x: usize, y: usize) -> &mut Field {
         &mut self.fields[y][x]
