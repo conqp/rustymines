@@ -21,7 +21,7 @@ pub struct Board {
 impl Board {
     pub fn new(width: u8, height: u8, mines: u8) -> Board {
         Board {
-            fields: gen_fields(width, height).collect(),
+            fields: gen_fields(width, height),
             mines: mines,
             initialized: false,
         }
@@ -182,8 +182,10 @@ impl Board {
     }
 }
 
-fn gen_fields(width: u8, height: u8) -> impl Iterator<Item = Vec<Field>> {
-    (0..height).map(move |_| (0..width).map(|_| Field::new()).collect())
+fn gen_fields(width: u8, height: u8) -> Vec<Vec<Field>> {
+    (0..height)
+        .map(move |_| (0..width).map(|_| Field::new()).collect())
+        .collect()
 }
 
 fn is_neighbor(dx: u8, dy: u8) -> bool {
