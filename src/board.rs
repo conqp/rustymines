@@ -25,14 +25,6 @@ impl Board {
         }
     }
 
-    pub fn width(&self) -> usize {
-        self.fields[0].len()
-    }
-
-    pub fn height(&self) -> usize {
-        self.fields.len()
-    }
-
     pub fn visit(&mut self, x: usize, y: usize) -> GameState {
         let optional_field = self.field(x, y);
 
