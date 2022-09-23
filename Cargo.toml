@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 rand = "*"
+factory = "*"
+grid = { git = "https://github.com/conqp/grid.git", branch = "main" }

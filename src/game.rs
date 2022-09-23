@@ -20,7 +20,7 @@ impl Game {
         }
     }
 
-    pub fn visit(&mut self, x: u8, y: u8) {
+    pub fn visit(&mut self, x: usize, y: usize) {
         match self.board.visit(x, y) {
             MoveResult::AlreadyVisited => self.already_visited(x, y),
             MoveResult::Continue => self.next_move(),
@@ -31,7 +31,7 @@ impl Game {
         }
     }
 
-    pub fn toggle_flag(&mut self, x: u8, y: u8) {
+    pub fn toggle_flag(&mut self, x: usize, y: usize) {
         match self.board.toggle_flag(x, y) {
             MoveResult::AlreadyVisited => self.already_visited(x, y),
             MoveResult::Continue => self.next_move(),
@@ -52,7 +52,7 @@ impl Game {
         println!("You won the game.")
     }
 
-    fn already_visited(&self, x: u8, y: u8) {
+    fn already_visited(&self, x: usize, y: usize) {
         println!("You already visited the field at {}x{}.", x, y);
     }
 
@@ -60,11 +60,11 @@ impl Game {
         println!("TODO: Print game board.");
     }
 
-    fn field_flagged(&self, x: u8, y: u8) {
+    fn field_flagged(&self, x: usize, y: usize) {
         println!("The field at {}x{} is already flagged.", x, y);
     }
 
-    fn invalid_position(&self, x: u8, y: u8) {
+    fn invalid_position(&self, x: usize, y: usize) {
         println!("The field at {}x{} is not on the board.", x, y);
     }
 }
