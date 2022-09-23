@@ -119,7 +119,7 @@ impl Board {
         self.initialized = true;
     }
 
-    fn visit_field(&mut self, x: u8, y: u8) -> MoveResult {
+    fn visit_recursive(&mut self, x: u8, y: u8) -> MoveResult {
         let optional_field = self.field_mut(x, y);
 
         if !optional_field.is_some() {
@@ -148,7 +148,7 @@ impl Board {
                 .for_each(|(x, y, _)| positions_to_visit.push((x, y)));
             positions_to_visit
                 .into_iter()
-                .for_each(|(x, y)| _ = self.visit_field(x, y));
+                .for_each(|(x, y)| _ = self.visit_recursive(x, y));
         }
     }
 
@@ -169,7 +169,7 @@ impl Board {
         if !self.initialized {
             self.first_move(x, y)
         } else {
-            self.visit_field(x, y)
+            self.visit_recursive(x, y)
         }
     }
 
