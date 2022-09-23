@@ -9,8 +9,8 @@ pub enum GameState {
 impl fmt::Display for GameState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            GameState::Running => write!(f, "Game is running"),
-            GameState::Over => write!(f, "game is over"),
+            GameState::Running => write!(f, "Playing"),
+            GameState::Over => write!(f, "Game over"),
         }
     }
 }
