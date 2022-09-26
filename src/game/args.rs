@@ -63,7 +63,7 @@ fn parse() -> ArgMatches {
                 .help("Height of the board"),
         )
         .arg(
-            Arg::with_name("amount")
+            Arg::with_name("mines")
                 .short('m')
                 .long("mines")
                 .takes_value(true)
