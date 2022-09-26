@@ -1,6 +1,5 @@
 mod board;
 use board::Board;
-use board::BoardError;
 use board::MoveResult;
 
 mod state;
@@ -13,20 +12,11 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8) -> (Option<Self>, BoardError) {
-        let (board, error) = Board::new(width, height, mines);
-
-        if board.is_some() {
-            (
-                Some(Self {
-                    board: board.unwrap(),
-                    state: GameState::Running,
-                }),
-                BoardError::OK,
-            )
-        } else {
-            (None, error)
-        }
+    pub fn new(width: usize, height: usize, mines: u8) -> Result<Self, &'static str> {
+        Ok(Self {
+            board: Board::new(width, height, mines)?,
+            state: GameState::Running,
+        })
     }
 
     pub fn visit(&mut self, x: usize, y: usize) {

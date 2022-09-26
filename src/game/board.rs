@@ -4,9 +4,6 @@ use rand::{seq::IteratorRandom, thread_rng};
 mod field;
 use field::Field;
 
-mod error;
-pub use error::BoardError;
-
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
     AlreadyVisited,
@@ -25,22 +22,19 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines: u8) -> (Option<Self>, BoardError) {
+    pub fn new(width: usize, height: usize, mines: u8) -> Result<Self, &'static str> {
         if width < 1 {
-            (None, BoardError::FieldTooNarrow)
+            Err("field too narrow")
         } else if height < 1 {
-            (None, BoardError::FieldTooFlat)
+            Err("field too flat")
         } else if width * height <= mines as usize {
-            (None, BoardError::TooManyMines)
+            Err("too many mines for field size")
         } else {
-            (
-                Some(Self {
-                    fields: Grid::new(width, height, Field::new),
-                    mines: mines,
-                    initialized: false,
-                }),
-                BoardError::OK,
-            )
+            Ok(Self {
+                fields: Grid::new(width, height, Field::new),
+                mines: mines,
+                initialized: false,
+            })
         }
     }
 
