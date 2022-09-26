@@ -1,3 +1,6 @@
+mod args;
+use args::Args;
+
 mod board;
 use board::Board;
 use board::MoveResult;
@@ -17,6 +20,15 @@ impl Game {
             board: Board::new(width, height, mines)?,
             state: GameState::Running,
         })
+    }
+
+    pub fn from_args(args: &Args) -> Result<Self, &'static str> {
+        Self::new(args.width, args.height, args.mines)
+    }
+
+    pub fn parse() -> Result<Self, &'static str> {
+        let args = Args::parse()?;
+        Self::from_args(&args)
     }
 
     pub fn visit(&mut self, x: usize, y: usize) {

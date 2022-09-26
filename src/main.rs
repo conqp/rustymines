@@ -2,7 +2,7 @@ mod game;
 use game::Game;
 
 fn main() {
-    let result = Game::new(5, 4, 8);
+    let result = Game::parse();
 
     if result.is_err() {
         println!("Error: {}", result.err().unwrap());
