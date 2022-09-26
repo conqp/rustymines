@@ -27,7 +27,7 @@ impl Game {
     }
 
     pub fn parse() -> Result<Self, &'static str> {
-        let args = Args::parse()?;
+        let args = Args::parse();
         Self::from_args(&args)
     }
 
