@@ -53,7 +53,7 @@ impl Board {
     pub fn toggle_flag(&mut self, x: usize, y: usize) -> MoveResult {
         let optional_field = self.fields.get_mut(x, y);
 
-        if optional_field.is_some() {
+        if optional_field.is_ok() {
             let field = optional_field.unwrap();
 
             if field.visited() {
@@ -96,7 +96,7 @@ impl Board {
     fn visit_recursive(&mut self, x: usize, y: usize) -> MoveResult {
         let optional_field = self.fields.get_mut(x, y);
 
-        if !optional_field.is_some() {
+        if !optional_field.is_ok() {
             return MoveResult::InvalidPosition;
         }
 
@@ -134,7 +134,7 @@ impl Board {
     fn first_move(&mut self, x: usize, y: usize) -> MoveResult {
         let optional_field = self.fields.get_mut(x, y);
 
-        if optional_field.is_some() {
+        if optional_field.is_ok() {
             optional_field.unwrap().visit();
             self.initialize();
             self.visit_neighbors(x, y);
