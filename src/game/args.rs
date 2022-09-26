@@ -8,7 +8,7 @@ pub struct Args {
 
 impl Args {
     pub fn parse() -> Result<Self, &'static str> {
-        let matches = get_matches();
+        let matches = parse();
         let mut args = Self {
             width: 0,
             height: 0,
@@ -43,7 +43,7 @@ impl Args {
     }
 }
 
-fn get_matches() -> ArgMatches {
+fn parse() -> ArgMatches {
     App::new("rustymines")
         .version("0.1.0")
         .author("Richard Neumann <mail@richard-neumann.de>")
