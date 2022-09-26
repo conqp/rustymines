@@ -1,3 +1,5 @@
+use clap::Parser;
+
 mod args;
 use args::Args;
 

@@ -8,13 +8,13 @@ use clap::Parser;
 pub struct Args {
     /// Optional name to operate on
     #[clap(short, long, value_parser)]
-    width: usize,
+    pub width: usize,
 
     /// Sets a custom config file
     #[clap(short, long, value_parser)]
-    height: usize,
+    pub height: usize,
 
     /// Turn debugging information on
     #[clap(short, long, value_parser)]
-    mines: u8,
+    pub mines: u8,
 }
