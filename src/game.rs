@@ -53,6 +53,14 @@ impl Game {
         }
     }
 
+    pub fn over(&self) -> bool {
+        self.state == GameState::Over
+    }
+
+    pub fn running(&self) -> bool {
+        self.state == GameState::Running
+    }
+
     fn lost(&mut self) {
         self.state = GameState::Over;
         println!("You lost the game.")
