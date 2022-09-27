@@ -1,7 +1,6 @@
-use clap::Parser;
-
 mod args;
-use args::Args;
+use args::parse;
+use args::GameArgs;
 
 mod board;
 use board::Board;
@@ -24,12 +23,12 @@ impl Game {
         })
     }
 
-    pub fn from_args(args: &Args) -> Result<Self, &'static str> {
-        Self::new(args.width, args.height, args.mines)
+    pub fn from_args(args: &impl GameArgs) -> Result<Self, &'static str> {
+        Self::new(args.width(), args.height(), args.mines())
     }
 
     pub fn parse() -> Result<Self, &'static str> {
-        Self::from_args(&Args::parse())
+        Self::from_args(&parse())
     }
 
     pub fn visit(&mut self, x: usize, y: usize) {
