@@ -29,8 +29,7 @@ impl Game {
     }
 
     pub fn parse() -> Result<Self, &'static str> {
-        let args = Args::parse();
-        Self::from_args(&args)
+        Self::from_args(&Args::parse())
     }
 
     pub fn visit(&mut self, x: usize, y: usize) {
