@@ -59,14 +59,14 @@ impl Field {
     fn to_string_while_playing(&self, adjacent_mintes: usize) -> String {
         if self.visited {
             if self.mine {
-                "🔥".to_string()
+                "*".to_string()
             } else if adjacent_mintes > 0 {
                 adjacent_mintes.to_string()
             } else {
                 " ".to_string()
             }
         } else if self.flagged {
-            "🚩".to_string()
+            "?".to_string()
         } else {
             "■".to_string()
         }
@@ -75,9 +75,9 @@ impl Field {
     fn to_string_game_over(&self, adjacent_mintes: usize) -> String {
         if self.mine {
             if self.visited {
-                "🔥".to_string()
+                "*".to_string()
             } else {
-                "💣".to_string()
+                "o".to_string()
             }
         } else if adjacent_mintes > 0 {
             adjacent_mintes.to_string()
