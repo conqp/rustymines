@@ -1,3 +1,5 @@
+use std::fmt;
+
 mod args;
 use args::parse;
 use args::GameArgs;
@@ -61,6 +63,10 @@ impl Game {
         self.state == GameState::Running
     }
 
+    pub fn to_string(&self) -> String {
+        self.board.to_string(self.over())
+    }
+
     fn lost(&mut self) {
         self.state = GameState::Over;
         println!("You lost the game.")
@@ -85,5 +91,11 @@ impl Game {
 
     fn invalid_position(&self, x: usize, y: usize) {
         println!("The field at {}x{} is not on the board.", x, y);
+    }
+}
+
+impl fmt::Display for Game {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.to_string())
     }
 }
