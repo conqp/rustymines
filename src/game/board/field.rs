@@ -61,12 +61,10 @@ impl Field {
             } else {
                 " "
             }
+        } else if self.flagged {
+            "🚩"
         } else {
-            if self.flagged {
-                "🚩"
-            } else {
-                "■"
-            }
+            "■"
         }
     }
 }
