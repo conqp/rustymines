@@ -67,6 +67,22 @@ impl Board {
         }
     }
 
+    pub fn to_string(&self, game_over: bool) -> String {
+        let mut rows = Vec::new();
+
+        for fields in self.fields.rows() {
+            let mut row = String::new();
+
+            for field in fields {
+                row.push_str(field.to_string(game_over));
+            }
+
+            rows.push(row);
+        }
+
+        rows.join("\n")
+    }
+
     fn total_fields(&self) -> usize {
         self.fields.width() * self.fields.height()
     }
