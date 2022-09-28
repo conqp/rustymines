@@ -4,6 +4,9 @@ use game::Game;
 mod io;
 use io::read_repeat;
 
+mod coordinate;
+use coordinate::Coordinate;
+
 fn main() {
     let result = Game::parse();
 
@@ -16,11 +19,9 @@ fn main() {
 
 fn run_game(game: &mut Game) {
     while game.running() {
-        let x = read_repeat::<usize>("Enter x coordinate: ");
-        println!("You entered: x = {}", x);
-        let y = read_repeat::<usize>("Enter y coordinate: ");
-        println!("You entered: y = {}", y);
-        game.visit(x, y);
+        let coordinate = read_repeat::<Coordinate>("Enter x coordinate: ");
+        println!("You entered: {}x{}", coordinate.x(), coordinate.y());
+        game.visit(coordinate.x(), coordinate.y());
     }
 
     println!("{}", game);
