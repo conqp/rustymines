@@ -72,7 +72,6 @@ impl Board {
     pub fn to_string(&self, game_over: bool) -> String {
         self.fields
             .rows()
-            .iter()
             .enumerate()
             .map(|(y, row)| {
                 row.iter()
