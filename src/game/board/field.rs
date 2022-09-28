@@ -49,15 +49,17 @@ impl Field {
     }
 
     pub fn to_string(&self, game_over: bool) -> &str {
+        if game_over {
+            self.to_string_game_over()
+        } else {
+            self.to_string_while_playing()
+        }
+    }
+
+    fn to_string_while_playing(&self) -> &str {
         if self.visited {
             if self.mine {
                 "🔥"
-            } else {
-                " "
-            }
-        } else if game_over {
-            if self.mine {
-                "💣"
             } else {
                 " "
             }
@@ -65,6 +67,18 @@ impl Field {
             "🚩"
         } else {
             "■"
+        }
+    }
+
+    fn to_string_game_over(&self) -> &str {
+        if self.mine {
+            if self.visited {
+                "🔥"
+            } else {
+                "💣"
+            }
+        } else {
+            " "
         }
     }
 }
