@@ -26,16 +26,26 @@ impl Field {
         self.visited
     }
 
-    pub fn visit(&mut self) {
-        self.visited = true;
+    pub fn visit(&mut self) -> bool {
+        if self.flagged {
+            false
+        } else {
+            self.visited = true;
+            true
+        }
     }
 
     pub fn flagged(&self) -> bool {
         self.flagged
     }
 
-    pub fn toggle_flag(&mut self) {
-        self.flagged = !self.flagged;
+    pub fn toggle_flag(&mut self) -> bool {
+        if self.visited {
+            false
+        } else {
+            self.flagged = !self.flagged;
+            true
+        }
     }
 
     pub fn to_string(&self, game_over: bool) -> &str {
