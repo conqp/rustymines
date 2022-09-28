@@ -47,8 +47,12 @@ impl Field {
             }
         } else if self.flagged {
             "🚩"
-        } else if self.mine && game_over {
-            "💣"
+        } else if game_over {
+            if self.mine {
+                "💣"
+            } else {
+                " "
+            }
         } else {
             "■"
         }
