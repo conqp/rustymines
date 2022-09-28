@@ -18,5 +18,10 @@ fn run_game(game: &mut Game) {
     while game.running() {
         let x = read_repeat::<usize>("Enter x coordinate: ");
         println!("You entered: x = {}", x);
+        let y = read_repeat::<usize>("Enter y coordinate: ");
+        println!("You entered: y = {}", y);
+        game.visit(x, y);
     }
+
+    println!("{}", game);
 }

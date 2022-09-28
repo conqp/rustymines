@@ -48,37 +48,41 @@ impl Field {
         }
     }
 
-    pub fn to_string(&self, game_over: bool) -> &str {
+    pub fn to_string(&self, adjacent_mintes: usize, game_over: bool) -> String {
         if game_over {
-            self.to_string_game_over()
+            self.to_string_game_over(adjacent_mintes)
         } else {
-            self.to_string_while_playing()
+            self.to_string_while_playing(adjacent_mintes)
         }
     }
 
-    fn to_string_while_playing(&self) -> &str {
+    fn to_string_while_playing(&self, adjacent_mintes: usize) -> String {
         if self.visited {
             if self.mine {
-                "🔥"
+                "🔥".to_string()
+            } else if adjacent_mintes > 0 {
+                adjacent_mintes.to_string()
             } else {
-                " "
+                " ".to_string()
             }
         } else if self.flagged {
-            "🚩"
+            "🚩".to_string()
         } else {
-            "■"
+            "■".to_string()
         }
     }
 
-    fn to_string_game_over(&self) -> &str {
+    fn to_string_game_over(&self, adjacent_mintes: usize) -> String {
         if self.mine {
             if self.visited {
-                "🔥"
+                "🔥".to_string()
             } else {
-                "💣"
+                "💣".to_string()
             }
+        } else if adjacent_mintes > 0 {
+            adjacent_mintes.to_string()
         } else {
-            " "
+            " ".to_string()
         }
     }
 }

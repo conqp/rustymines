@@ -82,7 +82,7 @@ impl Game {
     }
 
     fn next_move(&self) {
-        println!("TODO: Print game board.");
+        println!("{}", self);
     }
 
     fn field_flagged(&self, x: usize, y: usize) {

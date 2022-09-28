@@ -73,8 +73,21 @@ impl Board {
         self.fields
             .rows()
             .iter()
-            .map(|row| row.iter().map(|field| field.to_string(game_over)).join(""))
+            .enumerate()
+            .map(|(y, row)| {
+                row.iter()
+                    .enumerate()
+                    .map(|(x, field)| field.to_string(self.count_adjacent_mines(x, y), game_over))
+                    .join("")
+            })
             .join("\n")
+    }
+
+    fn count_adjacent_mines(&self, x: usize, y: usize) -> usize {
+        self.fields
+            .neighbors(x, y)
+            .filter(|(_, _, neighbor)| neighbor.has_mine())
+            .count()
     }
 
     fn total_fields(&self) -> usize {
