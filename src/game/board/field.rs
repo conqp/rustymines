@@ -37,4 +37,20 @@ impl Field {
     pub fn toggle_flag(&mut self) {
         self.flagged = !self.flagged;
     }
+
+    pub fn to_string(&self, game_over: bool) -> &str {
+        if self.visited {
+            if self.mine {
+                "🔥"
+            } else {
+                " "
+            }
+        } else if self.flagged {
+            "🚩"
+        } else if self.mine && game_over {
+            "💣"
+        } else {
+            "■"
+        }
+    }
 }
