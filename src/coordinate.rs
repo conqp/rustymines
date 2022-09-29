@@ -24,6 +24,18 @@ impl Coordinate {
     pub fn y(&self) -> usize {
         self.y
     }
+
+    fn from_str_pair(string_pair: (&str, &str)) -> Result<Self, CoordinateParseError> {
+        let (x, y) = string_pair;
+        let x = x.parse::<usize>();
+        let y = y.parse::<usize>();
+
+        if x.is_err() || y.is_err() {
+            Err(CoordinateParseError::NotUsize)
+        } else {
+            Ok(Coordinate::new(x.unwrap(), y.unwrap()))
+        }
+    }
 }
 
 impl FromStr for Coordinate {
@@ -33,18 +45,10 @@ impl FromStr for Coordinate {
         let result = string.split_once(' ');
 
         if result.is_none() {
-            return Err(CoordinateParseError::NotTwoNumbers);
+            Err(CoordinateParseError::NotTwoNumbers)
+        } else {
+            Self::from_str_pair(result.unwrap())
         }
-
-        let (x, y) = result.unwrap();
-        let x = x.parse::<usize>();
-        let y = y.parse::<usize>();
-
-        if x.is_err() || y.is_err() {
-            return Err(CoordinateParseError::NotUsize);
-        }
-
-        Ok(Coordinate::new(x.unwrap(), y.unwrap()))
     }
 }
 
