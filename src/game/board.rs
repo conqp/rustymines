@@ -53,16 +53,33 @@ impl Board {
     }
 
     pub fn to_string(&self, game_over: bool) -> String {
-        self.fields
-            .rows()
-            .enumerate()
-            .map(|(y, row)| {
-                row.iter()
-                    .enumerate()
-                    .map(|(x, field)| field.to_string(self.neighboring_mines(x, y), game_over))
-                    .join("")
-            })
-            .join("\n")
+        self.header()
+            + &self
+                .fields
+                .rows()
+                .enumerate()
+                .map(|(y, row)| {
+                    format!("{:x}|", y)
+                        + &row
+                            .iter()
+                            .enumerate()
+                            .map(|(x, field)| {
+                                field.to_string(self.neighboring_mines(x, y), game_over)
+                            })
+                            .join(" ")
+                })
+                .join("\n")
+    }
+
+    fn header(&self) -> String {
+        " |".to_string()
+            + &(0..self.fields.width())
+                .map(|x| format!("{:x}|", x))
+                .join("")
+            + "\n"
+            + &"--".to_string()
+            + &(0..self.fields.width()).map(|_| '-').join("-")
+            + "\n"
     }
 
     fn neighboring_mines(&self, x: usize, y: usize) -> usize {
