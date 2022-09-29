@@ -14,11 +14,11 @@ where
         Err("no value read")
     } else {
         let result = input.trim().parse::<T>();
-    
+
         if result.is_err() {
             Err("invalid value")
         } else {
-            return Ok(result.unwrap())
+            return Ok(result.unwrap());
         }
     }
 }
