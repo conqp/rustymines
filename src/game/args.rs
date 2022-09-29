@@ -13,16 +13,16 @@ pub trait GameArgs {
 #[clap(version = "0.1.0")]
 #[clap(about = "A mine sweeping game written in Rust.", long_about = None)]
 struct GameArgsParser {
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value_t = 5)]
     width: usize,
 
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value_t = 5)]
     height: usize,
 
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value_t = 8)]
     mines: u8,
 
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_parser, default_value_t = 0)]
     duds: u8,
 }
 
