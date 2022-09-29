@@ -141,6 +141,7 @@ impl Board {
             let mut positions_to_visit = Vec::new();
             self.fields
                 .neighbors(x, y)
+                .filter(|(_, _, field)| !field.has_mine())
                 .for_each(|(x, y, _)| positions_to_visit.push((x, y)));
             positions_to_visit
                 .into_iter()
