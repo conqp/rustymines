@@ -18,7 +18,7 @@ where
         if result.is_err() {
             Err("invalid value")
         } else {
-            return Ok(result.unwrap());
+            Ok(result.unwrap())
         }
     }
 }
