@@ -78,10 +78,9 @@ impl Board {
     fn header(&self) -> String {
         " |".to_string()
             + &(0..self.fields.width())
-                .map(|x| format!("{:x}|", x))
-                .join("")
-            + "\n"
-            + "--"
+                .map(|x| format!("{:x}", x))
+                .join("|")
+            + "\n--"
             + &(0..self.fields.width()).map(|_| '-').join("-")
             + "\n"
     }
