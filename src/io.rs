@@ -1,4 +1,5 @@
 use std::fmt::Debug;
+use std::io::Write;
 use std::str::FromStr;
 
 pub fn read<T>(prompt: impl Into<String>) -> Result<T, &'static str>
@@ -7,6 +8,7 @@ where
     <T as FromStr>::Err: Debug,
 {
     print!("{}", prompt.into());
+    _ = std::io::stdout().flush();
     let mut input = String::new();
     let result = std::io::stdin().read_line(&mut input);
 
