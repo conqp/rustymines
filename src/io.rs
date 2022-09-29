@@ -6,20 +6,21 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    print!("{}", prompt.into());
+    println!("{}", prompt);
+    let mut input = String::new();
+    let result = std::io::stdin().read_line(&mut input);
 
-    for line in std::io::stdin().lines() {
-        println!();
-        let result = line.unwrap().trim().parse::<T>();
-
+    if result.is_err() {
+        Err("no value read")
+    } else {
+        let result = input.trim().parse::<T>();
+    
         if result.is_err() {
-            return Err("invalid value");
+            Err("invalid value")
+        } else {
+            return Ok(result.unwrap())
         }
-
-        return Ok(result.unwrap());
     }
-
-    Err("no line read")
 }
 
 pub fn read_repeat<T>(prompt: impl Into<String> + Copy) -> T
