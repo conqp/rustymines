@@ -117,19 +117,17 @@ impl Board {
 
         let field = optional_field.unwrap();
 
-        if field.has_mine() {
-            return MoveResult::Lost;
-        }
-
         if field.visited() {
             return MoveResult::AlreadyVisited;
         }
 
-        if field.flagged() {
+        if !field.visit() {
             return MoveResult::FieldFlagged;
         }
 
-        field.visit();
+        if field.has_mine() {
+            return MoveResult::Lost;
+        }
 
         if self.neighboring_mines(x, y) == 0 {
             self.visit_neighbors(x, y);
