@@ -130,7 +130,11 @@ impl Board {
         }
 
         field.visit();
-        self.visit_neighbors(x, y);
+
+        if self.neighboring_mines(x, y) == 0 {
+            self.visit_neighbors(x, y);
+        }
+
         MoveResult::Continue
     }
 
