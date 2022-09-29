@@ -1,5 +1,10 @@
-use std::num::ParseIntError;
 use std::str::FromStr;
+
+#[derive(Debug)]
+pub enum CoordinateParseError {
+    NotTwoNumbers,
+    NotUsize,
+}
 
 #[derive(Debug)]
 pub struct Coordinate {
@@ -22,16 +27,24 @@ impl Coordinate {
 }
 
 impl FromStr for Coordinate {
-    type Err = ParseIntError;
+    type Err = CoordinateParseError;
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         let result = string.split_once(' ');
-        // TODO: Handle error!
-        let (x, y) = result.unwrap();
-        let x = x.parse::<usize>()?;
-        let y = y.parse::<usize>()?;
 
-        Ok(Coordinate::new(x, y))
+        if result.is_none() {
+            return Err(CoordinateParseError::NotTwoNumbers);
+        }
+
+        let (x, y) = result.unwrap();
+        let x = x.parse::<usize>();
+        let y = y.parse::<usize>();
+
+        if x.is_err() || y.is_err() {
+            return Err(CoordinateParseError::NotUsize);
+        }
+
+        Ok(Coordinate::new(x.unwrap(), y.unwrap()))
     }
 }
 
