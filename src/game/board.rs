@@ -20,21 +20,25 @@ pub enum MoveResult {
 pub struct Board {
     fields: Grid<Field>,
     mines: u8,
+    duds: u8,
     initialized: bool,
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines: u8) -> Result<Self, &'static str> {
+    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
         if width < 1 {
             Err("field too narrow")
         } else if height < 1 {
             Err("field too flat")
         } else if width * height <= mines as usize {
             Err("too many mines for field size")
+        } else if duds > mines {
+            Err("more duds than mines")
         } else {
             Ok(Self {
                 fields: Grid::new(width, height, Field::new),
                 mines: mines,
+                duds: duds,
                 initialized: false,
             })
         }
@@ -91,12 +95,19 @@ impl Board {
 
     fn populate_mines(&mut self) {
         let mines = self.mines as usize;
+        let duds = self.duds as usize;
         self.fields
             .iter_mut()
             .filter(|field| !field.visited())
             .choose_multiple(&mut thread_rng(), mines)
             .into_iter()
-            .for_each(|field| field.set_mine())
+            .for_each(|field| field.set_mine());
+        self.fields
+            .iter_mut()
+            .filter(|field| field.has_mine())
+            .choose_multiple(&mut thread_rng(), duds)
+            .into_iter()
+            .for_each(|field| field.set_dud());
     }
 
     fn make_move(&mut self, x: usize, y: usize) -> MoveResult {
@@ -136,7 +147,7 @@ impl Board {
 
         field.visit();
 
-        if field.has_mine() {
+        if field.has_mine() && !field.is_dud() {
             return MoveResult::Lost;
         }
 

@@ -1,6 +1,7 @@
 #[derive(Clone, Copy, Debug)]
 pub struct Field {
     mine: bool,
+    dud: bool,
     visited: bool,
 }
 
@@ -8,6 +9,7 @@ impl Field {
     pub fn new() -> Self {
         Self {
             mine: false,
+            dud: false,
             visited: false,
         }
     }
@@ -18,6 +20,14 @@ impl Field {
 
     pub fn set_mine(&mut self) {
         self.mine = true;
+    }
+
+    pub fn is_dud(&self) -> bool {
+        self.dud
+    }
+
+    pub fn set_dud(&mut self) {
+        self.dud = true;
     }
 
     pub fn visited(&self) -> bool {
@@ -39,7 +49,11 @@ impl Field {
     fn to_string_while_playing(&self, adjacent_mintes: usize) -> String {
         if self.visited {
             if self.mine {
-                "*".to_string()
+                if self.dud {
+                    "~".to_string()
+                } else {
+                    "*".to_string()
+                }
             } else if adjacent_mintes > 0 {
                 adjacent_mintes.to_string()
             } else {
@@ -53,7 +67,11 @@ impl Field {
     fn to_string_game_over(&self, adjacent_mintes: usize) -> String {
         if self.mine {
             if self.visited {
-                "*".to_string()
+                if self.dud {
+                    "~".to_string()
+                } else {
+                    "*".to_string()
+                }
             } else {
                 "o".to_string()
             }

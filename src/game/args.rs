@@ -4,6 +4,7 @@ pub trait GameArgs {
     fn width(&self) -> usize;
     fn height(&self) -> usize;
     fn mines(&self) -> u8;
+    fn duds(&self) -> u8;
 }
 
 #[derive(Parser)]
@@ -20,6 +21,9 @@ struct GameArgsParser {
 
     #[clap(short, long, value_parser)]
     mines: u8,
+
+    #[clap(short, long, value_parser)]
+    duds: u8,
 }
 
 pub fn parse() -> impl GameArgs {
@@ -37,5 +41,9 @@ impl GameArgs for GameArgsParser {
 
     fn mines(&self) -> u8 {
         self.mines
+    }
+
+    fn duds(&self) -> u8 {
+        self.duds
     }
 }

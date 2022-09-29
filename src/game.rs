@@ -18,15 +18,15 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8) -> Result<Self, &'static str> {
+    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
         Ok(Self {
-            board: Board::new(width, height, mines)?,
+            board: Board::new(width, height, mines, duds)?,
             state: GameState::Running,
         })
     }
 
     pub fn from_args(args: &impl GameArgs) -> Result<Self, &'static str> {
-        Self::new(args.width(), args.height(), args.mines())
+        Self::new(args.width(), args.height(), args.mines(), args.duds())
     }
 
     pub fn parse() -> Result<Self, &'static str> {
