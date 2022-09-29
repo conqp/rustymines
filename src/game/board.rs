@@ -65,10 +65,6 @@ impl Board {
             .join("\n")
     }
 
-    fn total_fields(&self) -> usize {
-        self.fields.width() * self.fields.height()
-    }
-
     fn neighboring_mines(&self, x: usize, y: usize) -> usize {
         self.fields
             .neighbors(x, y)
@@ -84,6 +80,28 @@ impl Board {
             .choose_multiple(&mut thread_rng(), mines)
             .into_iter()
             .for_each(|field| field.set_mine())
+    }
+
+    fn make_move(&mut self, x: usize, y: usize) -> MoveResult {
+        if !self.initialized {
+            self.first_move(x, y)
+        } else {
+            self.visit_coordinate(x, y)
+        }
+    }
+
+    fn first_move(&mut self, x: usize, y: usize) -> MoveResult {
+        let optional_field = self.fields.get_mut(x, y);
+
+        if optional_field.is_ok() {
+            optional_field.unwrap().visit();
+            self.populate_mines();
+            self.visit_coordinate(x, y);
+            self.initialized = true;
+            MoveResult::Continue
+        } else {
+            MoveResult::InvalidPosition
+        }
     }
 
     fn visit_coordinate(&mut self, x: usize, y: usize) -> MoveResult {
@@ -141,30 +159,8 @@ impl Board {
         }
     }
 
-    fn first_move(&mut self, x: usize, y: usize) -> MoveResult {
-        let optional_field = self.fields.get_mut(x, y);
-
-        if optional_field.is_ok() {
-            optional_field.unwrap().visit();
-            self.populate_mines();
-            self.visit_coordinate(x, y);
-            self.initialized = true;
-            MoveResult::Continue
-        } else {
-            MoveResult::InvalidPosition
-        }
-    }
-
-    fn make_move(&mut self, x: usize, y: usize) -> MoveResult {
-        if !self.initialized {
-            self.first_move(x, y)
-        } else {
-            self.visit_coordinate(x, y)
-        }
-    }
-
     fn all_mines_cleared(&self) -> bool {
         self.fields.iter().filter(|field| field.visited()).count()
-            == self.total_fields() - self.mines as usize
+            == self.fields.size() - self.mines as usize
     }
 }
