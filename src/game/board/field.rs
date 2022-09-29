@@ -2,7 +2,6 @@
 pub struct Field {
     mine: bool,
     visited: bool,
-    flagged: bool,
 }
 
 impl Field {
@@ -10,7 +9,6 @@ impl Field {
         Self {
             mine: false,
             visited: false,
-            flagged: false,
         }
     }
 
@@ -26,26 +24,8 @@ impl Field {
         self.visited
     }
 
-    pub fn visit(&mut self) -> bool {
-        if self.flagged {
-            false
-        } else {
-            self.visited = true;
-            true
-        }
-    }
-
-    pub fn flagged(&self) -> bool {
-        self.flagged
-    }
-
-    pub fn toggle_flag(&mut self) -> bool {
-        if self.visited {
-            false
-        } else {
-            self.flagged = !self.flagged;
-            true
-        }
+    pub fn visit(&mut self) {
+        self.visited = true;
     }
 
     pub fn to_string(&self, adjacent_mintes: usize, game_over: bool) -> String {
@@ -65,8 +45,6 @@ impl Field {
             } else {
                 " ".to_string()
             }
-        } else if self.flagged {
-            "?".to_string()
         } else {
             "■".to_string()
         }

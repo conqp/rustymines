@@ -37,18 +37,6 @@ impl Game {
         match self.board.visit(x, y) {
             MoveResult::AlreadyVisited => self.already_visited(x, y),
             MoveResult::Continue => self.next_move(),
-            MoveResult::FieldFlagged => self.field_flagged(x, y),
-            MoveResult::InvalidPosition => self.invalid_position(x, y),
-            MoveResult::Lost => self.lost(),
-            MoveResult::Won => self.won(),
-        }
-    }
-
-    pub fn toggle_flag(&mut self, x: usize, y: usize) {
-        match self.board.toggle_flag(x, y) {
-            MoveResult::AlreadyVisited => self.already_visited(x, y),
-            MoveResult::Continue => self.next_move(),
-            MoveResult::FieldFlagged => self.field_flagged(x, y),
             MoveResult::InvalidPosition => self.invalid_position(x, y),
             MoveResult::Lost => self.lost(),
             MoveResult::Won => self.won(),
@@ -83,10 +71,6 @@ impl Game {
 
     fn next_move(&self) {
         println!("{}", self);
-    }
-
-    fn field_flagged(&self, x: usize, y: usize) {
-        println!("The field at {}x{} is already flagged.", x, y);
     }
 
     fn invalid_position(&self, x: usize, y: usize) {

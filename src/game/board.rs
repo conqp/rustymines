@@ -10,7 +10,6 @@ use field::Field;
 pub enum MoveResult {
     AlreadyVisited,
     Continue,
-    FieldFlagged,
     InvalidPosition,
     Lost,
     Won,
@@ -49,23 +48,6 @@ impl Board {
             MoveResult::Won
         } else {
             MoveResult::Continue
-        }
-    }
-
-    pub fn toggle_flag(&mut self, x: usize, y: usize) -> MoveResult {
-        let optional_field = self.fields.get_mut(x, y);
-
-        if optional_field.is_ok() {
-            let field = optional_field.unwrap();
-
-            if field.visited() {
-                MoveResult::AlreadyVisited
-            } else {
-                field.toggle_flag();
-                MoveResult::Continue
-            }
-        } else {
-            MoveResult::InvalidPosition
         }
     }
 
@@ -121,9 +103,7 @@ impl Board {
             return MoveResult::AlreadyVisited;
         }
 
-        if !field.visit() {
-            return MoveResult::FieldFlagged;
-        }
+        field.visit();
 
         if field.has_mine() {
             return MoveResult::Lost;
