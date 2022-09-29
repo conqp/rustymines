@@ -26,7 +26,7 @@ struct GameArgsParser {
 }
 
 pub fn parse() -> impl GameArgs {
-    return GameArgsParser::parse();
+    GameArgsParser::parse()
 }
 
 impl GameArgs for GameArgsParser {
