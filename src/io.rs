@@ -6,7 +6,7 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    println!("{}", prompt.into());
+    print!("{}", prompt.into());
     let mut input = String::new();
     let result = std::io::stdin().read_line(&mut input);
 
