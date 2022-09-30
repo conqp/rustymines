@@ -59,6 +59,16 @@ impl Board {
         }
     }
 
+    pub fn toggle_flag(&mut self, coordinate: &Coordinate) -> MoveResult {
+        match self.fields.get_mut(coordinate) {
+            Ok(field) => {
+                field.toggle_flag();
+                MoveResult::Continue
+            }
+            Err(_) => MoveResult::InvalidPosition,
+        }
+    }
+
     pub fn to_string(&self, game_over: bool) -> String {
         self.header()
             + &self

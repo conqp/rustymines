@@ -3,12 +3,14 @@ pub struct Field {
     mine: bool,
     dud: bool,
     visited: bool,
+    flagged: bool,
 }
 
 #[derive(Debug)]
 pub enum VisitResult {
     Ok,
     AlreadyVisited,
+    Flagged,
     SteppedOnMine,
     SteppedOnDud,
 }
@@ -19,6 +21,7 @@ impl Field {
             mine: false,
             dud: false,
             visited: false,
+            flagged: false,
         }
     }
 
@@ -39,26 +42,40 @@ impl Field {
     }
 
     pub fn visit(&mut self) -> VisitResult {
-        let been_here = self.visited;
-        self.visited = true;
+        match (self.mine, self.dud, self.visited, self.flagged) {
+            (_, _, _, true) => VisitResult::Flagged,
+            (_, _, true, _) => VisitResult::AlreadyVisited,
+            (mine, dud, _, _) => {
+                self.visited = true;
 
-        match (self.mine, self.dud, been_here) {
-            (_, _, true) => VisitResult::AlreadyVisited,
-            (false, _, false) => VisitResult::Ok,
-            (true, false, false) => VisitResult::SteppedOnMine,
-            (true, true, false) => VisitResult::SteppedOnDud,
+                match (mine, dud) {
+                    (false, _) => VisitResult::Ok,
+                    (true, false) => VisitResult::SteppedOnMine,
+                    (true, true) => VisitResult::SteppedOnDud,
+                }
+            }
+        }
+    }
+
+    pub fn toggle_flag(&mut self) -> VisitResult {
+        if self.visited {
+            VisitResult::AlreadyVisited
+        } else {
+            self.flagged = false;
+            VisitResult::Ok
         }
     }
 
     pub fn to_string(&self, adjacent_mines: impl Fn() -> usize, game_over: bool) -> String {
-        match (game_over, self.visited, self.mine, self.dud) {
-            (_, true, true, true) => "~".to_string(),
-            (_, true, true, false) => "*".to_string(),
-            (false, true, false, _) | (true, _, false, _) => match adjacent_mines() {
+        match (game_over, self.visited, self.flagged, self.mine, self.dud) {
+            (_, false, true, _, _) => "⚐".to_string(),
+            (_, true, _, true, true) => "~".to_string(),
+            (_, true, _, true, false) => "☠".to_string(),
+            (false, true, false, false, _) | (true, _, false, false, _) => match adjacent_mines() {
                 0 => " ".to_string(),
                 mines => mines.to_string(),
             },
-            (true, false, true, _) => "o".to_string(),
+            (true, false, false, true, _) => "o".to_string(),
             _ => "■".to_string(),
         }
     }

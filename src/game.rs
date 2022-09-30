@@ -49,6 +49,15 @@ impl Game {
         }
     }
 
+    pub fn toggle_flag(&mut self, coordinate: &Coordinate) {
+        match self.board.toggle_flag(coordinate) {
+            MoveResult::InvalidPosition => {
+                println!("The field at {} is not on the board.", coordinate)
+            }
+            _ => println!("{}", self),
+        }
+    }
+
     pub fn over(&self) -> bool {
         self.over
     }
