@@ -30,12 +30,10 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    let mut result = read::<T>(prompt);
-
-    while result.is_err() {
-        println!("{}", result.err().unwrap());
-        result = read::<T>(prompt);
+    loop {
+        match read::<T>(prompt) {
+            Err(msg) => eprintln!("Error: {}", msg),
+            Ok(value) => return value,
+        }
     }
-
-    result.unwrap()
 }
