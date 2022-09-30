@@ -69,6 +69,34 @@ impl Board {
         }
     }
 
+    pub fn visit_unflagged_fields(&mut self) -> MoveResult {
+        let mut result = MoveResult::Continue;
+
+        if !self.initialized {
+            self.populate_mines();
+            self.populate_duds();
+            self.initialized = true;
+        }
+
+        self.fields.iter_mut().for_each(|field| {
+            // Will only visit non-flagged fields.
+            if field.visit() == VisitResult::SteppedOnMine {
+                result = MoveResult::Lost;
+            }
+        });
+
+        match result {
+            MoveResult::Lost => MoveResult::Lost,
+            _ => {
+                if self.all_mines_cleared() {
+                    MoveResult::Won
+                } else {
+                    MoveResult::Continue
+                }
+            }
+        }
+    }
+
     pub fn to_string(&self, game_over: bool) -> String {
         self.header()
             + &self

@@ -58,6 +58,20 @@ impl Game {
         }
     }
 
+    pub fn visit_unflagged_fields(&mut self) {
+        match self.board.visit_unflagged_fields() {
+            MoveResult::Lost => {
+                self.over = true;
+                println!("{}\nYou lost the game.", self)
+            }
+            MoveResult::Won => {
+                self.over = true;
+                println!("{}\nYou won the game.", self)
+            }
+            _ => println!("{}", self),
+        }
+    }
+
     pub fn over(&self) -> bool {
         self.over
     }

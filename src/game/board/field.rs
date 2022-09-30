@@ -6,7 +6,7 @@ pub struct Field {
     flagged: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum VisitResult {
     Ok,
     AlreadyVisited,
