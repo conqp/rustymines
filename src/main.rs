@@ -8,12 +8,9 @@ mod io;
 use io::read_repeat;
 
 fn main() {
-    let result = Game::parse();
-
-    if result.is_err() {
-        eprintln!("Error: {}", result.err().unwrap());
-    } else {
-        run_game(&mut result.unwrap())
+    match Game::parse() {
+        Ok(mut game) => run_game(&mut game),
+        Err(msg) => eprintln!("Error: {}", msg),
     }
 }
 
