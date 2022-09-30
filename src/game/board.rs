@@ -189,7 +189,9 @@ impl Board {
     }
 
     fn all_mines_cleared(&self) -> bool {
-        self.fields.iter().filter(|field| field.visited()).count()
-            == self.fields.size() - self.mines as usize
+        self.fields
+            .iter()
+            .filter(|field| !field.has_mine())
+            .all(|field| field.visited())
     }
 }
