@@ -107,10 +107,9 @@ impl Board {
                             .iter()
                             .enumerate()
                             .map(|(x, field)| {
-                                field.to_string(
-                                    || self.neighboring_mines(&Coordinate::new(x, y)),
-                                    game_over,
-                                )
+                                field.to_string(game_over, || {
+                                    self.neighboring_mines(&Coordinate::new(x, y))
+                                })
                             })
                             .join(" ")
                 })

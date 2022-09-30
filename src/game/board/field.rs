@@ -70,7 +70,7 @@ impl Field {
         }
     }
 
-    pub fn to_string(&self, adjacent_mines: impl Fn() -> usize, game_over: bool) -> String {
+    pub fn to_string(&self, game_over: bool, adjacent_mines: impl Fn() -> usize) -> String {
         match (game_over, self.visited, self.flagged, self.mine, self.dud) {
             (false, false, true, _, _) | (true, false, true, true, _) => "⚐".to_string(),
             (_, true, _, true, true) => "~".to_string(),
