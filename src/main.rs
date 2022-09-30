@@ -9,16 +9,14 @@ use io::read_repeat;
 
 fn main() {
     match Game::parse() {
-        Ok(mut game) => run_game(&mut game),
+        Ok(mut game) => {
+            println!("{}", game);
+
+            while !game.over() {
+                let coordinate = read_repeat::<Coordinate>("Enter coordinate: ");
+                game.visit(coordinate.x(), coordinate.y());
+            }
+        }
         Err(msg) => eprintln!("Error: {}", msg),
-    }
-}
-
-fn run_game(game: &mut Game) {
-    println!("{}", game);
-
-    while !game.over() {
-        let coordinate = read_repeat::<Coordinate>("Enter coordinate: ");
-        game.visit(coordinate.x(), coordinate.y());
     }
 }
