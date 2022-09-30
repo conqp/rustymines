@@ -61,7 +61,7 @@ impl Field {
         if self.visited {
             VisitResult::AlreadyVisited
         } else {
-            self.flagged = false;
+            self.flagged = !self.flagged;
             VisitResult::Ok
         }
     }
