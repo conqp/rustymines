@@ -120,16 +120,15 @@ impl Board {
     }
 
     fn first_move(&mut self, x: usize, y: usize) -> MoveResult {
-        let optional_field = self.fields.get_mut(x, y);
-
-        if optional_field.is_ok() {
-            optional_field.unwrap().visit();
-            self.populate_mines();
-            self.visit_coordinate(x, y);
-            self.initialized = true;
-            MoveResult::Continue
-        } else {
-            MoveResult::InvalidPosition
+        match self.fields.get_mut(x, y) {
+            Ok(field) => {
+                field.visit();
+                self.populate_mines();
+                self.visit_coordinate(x, y);
+                self.initialized = true;
+                MoveResult::Continue
+            }
+            Err(_) => MoveResult::InvalidPosition,
         }
     }
 
