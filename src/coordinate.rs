@@ -28,13 +28,11 @@ impl Coordinate {
 
     fn from_str_pair((x, y): (&str, &str)) -> Result<Self, CoordinateParseError> {
         match x.parse::<usize>() {
-            Ok(x) => {
-                match y.parse::<usize>() {
-                    Ok(y) => Ok(Coordinate::new(x, y)),
-                    Err(_) => Err(CoordinateParseError::InvalidYValue)
-                }
+            Ok(x) => match y.parse::<usize>() {
+                Ok(y) => Ok(Coordinate::new(x, y)),
+                Err(_) => Err(CoordinateParseError::InvalidYValue),
             },
-            Err(_) => Err(CoordinateParseError::InvalidXValue)
+            Err(_) => Err(CoordinateParseError::InvalidXValue),
         }
     }
 }
@@ -47,11 +45,5 @@ impl FromStr for Coordinate {
             Some(value) => Self::from_str_pair(value),
             None => Err(CoordinateParseError::NotTwoNumbers),
         }
-    }
-}
-
-impl From<Coordinate> for (usize, usize) {
-    fn from(coordinate: Coordinate) -> (usize, usize) {
-        (coordinate.x(), coordinate.y())
     }
 }
