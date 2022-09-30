@@ -82,7 +82,7 @@ impl Board {
             + &(0..self.fields.width())
                 .map(|x| format!("{:x}", x))
                 .join("|")
-            + "\n--"
+            + "\n-+"
             + &(0..self.fields.width()).map(|_| '-').join("-")
             + "\n"
     }
