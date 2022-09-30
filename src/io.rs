@@ -10,18 +10,13 @@ where
     print!("{}", prompt.into());
     _ = std::io::stdout().flush();
     let mut input = String::new();
-    let result = std::io::stdin().read_line(&mut input);
 
-    if result.is_err() {
-        Err("no value read")
-    } else {
-        let result = input.trim().parse::<T>();
-
-        if result.is_err() {
-            Err("invalid value")
-        } else {
-            Ok(result.unwrap())
-        }
+    match std::io::stdin().read_line(&mut input) {
+        Ok(_) => match input.trim().parse::<T>() {
+            Ok(value) => Ok(value),
+            Err(_) => Err("invalid value"),
+        },
+        Err(_) => Err("no value read"),
     }
 }
 
