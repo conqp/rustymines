@@ -57,6 +57,10 @@ impl Field {
         }
     }
 
+    pub fn is_flagged(&self) -> bool {
+        self.flagged
+    }
+
     pub fn toggle_flag(&mut self) -> VisitResult {
         if self.visited {
             VisitResult::AlreadyVisited

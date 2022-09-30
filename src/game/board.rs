@@ -176,7 +176,9 @@ impl Board {
                     self.fields
                         .neighbors(coordinate)
                         .filter(|(coordinate, neighbor)| {
-                            !neighbor.has_mine() && !neighbors.contains_key(coordinate)
+                            !neighbor.has_mine()
+                                && !neighbor.is_flagged()
+                                && !neighbors.contains_key(coordinate)
                         })
                 })
                 .collect_vec();
