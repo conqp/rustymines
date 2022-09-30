@@ -140,9 +140,10 @@ impl Board {
 
     fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Ok(field) => match field.visit() {
-                VisitResult::SteppedOnMine => MoveResult::Lost,
-                _ => {
+            Ok(field) => match (field.visit(), self.initialized) {
+                (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
+                (VisitResult::AlreadyVisited, true) => MoveResult::Continue,
+                (_, _) => {
                     if self.neighboring_mines(coordinate) == 0 {
                         self.visit_neighbors(coordinate);
                     }

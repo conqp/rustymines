@@ -39,7 +39,10 @@ impl Field {
     }
 
     pub fn visit(&mut self) -> VisitResult {
-        match (self.mine, self.dud, self.visited) {
+        let been_here = self.visited;
+        self.visited = true;
+
+        match (self.mine, self.dud, been_here) {
             (_, _, true) => VisitResult::AlreadyVisited,
             (false, _, false) => VisitResult::Ok,
             (true, false, false) => VisitResult::SteppedOnMine,
