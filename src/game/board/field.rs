@@ -42,15 +42,10 @@ impl Field {
         match (game_over, self.visited, self.mine, self.dud) {
             (_, true, true, true) => "~".to_string(),
             (_, true, true, false) => "*".to_string(),
-            (false, true, false, _) | (true, _, false, _) => {
-                let mines = adjacent_mines();
-
-                if mines > 0 {
-                    mines.to_string()
-                } else {
-                    " ".to_string()
-                }
-            }
+            (false, true, false, _) | (true, _, false, _) => match adjacent_mines() {
+                0 => " ".to_string(),
+                mines => mines.to_string(),
+            },
             (true, false, true, _) => "o".to_string(),
             _ => "■".to_string(),
         }
