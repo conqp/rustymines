@@ -75,7 +75,7 @@ impl Field {
             (false, false, true, _, _) | (true, false, true, true, _) => "⚐".to_string(),
             (_, true, _, true, true) => "~".to_string(),
             (_, true, _, true, false) => "☠".to_string(),
-            (false, true, false, false, _) | (true, _, false, false, _) => match adjacent_mines() {
+            (false, true, false, false, _) | (true, _, _, false, _) => match adjacent_mines() {
                 0 => " ".to_string(),
                 mines => mines.to_string(),
             },
