@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::io::Write;
 use std::str::FromStr;
 
-pub fn read<T>(prompt: impl Into<String>) -> Result<T, &'static str>
+pub fn read<T>(prompt: &str) -> Result<T, &'static str>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
@@ -19,7 +19,7 @@ where
     }
 }
 
-pub fn read_repeat<T>(prompt: impl Into<String> + Copy) -> T
+pub fn read_repeat<T>(prompt: &str) -> T
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
@@ -32,8 +32,8 @@ where
     }
 }
 
-fn print_prompt(prompt: impl Into<String>) {
-    print!("{}", prompt.into());
+fn print_prompt(prompt: &str) {
+    print!("{}", prompt);
 
     match std::io::stdout().flush() {
         Ok(_) => (),
