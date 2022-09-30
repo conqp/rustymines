@@ -1,4 +1,4 @@
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub struct Field {
     mine: bool,
     dud: bool,
