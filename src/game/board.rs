@@ -7,10 +7,10 @@ use grid::Grid;
 
 mod field;
 use field::Field;
+use field::VisitResult;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
-    AlreadyVisited,
     Continue,
     InvalidPosition,
     Lost,
@@ -140,22 +140,15 @@ impl Board {
 
     fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Ok(field) => {
-                if self.initialized && field.visited() {
-                    MoveResult::AlreadyVisited
-                } else {
-                    field.visit();
-
-                    if field.has_mine() && !field.is_dud() {
-                        MoveResult::Lost
-                    } else {
-                        if self.neighboring_mines(coordinate) == 0 {
-                            self.visit_neighbors(coordinate);
-                        }
-                        MoveResult::Continue
+            Ok(field) => match field.visit() {
+                VisitResult::SteppedOnMine => MoveResult::Lost,
+                _ => {
+                    if self.neighboring_mines(coordinate) == 0 {
+                        self.visit_neighbors(coordinate);
                     }
+                    MoveResult::Continue
                 }
-            }
+            },
             Err(_) => MoveResult::InvalidPosition,
         }
     }
@@ -188,7 +181,7 @@ impl Board {
 
         for coordinate in neighbors.keys() {
             match self.fields.get_mut(coordinate) {
-                Ok(field) => field.visit(),
+                Ok(field) => _ = field.visit(),
                 Err(_) => continue,
             }
         }

@@ -34,11 +34,6 @@ impl Game {
 
     pub fn visit(&mut self, coordinate: &Coordinate) {
         match self.board.visit(coordinate) {
-            MoveResult::AlreadyVisited => println!(
-                "You already visited the field at {}x{}.",
-                coordinate.x(),
-                coordinate.y()
-            ),
             MoveResult::Continue => println!("{}", self),
             MoveResult::InvalidPosition => {
                 println!(
