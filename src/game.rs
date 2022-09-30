@@ -1,12 +1,13 @@
 use std::fmt;
 
+use grid::Coordinate;
+
 mod args;
 use args::parse;
 use args::GameArgs;
 
 mod board;
 use board::Board;
-use board::Coordinate;
 use board::MoveResult;
 
 #[derive(Debug)]

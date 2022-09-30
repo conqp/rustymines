@@ -1,11 +1,9 @@
 use itertools::Itertools;
+use rand::{seq::IteratorRandom, thread_rng};
 use std::collections::HashMap;
 
-mod coordinate;
-pub use coordinate::Coordinate;
-
+use grid::Coordinate;
 use grid::Grid;
-use rand::{seq::IteratorRandom, thread_rng};
 
 mod field;
 use field::Field;
@@ -73,7 +71,10 @@ impl Board {
                             .iter()
                             .enumerate()
                             .map(|(x, field)| {
-                                field.to_string(|| self.neighboring_mines(x, y), game_over)
+                                field.to_string(
+                                    || self.neighboring_mines(&Coordinate::new(x, y)),
+                                    game_over,
+                                )
                             })
                             .join(" ")
                 })
@@ -90,10 +91,10 @@ impl Board {
             + "\n"
     }
 
-    fn neighboring_mines(&self, x: usize, y: usize) -> usize {
+    fn neighboring_mines(&self, coordinate: &Coordinate) -> usize {
         self.fields
-            .neighbors(x, y)
-            .filter(|(_, _, field)| field.has_mine())
+            .neighbors(coordinate)
+            .filter(|(_, field)| field.has_mine())
             .count()
     }
 
@@ -106,7 +107,7 @@ impl Board {
     }
 
     fn first_move(&mut self, coordinate: &Coordinate) -> MoveResult {
-        match self.fields.get_mut(coordinate.x(), coordinate.y()) {
+        match self.fields.get_mut(coordinate) {
             Ok(field) => {
                 field.visit();
                 self.populate_mines();
@@ -138,7 +139,7 @@ impl Board {
     }
 
     fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
-        match self.fields.get_mut(coordinate.x(), coordinate.y()) {
+        match self.fields.get_mut(coordinate) {
             Ok(field) => {
                 if self.initialized && field.visited() {
                     MoveResult::AlreadyVisited
@@ -148,7 +149,7 @@ impl Board {
                     if field.has_mine() && !field.is_dud() {
                         MoveResult::Lost
                     } else {
-                        if self.neighboring_mines(coordinate.x(), coordinate.y()) == 0 {
+                        if self.neighboring_mines(coordinate) == 0 {
                             self.visit_neighbors(coordinate);
                         }
                         MoveResult::Continue
@@ -166,13 +167,10 @@ impl Board {
         loop {
             let new_neighbors = neighbors
                 .iter()
-                .filter(|(coordinate, _)| {
-                    self.neighboring_mines(coordinate.x(), coordinate.y()) == 0
-                })
+                .filter(|(coordinate, _)| self.neighboring_mines(coordinate) == 0)
                 .flat_map(|(coordinate, _)| {
                     self.fields
-                        .neighbors(coordinate.x(), coordinate.y())
-                        .map(|(x, y, neighbor)| (Coordinate::new(x, y), neighbor))
+                        .neighbors(coordinate)
                         .filter(|(coordinate, neighbor)| {
                             !neighbor.has_mine() && !neighbors.contains_key(coordinate)
                         })
@@ -189,7 +187,7 @@ impl Board {
         }
 
         for coordinate in neighbors.keys() {
-            match self.fields.get_mut(coordinate.x(), coordinate.y()) {
+            match self.fields.get_mut(coordinate) {
                 Ok(field) => field.visit(),
                 Err(_) => continue,
             }
