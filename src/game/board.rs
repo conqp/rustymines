@@ -133,29 +133,25 @@ impl Board {
     }
 
     fn visit_coordinate(&mut self, x: usize, y: usize) -> MoveResult {
-        let optional_field = self.fields.get_mut(x, y);
+        match self.fields.get_mut(x, y) {
+            Ok(field) => {
+                if self.initialized && field.visited() {
+                    MoveResult::AlreadyVisited
+                } else {
+                    field.visit();
 
-        if !optional_field.is_ok() {
-            return MoveResult::InvalidPosition;
+                    if field.has_mine() && !field.is_dud() {
+                        MoveResult::Lost
+                    } else {
+                        if self.neighboring_mines(x, y) == 0 {
+                            self.visit_neighbors(x, y);
+                        }
+                        MoveResult::Continue
+                    }
+                }
+            }
+            Err(_) => MoveResult::InvalidPosition,
         }
-
-        let field = optional_field.unwrap();
-
-        if self.initialized && field.visited() {
-            return MoveResult::AlreadyVisited;
-        }
-
-        field.visit();
-
-        if field.has_mine() && !field.is_dud() {
-            return MoveResult::Lost;
-        }
-
-        if self.neighboring_mines(x, y) == 0 {
-            self.visit_neighbors(x, y);
-        }
-
-        MoveResult::Continue
     }
 
     fn visit_neighbors(&mut self, x: usize, y: usize) {
