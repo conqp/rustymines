@@ -6,6 +6,7 @@ use args::GameArgs;
 
 mod board;
 use board::Board;
+use board::Coordinate;
 use board::MoveResult;
 
 #[derive(Debug)]
@@ -30,12 +31,20 @@ impl Game {
         Self::from_args(&parse())
     }
 
-    pub fn visit(&mut self, x: usize, y: usize) {
-        match self.board.visit(x, y) {
-            MoveResult::AlreadyVisited => println!("You already visited the field at {}x{}.", x, y),
+    pub fn visit(&mut self, coordinate: &Coordinate) {
+        match self.board.visit(coordinate) {
+            MoveResult::AlreadyVisited => println!(
+                "You already visited the field at {}x{}.",
+                coordinate.x(),
+                coordinate.y()
+            ),
             MoveResult::Continue => println!("{}", self),
             MoveResult::InvalidPosition => {
-                println!("The field at {}x{} is not on the board.", x, y)
+                println!(
+                    "The field at {}x{} is not on the board.",
+                    coordinate.x(),
+                    coordinate.y()
+                )
             }
             MoveResult::Lost => {
                 self.over = true;

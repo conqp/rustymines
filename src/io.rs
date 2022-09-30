@@ -2,7 +2,20 @@ use std::fmt::Debug;
 use std::io::Write;
 use std::str::FromStr;
 
-pub fn read<T>(prompt: &str) -> Result<T, &'static str>
+pub fn read<T>(prompt: &str) -> T
+where
+    T: FromStr,
+    <T as FromStr>::Err: Debug,
+{
+    loop {
+        match try_read::<T>(prompt) {
+            Err(msg) => eprintln!("Error: {}", msg),
+            Ok(value) => return value,
+        }
+    }
+}
+
+fn try_read<T>(prompt: &str) -> Result<T, &'static str>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
@@ -16,19 +29,6 @@ where
             Err(_) => Err("invalid value"),
         },
         Err(_) => Err("no value read"),
-    }
-}
-
-pub fn read_repeat<T>(prompt: &str) -> T
-where
-    T: FromStr,
-    <T as FromStr>::Err: Debug,
-{
-    loop {
-        match read::<T>(prompt) {
-            Err(msg) => eprintln!("Error: {}", msg),
-            Ok(value) => return value,
-        }
     }
 }
 

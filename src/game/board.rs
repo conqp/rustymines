@@ -1,6 +1,9 @@
 use itertools::Itertools;
 use std::collections::HashMap;
 
+mod coordinate;
+pub use coordinate::Coordinate;
+
 use grid::Grid;
 use rand::{seq::IteratorRandom, thread_rng};
 
@@ -44,8 +47,8 @@ impl Board {
         }
     }
 
-    pub fn visit(&mut self, x: usize, y: usize) -> MoveResult {
-        match self.make_move(x, y) {
+    pub fn visit(&mut self, coordinate: &Coordinate) -> MoveResult {
+        match self.make_move(coordinate) {
             MoveResult::Lost => MoveResult::Lost,
             MoveResult::InvalidPosition => MoveResult::InvalidPosition,
             _ => {
@@ -94,21 +97,21 @@ impl Board {
             .count()
     }
 
-    fn make_move(&mut self, x: usize, y: usize) -> MoveResult {
+    fn make_move(&mut self, coordinate: &Coordinate) -> MoveResult {
         if !self.initialized {
-            self.first_move(x, y)
+            self.first_move(coordinate)
         } else {
-            self.visit_coordinate(x, y)
+            self.visit_coordinate(coordinate)
         }
     }
 
-    fn first_move(&mut self, x: usize, y: usize) -> MoveResult {
-        match self.fields.get_mut(x, y) {
+    fn first_move(&mut self, coordinate: &Coordinate) -> MoveResult {
+        match self.fields.get_mut(coordinate.x(), coordinate.y()) {
             Ok(field) => {
                 field.visit();
                 self.populate_mines();
                 self.populate_duds();
-                self.visit_coordinate(x, y);
+                self.visit_coordinate(coordinate);
                 self.initialized = true;
                 MoveResult::Continue
             }
@@ -134,8 +137,8 @@ impl Board {
             .for_each(|field| field.set_dud());
     }
 
-    fn visit_coordinate(&mut self, x: usize, y: usize) -> MoveResult {
-        match self.fields.get_mut(x, y) {
+    fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
+        match self.fields.get_mut(coordinate.x(), coordinate.y()) {
             Ok(field) => {
                 if self.initialized && field.visited() {
                     MoveResult::AlreadyVisited
@@ -145,8 +148,8 @@ impl Board {
                     if field.has_mine() && !field.is_dud() {
                         MoveResult::Lost
                     } else {
-                        if self.neighboring_mines(x, y) == 0 {
-                            self.visit_neighbors(x, y);
+                        if self.neighboring_mines(coordinate.x(), coordinate.y()) == 0 {
+                            self.visit_neighbors(coordinate);
                         }
                         MoveResult::Continue
                     }
@@ -156,18 +159,23 @@ impl Board {
         }
     }
 
-    fn visit_neighbors(&mut self, x: usize, y: usize) {
+    fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         let mut neighbors = HashMap::new();
-        neighbors.insert((x, y), ());
+        neighbors.insert(*coordinate, ());
 
         loop {
             let new_neighbors = neighbors
                 .iter()
-                .filter(|(&(x, y), _)| self.neighboring_mines(x, y) == 0)
-                .flat_map(|(&(x, y), _)| {
-                    self.fields.neighbors(x, y).filter(|(nx, ny, neighbor)| {
-                        !neighbor.has_mine() && !neighbors.contains_key(&(*nx, *ny))
-                    })
+                .filter(|(coordinate, _)| {
+                    self.neighboring_mines(coordinate.x(), coordinate.y()) == 0
+                })
+                .flat_map(|(coordinate, _)| {
+                    self.fields
+                        .neighbors(coordinate.x(), coordinate.y())
+                        .map(|(x, y, neighbor)| (Coordinate::new(x, y), neighbor))
+                        .filter(|(coordinate, neighbor)| {
+                            !neighbor.has_mine() && !neighbors.contains_key(coordinate)
+                        })
                 })
                 .collect_vec();
 
@@ -175,13 +183,13 @@ impl Board {
                 break;
             }
 
-            for (x, y, _) in new_neighbors {
-                neighbors.insert((x, y), ());
+            for (coordinate, _) in new_neighbors {
+                neighbors.insert(coordinate, ());
             }
         }
 
-        for &(x, y) in neighbors.keys() {
-            match self.fields.get_mut(x, y) {
+        for coordinate in neighbors.keys() {
+            match self.fields.get_mut(coordinate.x(), coordinate.y()) {
                 Ok(field) => field.visit(),
                 Err(_) => continue,
             }

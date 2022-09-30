@@ -1,11 +1,8 @@
-mod coordinate;
-use coordinate::Coordinate;
-
 mod game;
 use game::Game;
 
 mod io;
-use io::read_repeat;
+use io::read;
 
 fn main() {
     match Game::parse() {
@@ -13,8 +10,7 @@ fn main() {
             println!("{}", game);
 
             while !game.over() {
-                let coordinate = read_repeat::<Coordinate>("Enter coordinate: ");
-                game.visit(coordinate.x(), coordinate.y());
+                game.visit(&read("Enter coordinate: "));
             }
         }
         Err(msg) => eprintln!("Error: {}", msg),

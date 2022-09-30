@@ -7,7 +7,7 @@ pub enum CoordinateParseError {
     InvalidYValue,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Coordinate {
     x: usize,
     y: usize,
