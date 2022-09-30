@@ -1,11 +1,11 @@
+mod coordinate;
+use coordinate::Coordinate;
+
 mod game;
 use game::Game;
 
 mod io;
 use io::read_repeat;
-
-mod coordinate;
-use coordinate::Coordinate;
 
 fn main() {
     let result = Game::parse();
