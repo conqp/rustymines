@@ -45,14 +45,14 @@ impl Board {
     }
 
     pub fn visit(&mut self, x: usize, y: usize) -> MoveResult {
-        let result = self.make_move(x, y);
-
-        if result == MoveResult::Lost || result == MoveResult::InvalidPosition {
-            result
-        } else if self.all_mines_cleared() {
-            MoveResult::Won
-        } else {
-            MoveResult::Continue
+        match self.make_move(x, y) {
+            MoveResult::Lost => MoveResult::Lost,
+            MoveResult::InvalidPosition =>  MoveResult::InvalidPosition,
+            _ => if self.all_mines_cleared() {
+                MoveResult::Won
+            } else {
+                MoveResult::Continue
+            }
         }
     }
 
