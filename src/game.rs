@@ -36,11 +36,7 @@ impl Game {
         match self.board.visit(coordinate) {
             MoveResult::Continue => println!("{}", self),
             MoveResult::InvalidPosition => {
-                println!(
-                    "The field at {}x{} is not on the board.",
-                    coordinate.x(),
-                    coordinate.y()
-                )
+                println!("The field at {} is not on the board.", coordinate)
             }
             MoveResult::Lost => {
                 self.over = true;
