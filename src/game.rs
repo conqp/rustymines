@@ -35,11 +35,19 @@ impl Game {
 
     pub fn visit(&mut self, x: usize, y: usize) {
         match self.board.visit(x, y) {
-            MoveResult::AlreadyVisited => self.already_visited(x, y),
-            MoveResult::Continue => self.next_move(),
-            MoveResult::InvalidPosition => self.invalid_position(x, y),
-            MoveResult::Lost => self.lost(),
-            MoveResult::Won => self.won(),
+            MoveResult::AlreadyVisited => println!("You already visited the field at {}x{}.", x, y),
+            MoveResult::Continue => println!("{}", self),
+            MoveResult::InvalidPosition => {
+                println!("The field at {}x{} is not on the board.", x, y)
+            }
+            MoveResult::Lost => {
+                self.state = GameState::Over;
+                println!("You lost the game.")
+            }
+            MoveResult::Won => {
+                self.state = GameState::Over;
+                println!("You won the game.")
+            }
         }
     }
 
@@ -53,28 +61,6 @@ impl Game {
 
     pub fn to_string(&self) -> String {
         self.board.to_string(self.over())
-    }
-
-    fn lost(&mut self) {
-        self.state = GameState::Over;
-        println!("You lost the game.")
-    }
-
-    fn won(&mut self) {
-        self.state = GameState::Over;
-        println!("You won the game.")
-    }
-
-    fn already_visited(&self, x: usize, y: usize) {
-        println!("You already visited the field at {}x{}.", x, y);
-    }
-
-    fn next_move(&self) {
-        println!("{}", self);
-    }
-
-    fn invalid_position(&self, x: usize, y: usize) {
-        println!("The field at {}x{} is not on the board.", x, y);
     }
 }
 
