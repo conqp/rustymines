@@ -11,20 +11,14 @@ use board::MoveResult;
 #[derive(Debug)]
 pub struct Game {
     board: Board,
-    state: GameState,
-}
-
-#[derive(Debug, PartialEq, Eq)]
-enum GameState {
-    Running,
-    Over,
+    over: bool,
 }
 
 impl Game {
     pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
         Ok(Self {
             board: Board::new(width, height, mines, duds)?,
-            state: GameState::Running,
+            over: false,
         })
     }
 
@@ -44,22 +38,18 @@ impl Game {
                 println!("The field at {}x{} is not on the board.", x, y)
             }
             MoveResult::Lost => {
-                self.state = GameState::Over;
+                self.over = true;
                 println!("You lost the game.")
             }
             MoveResult::Won => {
-                self.state = GameState::Over;
+                self.over = true;
                 println!("You won the game.")
             }
         }
     }
 
     pub fn over(&self) -> bool {
-        self.state == GameState::Over
-    }
-
-    pub fn running(&self) -> bool {
-        self.state == GameState::Running
+        self.over
     }
 
     pub fn to_string(&self) -> String {
