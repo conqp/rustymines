@@ -65,7 +65,7 @@ impl Board {
                 .rows()
                 .enumerate()
                 .map(|(y, row)| {
-                    format!("{:x}|", y)
+                    format!("{:x}│", y)
                         + &row
                             .iter()
                             .enumerate()
@@ -78,12 +78,12 @@ impl Board {
     }
 
     fn header(&self) -> String {
-        " |".to_string()
+        " │".to_string()
             + &(0..self.fields.width())
                 .map(|x| format!("{:x}", x))
-                .join("|")
-            + "\n-+"
-            + &(0..self.fields.width()).map(|_| '-').join("-")
+                .join(" ")
+            + "\n─┼"
+            + &(0..self.fields.width()).map(|_| '─').join("─")
             + "\n"
     }
 
