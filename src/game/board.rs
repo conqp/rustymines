@@ -37,8 +37,8 @@ impl Board {
         } else {
             Ok(Self {
                 fields: Grid::new(width, height, Field::new),
-                mines: mines,
-                duds: duds,
+                mines,
+                duds,
                 initialized: false,
             })
         }
@@ -171,7 +171,7 @@ impl Board {
                 })
                 .collect_vec();
 
-            if new_neighbors.len() == 0 {
+            if new_neighbors.is_empty() {
                 break;
             }
 

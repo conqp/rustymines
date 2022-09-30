@@ -51,14 +51,10 @@ impl Game {
     pub fn over(&self) -> bool {
         self.over
     }
-
-    pub fn to_string(&self) -> String {
-        self.board.to_string(self.over())
-    }
 }
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.to_string())
+        write!(f, "{}", self.board.to_string(self.over()))
     }
 }

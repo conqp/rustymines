@@ -15,7 +15,7 @@ pub struct Coordinate {
 
 impl Coordinate {
     pub fn new(x: usize, y: usize) -> Self {
-        Self { x: x, y: y }
+        Self { x, y }
     }
 
     pub fn x(&self) -> usize {

@@ -34,9 +34,5 @@ where
 
 fn print_prompt(prompt: &str) {
     print!("{}", prompt);
-
-    match std::io::stdout().flush() {
-        Ok(_) => (),
-        Err(_) => (),
-    }
+    _ = std::io::stdout().flush();
 }
