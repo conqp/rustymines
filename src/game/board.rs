@@ -94,23 +94,6 @@ impl Board {
             .count()
     }
 
-    fn populate_mines(&mut self) {
-        let mines = self.mines as usize;
-        let duds = self.duds as usize;
-        self.fields
-            .iter_mut()
-            .filter(|field| !field.visited())
-            .choose_multiple(&mut thread_rng(), mines)
-            .into_iter()
-            .for_each(|field| field.set_mine());
-        self.fields
-            .iter_mut()
-            .filter(|field| field.has_mine())
-            .choose_multiple(&mut thread_rng(), duds)
-            .into_iter()
-            .for_each(|field| field.set_dud());
-    }
-
     fn make_move(&mut self, x: usize, y: usize) -> MoveResult {
         if !self.initialized {
             self.first_move(x, y)
@@ -124,12 +107,31 @@ impl Board {
             Ok(field) => {
                 field.visit();
                 self.populate_mines();
+                self.populate_duds();
                 self.visit_coordinate(x, y);
                 self.initialized = true;
                 MoveResult::Continue
             }
             Err(_) => MoveResult::InvalidPosition,
         }
+    }
+
+    fn populate_mines(&mut self) {
+        self.fields
+            .iter_mut()
+            .filter(|field| !field.visited())
+            .choose_multiple(&mut thread_rng(), self.mines as usize)
+            .into_iter()
+            .for_each(|field| field.set_mine());
+    }
+
+    fn populate_duds(&mut self) {
+        self.fields
+            .iter_mut()
+            .filter(|field| field.has_mine())
+            .choose_multiple(&mut thread_rng(), self.duds as usize)
+            .into_iter()
+            .for_each(|field| field.set_dud());
     }
 
     fn visit_coordinate(&mut self, x: usize, y: usize) -> MoveResult {
