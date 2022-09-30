@@ -8,13 +8,16 @@ mod board;
 use board::Board;
 use board::MoveResult;
 
-mod state;
-use state::GameState;
-
 #[derive(Debug)]
 pub struct Game {
     board: Board,
     state: GameState,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum GameState {
+    Running,
+    Over,
 }
 
 impl Game {
