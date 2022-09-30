@@ -75,7 +75,7 @@ impl Field {
                 0 => " ".to_string(),
                 mines => mines.to_string(),
             },
-            (true, false, false, true, _) => "o".to_string(),
+            (true, false, false, true, _) => "*".to_string(),
             _ => "■".to_string(),
         }
     }
