@@ -7,8 +7,7 @@ where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    print!("{}", prompt.into());
-    _ = std::io::stdout().flush();
+    print_prompt(prompt);
     let mut input = String::new();
 
     match std::io::stdin().read_line(&mut input) {
@@ -30,5 +29,14 @@ where
             Err(msg) => eprintln!("Error: {}", msg),
             Ok(value) => return value,
         }
+    }
+}
+
+fn print_prompt(prompt: impl Into<String>) {
+    print!("{}", prompt.into());
+
+    match std::io::stdout().flush() {
+        Ok(_) => (),
+        Err(_) => (),
     }
 }
