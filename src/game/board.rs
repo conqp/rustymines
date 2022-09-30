@@ -73,9 +73,7 @@ impl Board {
         let mut result = MoveResult::Continue;
 
         if !self.initialized {
-            self.populate_mines();
-            self.populate_duds();
-            self.initialized = true;
+            self.initialize(None);
         }
 
         self.fields.iter_mut().for_each(|field| {
@@ -148,14 +146,25 @@ impl Board {
         match self.fields.get_mut(coordinate) {
             Ok(field) => {
                 field.visit();
-                self.populate_mines();
-                self.populate_duds();
-                self.visit_coordinate(coordinate);
-                self.initialized = true;
+                self.initialize(Some(coordinate));
                 MoveResult::Continue
             }
             Err(_) => MoveResult::InvalidPosition,
         }
+    }
+
+    fn initialize(&mut self, coordinate: Option<&Coordinate>) {
+        self.populate_mines();
+        self.populate_duds();
+
+        match coordinate {
+            Some(coordinate) => {
+                self.visit_coordinate(coordinate);
+            }
+            None => (),
+        }
+
+        self.initialized = true;
     }
 
     fn populate_mines(&mut self) {
