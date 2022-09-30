@@ -179,7 +179,10 @@ impl Board {
         }
 
         for &(x, y) in neighbors.keys() {
-            self.fields.get_mut(x, y).unwrap().visit();
+            match self.fields.get_mut(x, y) {
+                Ok(field) => field.visit(),
+                Err(_) => continue,
+            }
         }
     }
 
