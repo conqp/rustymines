@@ -24,12 +24,12 @@ impl Game {
         })
     }
 
-    pub fn from_args(args: &impl GameArgs) -> Result<Self, &'static str> {
+    pub fn from_game_args(args: &impl GameArgs) -> Result<Self, &'static str> {
         Self::new(args.width(), args.height(), args.mines(), args.duds())
     }
 
-    pub fn parse() -> Result<Self, &'static str> {
-        Self::from_args(&parse())
+    pub fn from_args() -> Result<Self, &'static str> {
+        Self::from_game_args(&parse())
     }
 
     pub fn visit(&mut self, coordinate: &Coordinate) {
