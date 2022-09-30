@@ -3,7 +3,8 @@ use std::str::FromStr;
 #[derive(Debug)]
 pub enum CoordinateParseError {
     NotTwoNumbers,
-    NotUsize,
+    InvalidXValue,
+    InvalidYValue,
 }
 
 #[derive(Debug)]
@@ -25,15 +26,15 @@ impl Coordinate {
         self.y
     }
 
-    fn from_str_pair(string_pair: (&str, &str)) -> Result<Self, CoordinateParseError> {
-        let (x, y) = string_pair;
-        let x = x.parse::<usize>();
-        let y = y.parse::<usize>();
-
-        if x.is_err() || y.is_err() {
-            Err(CoordinateParseError::NotUsize)
-        } else {
-            Ok(Coordinate::new(x.unwrap(), y.unwrap()))
+    fn from_str_pair((x, y): (&str, &str)) -> Result<Self, CoordinateParseError> {
+        match x.parse::<usize>() {
+            Ok(x) => {
+                match y.parse::<usize>() {
+                    Ok(y) => Ok(Coordinate::new(x, y)),
+                    Err(_) => Err(CoordinateParseError::InvalidYValue)
+                }
+            },
+            Err(_) => Err(CoordinateParseError::InvalidXValue)
         }
     }
 }
