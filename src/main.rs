@@ -11,7 +11,7 @@ fn main() {
     let result = Game::parse();
 
     if result.is_err() {
-        println!("Error: {}", result.err().unwrap());
+        eprintln!("Error: {}", result.err().unwrap());
     } else {
         run_game(&mut result.unwrap())
     }
