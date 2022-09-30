@@ -42,12 +42,9 @@ impl FromStr for Coordinate {
     type Err = CoordinateParseError;
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
-        let result = string.split_once(' ');
-
-        if result.is_none() {
-            Err(CoordinateParseError::NotTwoNumbers)
-        } else {
-            Self::from_str_pair(result.unwrap())
+        match string.split_once(' ') {
+            Some(value) => Self::from_str_pair(value),
+            None => Err(CoordinateParseError::NotTwoNumbers),
         }
     }
 }
