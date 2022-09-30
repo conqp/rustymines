@@ -38,13 +38,13 @@ impl Field {
         self.visited = true;
     }
 
-    pub fn to_string(&self, adjacent_mintes: usize, game_over: bool) -> String {
+    pub fn to_string(&self, adjacent_mines: usize, game_over: bool) -> String {
         match (game_over, self.visited, self.mine, self.dud) {
             (_, true, true, true) => "~".to_string(),
             (_, true, true, false) => "*".to_string(),
             (false, true, false, _) | (true, _, false, _) => {
-                if adjacent_mintes > 0 {
-                    adjacent_mintes.to_string()
+                if adjacent_mines > 0 {
+                    adjacent_mines.to_string()
                 } else {
                     " ".to_string()
                 }
