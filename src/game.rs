@@ -39,11 +39,11 @@ impl Game {
             }
             MoveResult::Lost => {
                 self.over = true;
-                println!("You lost the game.")
+                println!("{}\nYou lost the game.", self)
             }
             MoveResult::Won => {
                 self.over = true;
-                println!("You won the game.")
+                println!("{}\nYou won the game.", self)
             }
         }
     }
