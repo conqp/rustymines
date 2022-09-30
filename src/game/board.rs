@@ -189,6 +189,7 @@ impl Board {
             Ok(field) => match (field.visit(), self.initialized) {
                 (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
                 (VisitResult::AlreadyVisited, true) => MoveResult::Continue,
+                (VisitResult::Flagged, _) => MoveResult::Continue,
                 (_, _) => {
                     if self.neighboring_mines(coordinate) == 0 {
                         self.visit_neighbors(coordinate);
