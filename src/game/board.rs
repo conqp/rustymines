@@ -70,7 +70,7 @@ impl Board {
                             .iter()
                             .enumerate()
                             .map(|(x, field)| {
-                                field.to_string(self.neighboring_mines(x, y), game_over)
+                                field.to_string(|| self.neighboring_mines(x, y), game_over)
                             })
                             .join(" ")
                 })
