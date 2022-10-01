@@ -202,11 +202,7 @@ impl Board {
     }
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
-        let mut neighbors = HashSet::new();
-        neighbors.insert(*coordinate);
-        self.extend_neighbors(&mut neighbors);
-
-        for coordinate in neighbors {
+        for coordinate in self.collect_neighbors(coordinate) {
             match self.fields.get_mut(&coordinate) {
                 Ok(field) => _ = field.visit(),
                 Err(_) => continue,
@@ -214,9 +210,11 @@ impl Board {
         }
     }
 
-    fn extend_neighbors(&self, neighbors: &mut HashSet<Coordinate>) {
+    fn collect_neighbors(&self, coordinate: &Coordinate) -> HashSet<Coordinate> {
+        let mut neighbors = HashSet::from([*coordinate]);
+
         loop {
-            let new_neighbors = self.new_neighbors(neighbors);
+            let new_neighbors = self.new_neighbors(&neighbors);
 
             if new_neighbors.is_empty() {
                 break;
@@ -226,6 +224,8 @@ impl Board {
                 neighbors.insert(coordinate);
             }
         }
+
+        neighbors
     }
 
     fn new_neighbors(&self, neighbors: &HashSet<Coordinate>) -> Vec<Coordinate> {
