@@ -204,22 +204,19 @@ impl Board {
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         let mut neighbors = HashSet::new();
         neighbors.insert(*coordinate);
+        self.extend_neighbors(&mut neighbors);
 
+        for coordinate in neighbors {
+            match self.fields.get_mut(&coordinate) {
+                Ok(field) => _ = field.visit(),
+                Err(_) => continue,
+            }
+        }
+    }
+
+    fn extend_neighbors(&self, neighbors: &mut HashSet<Coordinate>) {
         loop {
-            let new_neighbors = neighbors
-                .iter()
-                .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
-                .flat_map(|coordinate| {
-                    self.fields
-                        .neighbors(coordinate)
-                        .filter(|(coordinate, neighbor)| {
-                            !neighbor.has_mine()
-                                && !neighbor.is_flagged()
-                                && !neighbors.contains(coordinate)
-                        })
-                })
-                .map(|(coordinate, _)| coordinate)
-                .collect_vec();
+            let new_neighbors = self.new_neighbors(neighbors);
 
             if new_neighbors.is_empty() {
                 break;
@@ -229,13 +226,23 @@ impl Board {
                 neighbors.insert(coordinate);
             }
         }
+    }
 
-        for coordinate in neighbors {
-            match self.fields.get_mut(&coordinate) {
-                Ok(field) => _ = field.visit(),
-                Err(_) => continue,
-            }
-        }
+    fn new_neighbors(&self, neighbors: &HashSet<Coordinate>) -> Vec<Coordinate> {
+        neighbors
+            .iter()
+            .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
+            .flat_map(|coordinate| {
+                self.fields
+                    .neighbors(coordinate)
+                    .filter(|(coordinate, neighbor)| {
+                        !neighbor.has_mine()
+                            && !neighbor.is_flagged()
+                            && !neighbors.contains(coordinate)
+                    })
+            })
+            .map(|(coordinate, _)| coordinate)
+            .collect_vec()
     }
 
     fn all_mines_cleared(&self) -> bool {
