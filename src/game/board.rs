@@ -1,6 +1,6 @@
 use itertools::Itertools;
 use rand::{seq::IteratorRandom, thread_rng};
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 use grid::Coordinate;
 use grid::Grid;
@@ -202,35 +202,36 @@ impl Board {
     }
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
-        let mut neighbors = HashMap::new();
-        neighbors.insert(*coordinate, ());
+        let mut neighbors = HashSet::new();
+        neighbors.insert(*coordinate);
 
         loop {
             let new_neighbors = neighbors
                 .iter()
-                .filter(|(coordinate, _)| self.neighboring_mines(coordinate) == 0)
-                .flat_map(|(coordinate, _)| {
+                .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
+                .flat_map(|coordinate| {
                     self.fields
                         .neighbors(coordinate)
                         .filter(|(coordinate, neighbor)| {
                             !neighbor.has_mine()
                                 && !neighbor.is_flagged()
-                                && !neighbors.contains_key(coordinate)
+                                && !neighbors.contains(coordinate)
                         })
                 })
+                .map(|(coordinate, _)| coordinate)
                 .collect_vec();
 
             if new_neighbors.is_empty() {
                 break;
             }
 
-            for (coordinate, _) in new_neighbors {
-                neighbors.insert(coordinate, ());
+            for coordinate in new_neighbors {
+                neighbors.insert(coordinate);
             }
         }
 
-        for coordinate in neighbors.keys() {
-            match self.fields.get_mut(coordinate) {
+        for coordinate in neighbors {
+            match self.fields.get_mut(&coordinate) {
                 Ok(field) => _ = field.visit(),
                 Err(_) => continue,
             }
