@@ -32,7 +32,7 @@ where
     }
 }
 
-fn print_prompt(prompt: &str) {
+fn print_prompt(prompt: &str) -> bool{
     print!("{}", prompt);
-    _ = std::io::stdout().flush();
+    std::io::stdout().flush().is_ok()
 }
