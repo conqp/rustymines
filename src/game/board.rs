@@ -204,9 +204,9 @@ impl Board {
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         for coordinate in self.collect_neighbors(coordinate) {
             match self.fields.get_mut(&coordinate) {
-                Some(field) => _ = field.visit(),
+                Some(field) => field.visit(),
                 None => continue,
-            }
+            };
         }
     }
 
