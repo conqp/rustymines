@@ -61,11 +61,11 @@ impl Board {
 
     pub fn toggle_flag(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Ok(field) => {
+            Some(field) => {
                 field.toggle_flag();
                 MoveResult::Continue
             }
-            Err(_) => MoveResult::InvalidPosition,
+            None => MoveResult::InvalidPosition,
         }
     }
 
@@ -143,12 +143,12 @@ impl Board {
 
     fn first_move(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Ok(field) => {
+            Some(field) => {
                 field.visit();
                 self.initialize(Some(coordinate));
                 MoveResult::Continue
             }
-            Err(_) => MoveResult::InvalidPosition,
+            None => MoveResult::InvalidPosition,
         }
     }
 
@@ -186,7 +186,7 @@ impl Board {
 
     fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Ok(field) => match (field.visit(), self.initialized) {
+            Some(field) => match (field.visit(), self.initialized) {
                 (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
                 (VisitResult::AlreadyVisited, true) => MoveResult::Continue,
                 (VisitResult::Flagged, _) => MoveResult::Continue,
@@ -197,15 +197,15 @@ impl Board {
                     MoveResult::Continue
                 }
             },
-            Err(_) => MoveResult::InvalidPosition,
+            None => MoveResult::InvalidPosition,
         }
     }
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         for coordinate in self.collect_neighbors(coordinate) {
             match self.fields.get_mut(&coordinate) {
-                Ok(field) => _ = field.visit(),
-                Err(_) => continue,
+                Some(field) => _ = field.visit(),
+                None => continue,
             }
         }
     }
