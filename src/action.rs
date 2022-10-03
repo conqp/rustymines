@@ -1,5 +1,4 @@
-use grid::Coordinate;
-use grid::CoordinateParseError;
+use grid::{Coordinate, CoordinateParseError};
 
 #[derive(Clone, Copy, Debug)]
 pub enum ActionKind {

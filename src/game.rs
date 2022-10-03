@@ -3,12 +3,10 @@ use std::fmt;
 use grid::Coordinate;
 
 mod args;
-use args::parse;
-use args::GameArgs;
+use args::{parse, GameArgs};
 
 mod board;
-use board::Board;
-use board::MoveResult;
+use board::{Board, MoveResult};
 
 #[derive(Debug)]
 pub struct Game {

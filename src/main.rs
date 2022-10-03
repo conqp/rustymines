@@ -1,8 +1,7 @@
 use std::str::FromStr;
 
 mod action;
-use action::Action;
-use action::ActionKind;
+use action::{Action, ActionKind};
 
 mod game;
 use game::Game;

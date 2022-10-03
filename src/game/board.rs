@@ -2,12 +2,10 @@ use itertools::Itertools;
 use rand::{seq::IteratorRandom, thread_rng};
 use std::collections::HashSet;
 
-use grid::Coordinate;
-use grid::Grid;
+use grid::{Coordinate, Grid};
 
 mod field;
-use field::Field;
-use field::VisitResult;
+use field::{Field, VisitResult};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
