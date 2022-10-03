@@ -156,11 +156,8 @@ impl Board {
         self.populate_mines();
         self.populate_duds();
 
-        match coordinate {
-            Some(coordinate) => {
-                self.visit_coordinate(coordinate);
-            }
-            None => (),
+        if let Some(coordinate) = coordinate {
+            self.visit_coordinate(coordinate);
         }
 
         self.initialized = true;
