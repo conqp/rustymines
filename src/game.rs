@@ -1,5 +1,7 @@
 use std::fmt;
 
+use grid::Coordinate;
+
 mod args;
 use args::parse;
 use args::GameArgs;
@@ -8,94 +10,77 @@ mod board;
 use board::Board;
 use board::MoveResult;
 
-mod state;
-use state::GameState;
-
 #[derive(Debug)]
 pub struct Game {
     board: Board,
-    state: GameState,
+    over: bool,
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8) -> Result<Self, &'static str> {
+    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
         Ok(Self {
-            board: Board::new(width, height, mines)?,
-            state: GameState::Running,
+            board: Board::new(width, height, mines, duds)?,
+            over: false,
         })
     }
 
-    pub fn from_args(args: &impl GameArgs) -> Result<Self, &'static str> {
-        Self::new(args.width(), args.height(), args.mines())
+    pub fn from_game_args(args: &impl GameArgs) -> Result<Self, &'static str> {
+        Self::new(args.width(), args.height(), args.mines(), args.duds())
     }
 
-    pub fn parse() -> Result<Self, &'static str> {
-        Self::from_args(&parse())
+    pub fn from_args() -> Result<Self, &'static str> {
+        Self::from_game_args(&parse())
     }
 
-    pub fn visit(&mut self, x: usize, y: usize) {
-        match self.board.visit(x, y) {
-            MoveResult::AlreadyVisited => self.already_visited(x, y),
-            MoveResult::Continue => self.next_move(),
-            MoveResult::FieldFlagged => self.field_flagged(x, y),
-            MoveResult::InvalidPosition => self.invalid_position(x, y),
-            MoveResult::Lost => self.lost(),
-            MoveResult::Won => self.won(),
+    pub fn visit(&mut self, coordinate: &Coordinate) {
+        match self.board.visit(coordinate) {
+            MoveResult::Continue => self.print_board(),
+            MoveResult::InvalidPosition => {
+                println!("The field at {} is not on the board.", coordinate)
+            }
+            MoveResult::Lost => self.game_over(false),
+            MoveResult::Won => self.game_over(true),
         }
     }
 
-    pub fn toggle_flag(&mut self, x: usize, y: usize) {
-        match self.board.toggle_flag(x, y) {
-            MoveResult::AlreadyVisited => self.already_visited(x, y),
-            MoveResult::Continue => self.next_move(),
-            MoveResult::FieldFlagged => self.field_flagged(x, y),
-            MoveResult::InvalidPosition => self.invalid_position(x, y),
-            MoveResult::Lost => self.lost(),
-            MoveResult::Won => self.won(),
+    pub fn toggle_flag(&mut self, coordinate: &Coordinate) {
+        match self.board.toggle_flag(coordinate) {
+            MoveResult::InvalidPosition => {
+                println!("The field at {} is not on the board.", coordinate)
+            }
+            _ => self.print_board(),
+        }
+    }
+
+    pub fn visit_unflagged_fields(&mut self) {
+        match self.board.visit_unflagged_fields() {
+            MoveResult::Lost => self.game_over(false),
+            MoveResult::Won => self.game_over(true),
+            _ => self.print_board(),
         }
     }
 
     pub fn over(&self) -> bool {
-        self.state == GameState::Over
+        self.over
     }
 
-    pub fn running(&self) -> bool {
-        self.state == GameState::Running
+    fn print_board(&self) {
+        println!("\n{}", self)
     }
 
-    pub fn to_string(&self) -> String {
-        self.board.to_string(self.over())
-    }
+    fn game_over(&mut self, won: bool) {
+        self.over = true;
 
-    fn lost(&mut self) {
-        self.state = GameState::Over;
-        println!("You lost the game.")
-    }
-
-    fn won(&mut self) {
-        self.state = GameState::Over;
-        println!("You won the game.")
-    }
-
-    fn already_visited(&self, x: usize, y: usize) {
-        println!("You already visited the field at {}x{}.", x, y);
-    }
-
-    fn next_move(&self) {
-        println!("{}", self);
-    }
-
-    fn field_flagged(&self, x: usize, y: usize) {
-        println!("The field at {}x{} is already flagged.", x, y);
-    }
-
-    fn invalid_position(&self, x: usize, y: usize) {
-        println!("The field at {}x{} is not on the board.", x, y);
+        if won {
+            println!("{}\nYou won the game.", self)
+        } else {
+            println!("{}\nYou lost the game.", self)
+        }
     }
 }
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.to_string())
+        write!(f, "{}", self.board.to_string(self.over()))
     }
 }

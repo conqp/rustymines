@@ -1,38 +1,38 @@
 use std::fmt::Debug;
+use std::io::Write;
 use std::str::FromStr;
 
-pub fn read<T>(prompt: impl Into<String>) -> Result<T, &'static str>
+pub fn read<T>(prompt: &str) -> T
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    print!("{}", prompt.into());
-
-    for line in std::io::stdin().lines() {
-        println!();
-        let result = line.unwrap().trim().parse::<T>();
-
-        if result.is_err() {
-            return Err("invalid value");
+    loop {
+        match try_read::<T>(prompt) {
+            Err(msg) => eprintln!("Error: {}", msg),
+            Ok(value) => return value,
         }
-
-        return Ok(result.unwrap());
     }
-
-    Err("no line read")
 }
 
-pub fn read_repeat<T>(prompt: impl Into<String> + Copy) -> T
+fn try_read<T>(prompt: &str) -> Result<T, &'static str>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
 {
-    let mut result = read::<T>(prompt);
+    print_prompt(prompt);
+    let mut input = String::new();
 
-    while result.is_err() {
-        println!("{}", result.err().unwrap());
-        result = read::<T>(prompt);
+    match std::io::stdin().read_line(&mut input) {
+        Ok(_) => match input.trim().parse::<T>() {
+            Ok(value) => Ok(value),
+            Err(_) => Err("invalid value"),
+        },
+        Err(_) => Err("no value read"),
     }
+}
 
-    result.unwrap()
+fn print_prompt(prompt: &str) -> bool{
+    print!("{}", prompt);
+    std::io::stdout().flush().is_ok()
 }

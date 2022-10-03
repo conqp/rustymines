@@ -1,14 +1,25 @@
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub struct Field {
     mine: bool,
+    dud: bool,
     visited: bool,
     flagged: bool,
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum VisitResult {
+    Ok,
+    AlreadyVisited,
+    Flagged,
+    SteppedOnMine,
+    SteppedOnDud,
 }
 
 impl Field {
     pub fn new() -> Self {
         Self {
             mine: false,
+            dud: false,
             visited: false,
             flagged: false,
         }
@@ -22,67 +33,54 @@ impl Field {
         self.mine = true;
     }
 
+    pub fn set_dud(&mut self) {
+        self.dud = true;
+    }
+
     pub fn visited(&self) -> bool {
         self.visited
     }
 
-    pub fn visit(&mut self) -> bool {
-        if self.flagged {
-            false
-        } else {
-            self.visited = true;
-            true
+    pub fn visit(&mut self) -> VisitResult {
+        match (self.mine, self.dud, self.visited, self.flagged) {
+            (_, _, _, true) => VisitResult::Flagged,
+            (_, _, true, _) => VisitResult::AlreadyVisited,
+            (mine, dud, _, _) => {
+                self.visited = true;
+
+                match (mine, dud) {
+                    (false, _) => VisitResult::Ok,
+                    (true, false) => VisitResult::SteppedOnMine,
+                    (true, true) => VisitResult::SteppedOnDud,
+                }
+            }
         }
     }
 
-    pub fn flagged(&self) -> bool {
+    pub fn is_flagged(&self) -> bool {
         self.flagged
     }
 
-    pub fn toggle_flag(&mut self) -> bool {
+    pub fn toggle_flag(&mut self) -> VisitResult {
         if self.visited {
-            false
+            VisitResult::AlreadyVisited
         } else {
             self.flagged = !self.flagged;
-            true
+            VisitResult::Ok
         }
     }
 
-    pub fn to_string(&self, adjacent_mintes: usize, game_over: bool) -> String {
-        if game_over {
-            self.to_string_game_over(adjacent_mintes)
-        } else {
-            self.to_string_while_playing(adjacent_mintes)
-        }
-    }
-
-    fn to_string_while_playing(&self, adjacent_mintes: usize) -> String {
-        if self.visited {
-            if self.mine {
-                "*".to_string()
-            } else if adjacent_mintes > 0 {
-                adjacent_mintes.to_string()
-            } else {
-                " ".to_string()
-            }
-        } else if self.flagged {
-            "?".to_string()
-        } else {
-            "■".to_string()
-        }
-    }
-
-    fn to_string_game_over(&self, adjacent_mintes: usize) -> String {
-        if self.mine {
-            if self.visited {
-                "*".to_string()
-            } else {
-                "o".to_string()
-            }
-        } else if adjacent_mintes > 0 {
-            adjacent_mintes.to_string()
-        } else {
-            " ".to_string()
+    pub fn to_string(&self, game_over: bool, adjacent_mines: impl Fn() -> usize) -> String {
+        match (game_over, self.visited, self.flagged, self.mine, self.dud) {
+            (false, false, true, _, _) | (true, false, true, true, _) => "⚐".to_string(),
+            (_, true, _, true, true) => "~".to_string(),
+            (_, true, _, true, false) => "☠".to_string(),
+            (false, true, false, false, _) | (true, _, _, false, _) => match adjacent_mines() {
+                0 => " ".to_string(),
+                mines => mines.to_string(),
+            },
+            (true, false, false, true, _) => "*".to_string(),
+            _ => "■".to_string(),
         }
     }
 }
