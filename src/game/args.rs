@@ -16,7 +16,7 @@ struct GameArgsParser {
     #[clap(short, long, value_parser, default_value_t = 5)]
     width: usize,
 
-    #[clap(short, long, value_parser, default_value_t = 5)]
+    #[clap(short = 'H', long, value_parser, default_value_t = 5)]
     height: usize,
 
     #[clap(short, long, value_parser, default_value_t = 8)]
