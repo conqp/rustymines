@@ -22,8 +22,14 @@ fn main() {
                     "!!" => game.visit_unflagged_fields(),
                     input => match Action::from_str(input) {
                         Ok(action) => match action.kind() {
-                            ActionKind::Visit => game.visit(&action.coordinate()),
-                            ActionKind::ToggleFlag => game.toggle_flag(&action.coordinate()),
+                            ActionKind::Visit => game.visit(&action.coordinate().unwrap()),
+                            ActionKind::ToggleFlag => {
+                                game.toggle_flag(&action.coordinate().unwrap())
+                            }
+                            ActionKind::Exit => {
+                                println!("Bye!");
+                                break;
+                            }
                         },
                         Err(msg) => eprintln!("Error: {}", msg),
                     },
