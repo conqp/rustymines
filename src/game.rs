@@ -1,10 +1,11 @@
 use std::fmt;
 use std::time::Instant;
 
+use clap::Parser;
 use grid::Coordinate;
 
 mod args;
-use args::{parse, GameArgs};
+use args::Args;
 
 mod board;
 use board::{Board, MoveResult};
@@ -25,12 +26,12 @@ impl Game {
         })
     }
 
-    pub fn from_game_args(args: &impl GameArgs) -> Result<Self, &'static str> {
-        Self::new(args.width(), args.height(), args.mines(), args.duds())
+    pub fn from_game_args(args: &Args) -> Result<Self, &'static str> {
+        Self::new(args.width, args.height, args.mines, args.duds)
     }
 
     pub fn from_args() -> Result<Self, &'static str> {
-        Self::from_game_args(&parse())
+        Self::from_game_args(&Args::parse())
     }
 
     pub fn visit(&mut self, coordinate: &Coordinate) {
