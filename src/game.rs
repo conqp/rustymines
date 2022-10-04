@@ -71,15 +71,12 @@ impl Game {
 
     fn game_over(&mut self, won: bool) {
         self.over = true;
+        self.print_board();
 
         if won {
-            println!(
-                "{}\nYou won the game.\nTime: {:?}",
-                self,
-                self.start.elapsed()
-            )
+            println!("\nYou won the game.\nTime: {:?}", self.start.elapsed())
         } else {
-            println!("{}\nYou lost the game.", self)
+            println!("\nYou lost the game.")
         }
     }
 }
