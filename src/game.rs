@@ -73,7 +73,11 @@ impl Game {
         self.over = true;
 
         if won {
-            println!("{}\nYou won the game.\nTime: {:?}", self, self.start.elapsed())
+            println!(
+                "{}\nYou won the game.\nTime: {:?}",
+                self,
+                self.start.elapsed()
+            )
         } else {
             println!("{}\nYou lost the game.", self)
         }
