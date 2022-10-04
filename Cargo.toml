@@ -9,4 +9,10 @@ edition = "2021"
 itertools = "*"
 rand = "*"
 grid = { git = "https://github.com/conqp/grid.git", branch = "main" }
-clap = { version = "3.2.22", features = ["derive"] }
+clap = { version = "*", features = ["derive"] }
+
+[profile.release]
+strip = true
+#opt-level = "s"
+lto = true
+codegen-units = 1
