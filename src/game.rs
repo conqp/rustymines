@@ -35,7 +35,7 @@ impl Game {
 
     pub fn visit(&mut self, coordinate: &Coordinate) {
         match self.board.visit(coordinate) {
-            MoveResult::Continue => self.print_board(),
+            MoveResult::Continue => println!("\n{}", self),
             MoveResult::InvalidPosition => {
                 println!("The field at {} is not on the board.", coordinate)
             }
@@ -49,7 +49,7 @@ impl Game {
             MoveResult::InvalidPosition => {
                 println!("The field at {} is not on the board.", coordinate)
             }
-            _ => self.print_board(),
+            _ => println!("\n{}", self),
         }
     }
 
@@ -57,7 +57,7 @@ impl Game {
         match self.board.visit_unflagged_fields() {
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
-            _ => self.print_board(),
+            _ => println!("\n{}", self),
         }
     }
 
@@ -65,13 +65,9 @@ impl Game {
         self.over
     }
 
-    fn print_board(&self) {
-        println!("\n{}", self)
-    }
-
     fn game_over(&mut self, won: bool) {
         self.over = true;
-        self.print_board();
+        println!("\n{}", self);
 
         if won {
             println!("\nYou won the game.\nTime: {:?}", self.start.elapsed())
