@@ -2,6 +2,7 @@
 name = "rustymines"
 version = "1.1.3"
 edition = "2021"
+authors = ["Richard Neumann"]
 description = "A mine sweeping game written in Rust."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
