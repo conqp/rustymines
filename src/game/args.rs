@@ -1,9 +1,8 @@
 use clap::Parser;
 
 #[derive(Parser)]
-#[clap(name = "rustymines")]
-#[clap(author = "Richard Neumann <mail@richard-neumann.de>")]
-#[clap(version = "1.0.0")]
+#[clap(author)]
+#[clap(version)]
 #[clap(about = "A mine sweeping game written in Rust.", long_about = None)]
 pub struct Args {
     #[clap(short, long, name = "width", value_parser, default_value_t = 5)]
