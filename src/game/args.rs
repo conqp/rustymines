@@ -3,7 +3,7 @@ use clap::Parser;
 #[derive(Parser)]
 #[clap(author)]
 #[clap(version)]
-#[clap(about = "A mine sweeping game written in Rust.", long_about = None)]
+#[clap(about)]
 pub struct Args {
     #[clap(short, long, name = "width", value_parser, default_value_t = 5)]
     pub width: usize,
