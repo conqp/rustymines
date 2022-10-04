@@ -1,9 +1,7 @@
 use clap::Parser;
 
 #[derive(Parser)]
-#[clap(author)]
-#[clap(version)]
-#[clap(about)]
+#[clap(about, author, version)]
 pub struct Args {
     #[clap(short, long, name = "width", value_parser, default_value_t = 5)]
     pub width: usize,
