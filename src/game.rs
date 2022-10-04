@@ -1,4 +1,5 @@
 use std::fmt;
+use std::time::Instant;
 
 use grid::Coordinate;
 
@@ -11,6 +12,7 @@ use board::{Board, MoveResult};
 #[derive(Debug)]
 pub struct Game {
     board: Board,
+    start: Instant,
     over: bool,
 }
 
@@ -18,6 +20,7 @@ impl Game {
     pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
         Ok(Self {
             board: Board::new(width, height, mines, duds)?,
+            start: Instant::now(),
             over: false,
         })
     }
@@ -70,7 +73,7 @@ impl Game {
         self.over = true;
 
         if won {
-            println!("{}\nYou won the game.", self)
+            println!("{}\nYou won the game.\nTime: {:?}", self, self.start.elapsed())
         } else {
             println!("{}\nYou lost the game.", self)
         }
