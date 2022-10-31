@@ -9,6 +9,13 @@ use game::Game;
 mod io;
 use io::read;
 
+const HELP: [&str; 4] = [
+    "Visit a field:                x y",
+    "Toggle flag on a field:       !x y",
+    "Visit all non-flagged fields: !!",
+    "Abort:                        exit",
+];
+
 fn main() {
     match Game::from_args() {
         Ok(mut game) => {
@@ -40,8 +47,7 @@ fn play_game(game: &mut Game) {
 }
 
 fn print_help() {
-    println!("Visit a field:                x y");
-    println!("Toggle flag on a field:       !x y");
-    println!("Visit all non-flagged fields: !!");
-    println!("Abort:                        exit");
+    for line in HELP {
+        println!("{}", line);
+    }
 }
