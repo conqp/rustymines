@@ -16,6 +16,7 @@ fn main() {
             println!("Visit a field:                x y");
             println!("Toggle flag on a field:       !x y");
             println!("Visit all non-flagged fields: !!");
+            println!("Abort:                        exit");
 
             while !game.over() {
                 match read::<String>("Enter action: ").trim() {
