@@ -9,11 +9,12 @@ mod args;
 use args::Args;
 
 mod action;
-mod board;
-mod io;
-
 use action::{Action, ActionKind};
+
+mod board;
 use board::{Board, MoveResult};
+
+mod io;
 use io::read;
 
 #[derive(Debug)]
