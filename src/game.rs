@@ -1,4 +1,5 @@
 use std::fmt;
+use std::str::FromStr;
 use std::time::Instant;
 
 use clap::Parser;
@@ -7,8 +8,13 @@ use grid2d::Coordinate;
 mod args;
 use args::Args;
 
+mod action;
 mod board;
+mod io;
+
+use action::{Action, ActionKind};
 use board::{Board, MoveResult};
+use io::read;
 
 #[derive(Debug)]
 pub struct Game {
@@ -34,7 +40,34 @@ impl Game {
         Self::from_game_args(&Args::parse())
     }
 
-    pub fn visit(&mut self, coordinate: &Coordinate) {
+    pub fn play(&mut self) {
+        while !self.over {
+            if !self.next_round() {
+                break;
+            }
+        }
+    }
+
+    fn next_round(&mut self) -> bool {
+        match read::<String>("Enter action: ").trim() {
+            "!!" => self.visit_unflagged_fields(),
+            input => match Action::from_str(input) {
+                Ok(action) => match action.kind() {
+                    ActionKind::Visit => self.visit(&action.coordinate().unwrap()),
+                    ActionKind::ToggleFlag => self.toggle_flag(&action.coordinate().unwrap()),
+                    ActionKind::Exit => {
+                        println!("Bye!");
+                        return false;
+                    }
+                },
+                Err(msg) => eprintln!("Error: {}", msg),
+            },
+        }
+
+        true
+    }
+
+    fn visit(&mut self, coordinate: &Coordinate) {
         match self.board.visit(coordinate) {
             MoveResult::Continue => println!("\n{}", self),
             MoveResult::InvalidPosition => {
@@ -45,7 +78,7 @@ impl Game {
         }
     }
 
-    pub fn toggle_flag(&mut self, coordinate: &Coordinate) {
+    fn toggle_flag(&mut self, coordinate: &Coordinate) {
         match self.board.toggle_flag(coordinate) {
             MoveResult::InvalidPosition => {
                 println!("The field at {} is not on the board.", coordinate)
@@ -54,16 +87,12 @@ impl Game {
         }
     }
 
-    pub fn visit_unflagged_fields(&mut self) {
+    fn visit_unflagged_fields(&mut self) {
         match self.board.visit_unflagged_fields() {
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
             _ => println!("\n{}", self),
         }
-    }
-
-    pub fn over(&self) -> bool {
-        self.over
     }
 
     fn game_over(&mut self, won: bool) {
@@ -80,6 +109,6 @@ impl Game {
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.board.to_string(self.over()))
+        write!(f, "{}", self.board.to_string(self.over))
     }
 }
