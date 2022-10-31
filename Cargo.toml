@@ -14,9 +14,9 @@ categories = ["games"]
 
 [dependencies]
 clap = { version = "*", features = ["derive"] }
-grid2d = "*"
-itertools = "*"
-rand = "*"
+grid2d = "0.2.1"
+itertools = "0.10.5"
+rand = "0.8.5"
 
 [profile.release]
 strip = true
