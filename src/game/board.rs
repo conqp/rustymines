@@ -2,7 +2,7 @@ use itertools::Itertools;
 use rand::{seq::IteratorRandom, thread_rng};
 use std::collections::HashSet;
 
-use grid::{Coordinate, Grid};
+use grid2d::{Coordinate, Grid};
 
 mod field;
 use field::{Field, VisitResult};

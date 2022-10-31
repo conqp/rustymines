@@ -2,7 +2,7 @@ use std::fmt;
 use std::time::Instant;
 
 use clap::Parser;
-use grid::Coordinate;
+use grid2d::Coordinate;
 
 mod args;
 use args::Args;

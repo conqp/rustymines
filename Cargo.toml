@@ -10,7 +10,7 @@ description = "A mine sweeping game written in Rust."
 [dependencies]
 itertools = "*"
 rand = "*"
-grid = { git = "https://github.com/conqp/grid.git", branch = "main" }
+grid2d = "*"
 clap = { version = "*", features = ["derive"] }
 
 [profile.release]
