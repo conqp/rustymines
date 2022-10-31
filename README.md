@@ -1,5 +1,5 @@
 # rustymines
-A mine sweeping game written in Rust with optional dud mines.
+A mine sweeping game for the console with optional dud mines.
 
 ## Parameters
 You can specify the field size, amount of mines and amount of duds:
@@ -10,12 +10,12 @@ You can specify the field size, amount of mines and amount of duds:
 * `--duds` Amount of duds among the mines
 
 ## Playing
-You play the game by either flagging of visiting fields.
-The field is over, if you stepped onto a mine, which is not a dud, in which case you lose,
+You play the game by either flagging or visiting fields.
+The game is over, if you stepped onto a mine, which is not a dud, in which case you lose,
 or you uncover all fields that do not contain a mine, in which case you win. 
 
 ### Visiting fields
-You can visit fields under which you deem safe by specifying the x and y coordinate.
+You can visit fields, which you deem safe, by specifying the x and y coordinate.
 E.g.: `2 3` to visit the field at coordinate x=2 and y=3.
 
 ### Flagging fields
