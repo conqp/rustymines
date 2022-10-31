@@ -22,6 +22,8 @@ E.g.: `2 3` to visit the field at coordinate x=2 and y=3.
 You can flag fields under which you suspect a mine by prepending an exclamation
 mark to the coordinate. E.g.: `!3 1` to flag the field at coordinate x=3 and y=1.
 
+You can remove a flag from a field by repeating the command, i.e. this command toggles a field's flag.
+
 ### Uncovering all remaining fields
 You can uncover all non-flagged fields by providing two exclamation marks: `!!`
 
