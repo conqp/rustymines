@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Field {
     mine: bool,
     dud: bool,
@@ -72,17 +72,6 @@ impl Field {
             },
             (true, false, false, true, _) => "*".to_string(),
             _ => "■".to_string(),
-        }
-    }
-}
-
-impl Default for Field {
-    fn default() -> Self {
-        Self {
-            mine: false,
-            dud: false,
-            visited: false,
-            flagged: false,
         }
     }
 }
