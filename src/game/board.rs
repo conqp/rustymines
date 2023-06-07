@@ -35,7 +35,7 @@ impl Board {
             Err("more duds than mines")
         } else {
             Ok(Self {
-                fields: Grid::<Field>::new_default(width, height),
+                fields: Grid::new_default(width, height),
                 mines,
                 duds,
                 initialized: false,
