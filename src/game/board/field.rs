@@ -16,15 +16,6 @@ pub enum VisitResult {
 }
 
 impl Field {
-    pub fn new() -> Self {
-        Self {
-            mine: false,
-            dud: false,
-            visited: false,
-            flagged: false,
-        }
-    }
-
     pub fn has_mine(&self) -> bool {
         self.mine
     }
@@ -81,6 +72,17 @@ impl Field {
             },
             (true, false, false, true, _) => "*".to_string(),
             _ => "■".to_string(),
+        }
+    }
+}
+
+impl Default for Field {
+    fn default() -> Self {
+        Self {
+            mine: false,
+            dud: false,
+            visited: false,
+            flagged: false,
         }
     }
 }

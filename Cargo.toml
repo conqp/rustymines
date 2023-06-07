@@ -1,6 +1,6 @@
 [package]
 name = "rustymines"
-version = "1.1.6"
+version = "1.1.7"
 edition = "2021"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
 description = "A mine sweeping game with optional duds."
@@ -14,7 +14,7 @@ categories = ["games"]
 
 [dependencies]
 clap = { version = "4.0.18", features = ["derive"] }
-grid2d = "0.2.2"
+grid2d = "0.2.3"
 itertools = "0.10.5"
 rand = "0.8.5"
 
