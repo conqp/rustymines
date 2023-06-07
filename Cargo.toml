@@ -14,7 +14,7 @@ categories = ["games"]
 
 [dependencies]
 clap = { version = "4.0.18", features = ["derive"] }
-grid2d = "0.2.5"
+grid2d = "0.2.6"
 itertools = "0.10.5"
 rand = "0.8.5"
 
