@@ -9,7 +9,7 @@ where
 {
     loop {
         match try_read::<T>(prompt) {
-            Err(msg) => eprintln!("Error: {}", msg),
+            Err(msg) => eprintln!("Error: {msg}"),
             Ok(value) => return value,
         }
     }
@@ -24,15 +24,15 @@ where
     let mut input = String::new();
 
     match std::io::stdin().read_line(&mut input) {
-        Ok(_) => match input.trim().parse::<T>() {
-            Ok(value) => Ok(value),
-            Err(_) => Err("invalid value"),
-        },
+        Ok(_) => input
+            .trim()
+            .parse::<T>()
+            .map_or_else(|_| Err("invalid value"), |value| Ok(value)),
         Err(_) => Err("no value read"),
     }
 }
 
 fn print_prompt(prompt: &str) -> bool {
-    print!("{}", prompt);
+    print!("{prompt}");
     std::io::stdout().flush().is_ok()
 }

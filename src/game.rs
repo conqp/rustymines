@@ -9,7 +9,7 @@ mod args;
 use args::Args;
 
 mod action;
-use action::{Action, ActionKind};
+use action::Action;
 
 mod board;
 use board::{Board, MoveResult};
@@ -53,15 +53,15 @@ impl Game {
         match read::<String>("Enter action: ").trim() {
             "!!" => self.visit_unflagged_fields(),
             input => match Action::from_str(input) {
-                Ok(action) => match action.kind() {
-                    ActionKind::Visit => self.visit(&action.coordinate().unwrap()),
-                    ActionKind::ToggleFlag => self.toggle_flag(&action.coordinate().unwrap()),
-                    ActionKind::Exit => {
+                Ok(action) => match action {
+                    Action::Visit(coordinate) => self.visit(&coordinate),
+                    Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
+                    Action::Exit => {
                         println!("Bye!");
                         return false;
                     }
                 },
-                Err(msg) => eprintln!("Error: {}", msg),
+                Err(msg) => eprintln!("Error: {msg}"),
             },
         }
 
@@ -70,9 +70,9 @@ impl Game {
 
     fn visit(&mut self, coordinate: &Coordinate) {
         match self.board.visit(coordinate) {
-            MoveResult::Continue => println!("\n{}", self),
+            MoveResult::Continue => println!("\n{self}"),
             MoveResult::InvalidPosition => {
-                println!("The field at {} is not on the board.", coordinate)
+                println!("The field at {coordinate} is not on the board.");
             }
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
@@ -82,9 +82,9 @@ impl Game {
     fn toggle_flag(&mut self, coordinate: &Coordinate) {
         match self.board.toggle_flag(coordinate) {
             MoveResult::InvalidPosition => {
-                println!("The field at {} is not on the board.", coordinate)
+                println!("The field at {coordinate} is not on the board.");
             }
-            _ => println!("\n{}", self),
+            _ => println!("\n{self}"),
         }
     }
 
@@ -92,18 +92,18 @@ impl Game {
         match self.board.visit_unflagged_fields() {
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
-            _ => println!("\n{}", self),
+            _ => println!("\n{self}"),
         }
     }
 
     fn game_over(&mut self, won: bool) {
         self.over = true;
-        println!("\n{}", self);
+        println!("\n{self}");
 
         if won {
-            println!("\nYou won the game.\nTime: {:?}", self.start.elapsed())
+            println!("\nYou won the game.\nTime: {:?}", self.start.elapsed());
         } else {
-            println!("\nYou lost the game.")
+            println!("\nYou lost the game.");
         }
     }
 }

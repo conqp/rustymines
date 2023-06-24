@@ -11,16 +11,16 @@ const HELP: [&str; 4] = [
 fn main() {
     match Game::from_args() {
         Ok(mut game) => {
-            println!("{}", game);
+            println!("{game}");
             print_help();
             game.play();
         }
-        Err(msg) => eprintln!("Error: {}", msg),
+        Err(msg) => eprintln!("Error: {msg}"),
     }
 }
 
 fn print_help() {
     for line in HELP {
-        println!("{}", line);
+        println!("{line}");
     }
 }

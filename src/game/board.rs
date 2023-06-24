@@ -58,13 +58,12 @@ impl Board {
     }
 
     pub fn toggle_flag(&mut self, coordinate: &Coordinate) -> MoveResult {
-        match self.fields.get_mut(coordinate) {
-            Some(field) => {
+        self.fields
+            .get_mut(coordinate)
+            .map_or(MoveResult::InvalidPosition, |field| {
                 field.toggle_flag();
                 MoveResult::Continue
-            }
-            None => MoveResult::InvalidPosition,
-        }
+            })
     }
 
     pub fn visit_unflagged_fields(&mut self) -> MoveResult {
@@ -100,7 +99,7 @@ impl Board {
                 .rows()
                 .enumerate()
                 .map(|(y, row)| {
-                    format!("{:x}│", y)
+                    format!("{y:x}│")
                         + &row
                             .iter()
                             .enumerate()
@@ -116,9 +115,7 @@ impl Board {
 
     fn header(&self) -> String {
         " │".to_string()
-            + &(0..self.fields.width())
-                .map(|x| format!("{:x}", x))
-                .join(" ")
+            + &(0..self.fields.width()).map(|x| format!("{x:x}")).join(" ")
             + "\n─┼"
             + &(0..self.fields.width()).map(|_| '─').join("─")
             + "\n"
@@ -132,10 +129,10 @@ impl Board {
     }
 
     fn make_move(&mut self, coordinate: &Coordinate) -> MoveResult {
-        if !self.initialized {
-            self.first_move(coordinate)
-        } else {
+        if self.initialized {
             self.visit_coordinate(coordinate)
+        } else {
+            self.first_move(coordinate)
         }
     }
 
@@ -167,7 +164,7 @@ impl Board {
             .filter(|field| !field.visited())
             .choose_multiple(&mut thread_rng(), self.mines as usize)
             .into_iter()
-            .for_each(|field| field.set_mine());
+            .for_each(Field::set_mine);
     }
 
     fn populate_duds(&mut self) {
@@ -176,15 +173,16 @@ impl Board {
             .filter(|field| field.has_mine())
             .choose_multiple(&mut thread_rng(), self.duds as usize)
             .into_iter()
-            .for_each(|field| field.set_dud());
+            .for_each(Field::set_dud);
     }
 
     fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
             Some(field) => match (field.visit(), self.initialized) {
                 (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
-                (VisitResult::AlreadyVisited, true) => MoveResult::Continue,
-                (VisitResult::Flagged, _) => MoveResult::Continue,
+                (VisitResult::AlreadyVisited, true) | (VisitResult::Flagged, _) => {
+                    MoveResult::Continue
+                }
                 (_, _) => {
                     if self.neighboring_mines(coordinate) == 0 {
                         self.visit_neighbors(coordinate);
@@ -198,7 +196,7 @@ impl Board {
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         for coordinate in self.collect_neighbors(coordinate) {
-            match self.fields.get_mut(&coordinate) {
+            match self.fields.get_mut(coordinate) {
                 Some(field) => field.visit(),
                 None => continue,
             };
@@ -244,6 +242,6 @@ impl Board {
         self.fields
             .iter()
             .filter(|field| !field.has_mine())
-            .all(|field| field.visited())
+            .all(Field::visited)
     }
 }
