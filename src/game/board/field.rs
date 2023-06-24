@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Field {
     mine: Option<bool>,
     visited: bool,
@@ -15,15 +15,6 @@ pub enum VisitResult {
 }
 
 impl Field {
-    #[must_use]
-    pub const fn new() -> Self {
-        Self {
-            mine: None,
-            visited: false,
-            flagged: false,
-        }
-    }
-
     #[must_use]
     pub const fn has_mine(&self) -> bool {
         self.mine.is_none()

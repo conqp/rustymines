@@ -1,21 +1,17 @@
+mod action;
+mod args;
+mod board;
+mod io;
+
+use action::Action;
+use args::Args;
+use board::{Board, MoveResult};
+use clap::Parser;
+use grid2d::Coordinate;
+use io::read;
 use std::fmt;
 use std::str::FromStr;
 use std::time::Instant;
-
-use clap::Parser;
-use grid2d::Coordinate;
-
-mod args;
-use args::Args;
-
-mod action;
-use action::Action;
-
-mod board;
-use board::{Board, MoveResult};
-
-mod io;
-use io::read;
 
 #[derive(Debug)]
 pub struct Game {

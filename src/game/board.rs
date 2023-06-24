@@ -1,11 +1,10 @@
+mod field;
+
+use field::{Field, VisitResult};
+use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
 use rand::{seq::IteratorRandom, thread_rng};
 use std::collections::HashSet;
-
-use grid2d::{Coordinate, Grid};
-
-mod field;
-use field::{Field, VisitResult};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
