@@ -137,14 +137,19 @@ impl Board {
     }
 
     fn first_move(&mut self, coordinate: &Coordinate) -> MoveResult {
-        match self.fields.get_mut(coordinate) {
-            Some(field) => {
+        let result = self
+            .fields
+            .get_mut(coordinate)
+            .map_or(MoveResult::InvalidPosition, |field| {
                 field.visit();
-                self.initialize(Some(coordinate));
                 MoveResult::Continue
-            }
-            None => MoveResult::InvalidPosition,
+            });
+
+        if result == MoveResult::Continue {
+            self.initialize(Some(coordinate));
         }
+
+        result
     }
 
     fn initialize(&mut self, coordinate: Option<&Coordinate>) {
