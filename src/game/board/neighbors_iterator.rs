@@ -49,8 +49,8 @@ impl<'grid> Iterator for NeighborsIterator<'grid> {
 
         self.processed.extend(&self.unprocessed);
 
-        if let Some(coordinate) = self.unprocessed.pop() {
-            self.index = 0;
+        if let Some(&coordinate) = self.unprocessed.get(0) {
+            self.index = 1;
             return Some(coordinate);
         }
 
