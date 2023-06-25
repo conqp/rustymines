@@ -165,7 +165,7 @@ impl Board {
     fn populate_mines(&mut self) {
         self.fields
             .iter_mut()
-            .filter(|field| !field.visited())
+            .filter(|field| !field.has_been_visited())
             .choose_multiple(&mut thread_rng(), self.mines as usize)
             .into_iter()
             .for_each(Field::set_mine);
@@ -246,6 +246,6 @@ impl Board {
         self.fields
             .iter()
             .filter(|field| !field.has_mine())
-            .all(Field::visited)
+            .all(Field::has_been_visited)
     }
 }
