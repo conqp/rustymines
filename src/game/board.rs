@@ -1,10 +1,11 @@
 mod field;
+mod neighbors_iterator;
 
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
+use neighbors_iterator::NeighborsIterator;
 use rand::{seq::IteratorRandom, thread_rng};
-use std::collections::HashSet;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
@@ -199,42 +200,16 @@ impl Board {
     }
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
-        for coordinate in self.collect_neighbors(coordinate) {
-            match self.fields.get_mut(coordinate) {
-                Some(field) => field.visit(),
-                None => continue,
-            };
-        }
+        self.walk_safe_neighbors(coordinate)
+            .collect_vec()
+            .iter()
+            .for_each(|coordinate| {
+                self.fields.get_mut(coordinate).map(Field::visit);
+            });
     }
 
-    fn collect_neighbors(&self, coordinate: &Coordinate) -> HashSet<Coordinate> {
-        let mut neighbors = HashSet::from([*coordinate]);
-        let mut new_neighbors = neighbors.clone();
-
-        loop {
-            new_neighbors = new_neighbors
-                .iter()
-                .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
-                .flat_map(|coordinate| {
-                    self.fields
-                        .neighbors(coordinate)
-                        .filter(|(coordinate, neighbor)| {
-                            !neighbor.has_mine()
-                                && !neighbor.is_flagged()
-                                && !neighbors.contains(coordinate)
-                        })
-                })
-                .map(|(coordinate, _)| coordinate)
-                .collect();
-
-            if new_neighbors.is_empty() {
-                break;
-            }
-
-            neighbors.extend(&new_neighbors);
-        }
-
-        neighbors
+    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> NeighborsIterator {
+        NeighborsIterator::new(&self.fields, *coordinate)
     }
 
     fn all_mines_cleared(&self) -> bool {
