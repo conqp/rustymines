@@ -209,27 +209,32 @@ impl Board {
 
     fn collect_neighbors(&self, coordinate: &Coordinate) -> HashSet<Coordinate> {
         let mut neighbors = HashSet::from([*coordinate]);
-        while self.update_neighbors(&mut neighbors) {}
-        neighbors
-    }
+        let mut new_neighbors = neighbors.clone();
 
-    fn update_neighbors(&self, neighbors: &mut HashSet<Coordinate>) -> bool {
-        let current_neighbors = neighbors.clone();
-        current_neighbors
-            .iter()
-            .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
-            .flat_map(|coordinate| {
-                self.fields
-                    .neighbors(coordinate)
-                    .filter(|(coordinate, neighbor)| {
-                        !neighbor.has_mine()
-                            && !neighbor.is_flagged()
-                            && !current_neighbors.contains(coordinate)
-                    })
-            })
-            .map(|(coordinate, _)| neighbors.insert(coordinate))
-            .count()
-            != 0
+        loop {
+            new_neighbors = new_neighbors
+                .iter()
+                .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
+                .flat_map(|coordinate| {
+                    self.fields
+                        .neighbors(coordinate)
+                        .filter(|(coordinate, neighbor)| {
+                            !neighbor.has_mine()
+                                && !neighbor.is_flagged()
+                                && !neighbors.contains(coordinate)
+                        })
+                })
+                .map(|(coordinate, _)| coordinate)
+                .collect();
+
+            if new_neighbors.is_empty() {
+                break;
+            }
+
+            neighbors.extend(&new_neighbors);
+        }
+
+        neighbors
     }
 
     fn all_mines_cleared(&self) -> bool {
