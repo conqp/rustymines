@@ -35,16 +35,17 @@ impl<'grid> Iterator for NeighborsIterator<'grid> {
             .iter()
             .flat_map(|&coordinate| {
                 let neighbors = self.fields.neighbors(coordinate).collect_vec();
-                if neighbors.iter().all(|(_, field)| !field.has_mine()) {
+                if neighbors
+                    .iter()
+                    .all(|(_, neighbor)| !neighbor.has_mine() && !neighbor.is_flagged())
+                {
                     neighbors
                 } else {
                     Vec::new()
                 }
             })
-            .filter(|(coordinate, neighbor)| {
-                !self.processed.contains(coordinate) && !neighbor.is_flagged()
-            })
             .map(|(coordinate, _)| coordinate)
+            .filter(|coordinate| !self.processed.contains(coordinate))
             .collect();
 
         self.processed.extend(&self.unprocessed);
