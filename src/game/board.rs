@@ -209,24 +209,13 @@ impl Board {
 
     fn collect_neighbors(&self, coordinate: &Coordinate) -> HashSet<Coordinate> {
         let mut neighbors = HashSet::from([*coordinate]);
-
-        loop {
-            let new_neighbors = self.new_neighbors(&neighbors);
-
-            if new_neighbors.is_empty() {
-                break;
-            }
-
-            for coordinate in new_neighbors {
-                neighbors.insert(coordinate);
-            }
-        }
-
+        while self.update_neighbors(&mut neighbors) {}
         neighbors
     }
 
-    fn new_neighbors(&self, neighbors: &HashSet<Coordinate>) -> Vec<Coordinate> {
-        neighbors
+    fn update_neighbors(&self, neighbors: &mut HashSet<Coordinate>) -> bool {
+        let current_neighbors = neighbors.clone();
+        current_neighbors
             .iter()
             .filter(|coordinate| self.neighboring_mines(coordinate) == 0)
             .flat_map(|coordinate| {
@@ -235,11 +224,12 @@ impl Board {
                     .filter(|(coordinate, neighbor)| {
                         !neighbor.has_mine()
                             && !neighbor.is_flagged()
-                            && !neighbors.contains(coordinate)
+                            && !current_neighbors.contains(coordinate)
                     })
             })
-            .map(|(coordinate, _)| coordinate)
-            .collect_vec()
+            .map(|(coordinate, _)| neighbors.insert(coordinate))
+            .count()
+            != 0
     }
 
     fn all_mines_cleared(&self) -> bool {
