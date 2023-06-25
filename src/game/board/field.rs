@@ -69,7 +69,7 @@ impl Field {
         if self.has_been_visited() {
             VisitResult::AlreadyVisited
         } else {
-            self.0 |= VISITED_MASK;
+            self.0 |= FLAGGED_MASK;
             VisitResult::Ok
         }
     }
