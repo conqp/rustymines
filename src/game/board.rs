@@ -246,6 +246,6 @@ impl Board {
         self.fields
             .iter()
             .filter(|field| !field.has_mine())
-            .all(Field::has_been_visited)
+            .all(|&field| field.has_been_visited())
     }
 }

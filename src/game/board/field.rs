@@ -1,7 +1,7 @@
-const MINED_MASK: u8 = 0b00000001;
-const VISITED_MASK: u8 = 0b00000010;
-const FLAGGED_MASK: u8 = 0b00000100;
-const IS_DUD_MASK: u8 = 0b00001000;
+const MINED_MASK: u8 = 0b0000_0001;
+const VISITED_MASK: u8 = 0b0000_0010;
+const FLAGGED_MASK: u8 = 0b0000_0100;
+const IS_DUD_MASK: u8 = 0b0000_1000;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
@@ -17,22 +17,22 @@ pub enum VisitResult {
 
 impl Field {
     #[must_use]
-    pub const fn has_mine(&self) -> bool {
+    pub const fn has_mine(self) -> bool {
         self.0 & MINED_MASK != 0
     }
 
     #[must_use]
-    pub const fn has_been_visited(&self) -> bool {
+    pub const fn has_been_visited(self) -> bool {
         self.0 & VISITED_MASK != 0
     }
 
     #[must_use]
-    pub const fn is_flagged(&self) -> bool {
+    pub const fn is_flagged(self) -> bool {
         self.0 & FLAGGED_MASK != 0
     }
 
     #[must_use]
-    pub const fn is_dud(&self) -> bool {
+    pub const fn is_dud(self) -> bool {
         self.0 & IS_DUD_MASK != 0
     }
 
@@ -74,7 +74,7 @@ impl Field {
         }
     }
 
-    pub fn to_string(&self, game_over: bool, adjacent_mines: impl Fn() -> usize) -> String {
+    pub fn to_string(self, game_over: bool, adjacent_mines: impl Fn() -> usize) -> String {
         match (
             game_over,
             self.has_been_visited(),
