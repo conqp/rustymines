@@ -1,5 +1,6 @@
 use crate::game::board::field::Field;
 use grid2d::{Coordinate, Grid};
+use itertools::Itertools;
 use std::collections::HashSet;
 
 pub struct NeighborsIterator<'grid> {
@@ -32,22 +33,18 @@ impl<'grid> Iterator for NeighborsIterator<'grid> {
         self.unprocessed = self
             .unprocessed
             .iter()
-            .filter(|&coordinate| {
-                self.fields
-                    .neighbors(coordinate)
-                    .filter(|(coordinate, _)| !self.processed.contains(coordinate))
-                    .all(|(_, field)| !field.has_mine())
-            })
             .flat_map(|&coordinate| {
-                self.fields
-                    .neighbors(coordinate)
-                    .filter(|(coordinate, neighbor)| {
-                        !self.processed.contains(coordinate)
-                            && !neighbor.has_mine()
-                            && !neighbor.is_flagged()
-                    })
-                    .map(|(coordinate, _)| coordinate)
+                let neighbors = self.fields.neighbors(coordinate).collect_vec();
+                if neighbors.iter().all(|(_, field)| !field.has_mine()) {
+                    neighbors
+                } else {
+                    Vec::new()
+                }
             })
+            .filter(|(coordinate, neighbor)| {
+                !self.processed.contains(coordinate) && !neighbor.is_flagged()
+            })
+            .map(|(coordinate, _)| coordinate)
             .collect();
 
         self.processed.extend(&self.unprocessed);
