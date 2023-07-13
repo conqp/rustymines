@@ -5,7 +5,8 @@ use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
 use neighbors_iterator::NeighborsIterator;
-use rand::{seq::IteratorRandom, thread_rng};
+use rand::rngs::ThreadRng;
+use rand::seq::IteratorRandom;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum MoveResult {
@@ -21,6 +22,7 @@ pub struct Board {
     mines: u8,
     duds: u8,
     initialized: bool,
+    rng: ThreadRng,
 }
 
 impl Board {
@@ -39,6 +41,7 @@ impl Board {
                 mines,
                 duds,
                 initialized: false,
+                rng: ThreadRng::default(),
             })
         }
     }
@@ -167,7 +170,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| !field.has_been_visited())
-            .choose_multiple(&mut thread_rng(), self.mines as usize)
+            .choose_multiple(&mut self.rng, self.mines as usize)
             .into_iter()
             .for_each(Field::set_mine);
     }
@@ -176,7 +179,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| field.has_mine())
-            .choose_multiple(&mut thread_rng(), self.duds as usize)
+            .choose_multiple(&mut self.rng, self.duds as usize)
             .into_iter()
             .for_each(Field::set_dud);
     }
