@@ -11,6 +11,7 @@ repository = "https://github.com/conqp/rustymines/"
 documentation = "https://docs.rs/rustymines"
 keywords = [ "mine", "mines", "sweeper", "game", "console"]
 categories = ["games"]
+exclude = [".gitignore"]
 
 [dependencies]
 clap = { version = "4.0.18", features = ["derive"] }
