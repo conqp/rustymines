@@ -1,22 +1,16 @@
 mod error;
 mod field;
+mod move_result;
 mod neighbors_iterator;
 
 pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
+pub use move_result::MoveResult;
 use neighbors_iterator::NeighborsIterator;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum MoveResult {
-    Continue,
-    InvalidPosition,
-    Lost,
-    Won,
-}
 
 #[derive(Debug)]
 pub struct Board {
