@@ -5,7 +5,7 @@ mod io;
 
 use action::Action;
 use args::Args;
-use board::{Board, MoveResult};
+use board::{Board, Error, MoveResult};
 use clap::Parser;
 use grid2d::Coordinate;
 use io::read;
@@ -21,7 +21,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
+    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, Error> {
         Ok(Self {
             board: Board::new(width, height, mines, duds)?,
             start: Instant::now(),
@@ -29,11 +29,11 @@ impl Game {
         })
     }
 
-    pub fn from_game_args(args: &Args) -> Result<Self, &'static str> {
+    pub fn from_game_args(args: &Args) -> Result<Self, Error> {
         Self::new(args.width, args.height, args.mines, args.duds)
     }
 
-    pub fn from_args() -> Result<Self, &'static str> {
+    pub fn from_args() -> Result<Self, Error> {
         Self::from_game_args(&Args::parse())
     }
 

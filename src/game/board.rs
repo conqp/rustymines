@@ -1,6 +1,8 @@
+mod error;
 mod field;
 mod neighbors_iterator;
 
+pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
@@ -26,24 +28,27 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, &'static str> {
+    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, Error> {
         if width < 1 {
-            Err("field too narrow")
-        } else if height < 1 {
-            Err("field too flat")
-        } else if width * height <= mines as usize {
-            Err("too many mines for field size")
-        } else if duds > mines {
-            Err("more duds than mines")
-        } else {
-            Ok(Self {
-                fields: Grid::new_default(width, height),
-                mines,
-                duds,
-                initialized: false,
-                rng: ThreadRng::default(),
-            })
+            return Err(Error::FieldTooNarrow);
         }
+        if height < 1 {
+            return Err(Error::FieldTooFlat);
+        }
+        if width * height <= mines as usize {
+            return Err(Error::TooManyMines);
+        }
+        if duds > mines {
+            return Err(Error::TooManyDuds);
+        }
+
+        Ok(Self {
+            fields: Grid::new_default(width, height),
+            mines,
+            duds,
+            initialized: false,
+            rng: ThreadRng::default(),
+        })
     }
 
     pub fn visit(&mut self, coordinate: &Coordinate) -> MoveResult {
