@@ -10,6 +10,7 @@ where
     let mut input = String::new();
 
     loop {
+        input.clear();
         print!("{prompt}");
         std::io::stdout().flush().expect("Could not flush stdout.");
 
