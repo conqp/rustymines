@@ -29,7 +29,7 @@ impl Board {
         if height < 1 {
             return Err(Error::FieldTooFlat);
         }
-        if width * height <= mines as usize {
+        if width * height <= mines.into() {
             return Err(Error::TooManyMines);
         }
         if duds > mines {
@@ -169,7 +169,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| !field.has_been_visited())
-            .choose_multiple(&mut self.rng, self.mines as usize)
+            .choose_multiple(&mut self.rng, self.mines.into())
             .into_iter()
             .for_each(Field::set_mine);
     }
@@ -178,7 +178,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| field.has_mine())
-            .choose_multiple(&mut self.rng, self.duds as usize)
+            .choose_multiple(&mut self.rng, self.duds.into())
             .into_iter()
             .for_each(Field::set_dud);
     }
