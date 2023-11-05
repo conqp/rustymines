@@ -3,14 +3,14 @@ use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
 use std::collections::HashSet;
 
-pub struct NeighborsIterator<'grid> {
+pub struct SafeNeighbors<'grid> {
     fields: &'grid Grid<Field>,
     processed: HashSet<Coordinate>,
     unprocessed: Vec<Coordinate>,
     index: usize,
 }
 
-impl<'grid> NeighborsIterator<'grid> {
+impl<'grid> SafeNeighbors<'grid> {
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {
             fields,
@@ -21,7 +21,7 @@ impl<'grid> NeighborsIterator<'grid> {
     }
 }
 
-impl<'grid> Iterator for NeighborsIterator<'grid> {
+impl<'grid> Iterator for SafeNeighbors<'grid> {
     type Item = Coordinate;
 
     fn next(&mut self) -> Option<Self::Item> {

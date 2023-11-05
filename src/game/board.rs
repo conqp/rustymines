@@ -8,7 +8,7 @@ use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
 pub use move_result::MoveResult;
-use neighbors_iterator::NeighborsIterator;
+use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 use std::fmt::{Display, Formatter};
@@ -199,8 +199,8 @@ impl Board {
             });
     }
 
-    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> NeighborsIterator {
-        NeighborsIterator::new(&self.fields, *coordinate)
+    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> SafeNeighbors {
+        SafeNeighbors::new(&self.fields, *coordinate)
     }
 
     fn all_mines_cleared(&self) -> bool {
