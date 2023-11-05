@@ -220,6 +220,7 @@ impl<'board> DisplayableBoard<'board> {
 impl<'board> Display for DisplayableBoard<'board> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.board.header())?;
+
         for line in self.board.fields.rows().enumerate().map(|(y, row)| {
             format!("{y:x}│")
                 + &row
