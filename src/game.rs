@@ -29,12 +29,8 @@ impl Game {
         })
     }
 
-    pub fn from_game_args(args: &Args) -> Result<Self, Error> {
-        Self::new(args.width, args.height, args.mines, args.duds)
-    }
-
     pub fn from_args() -> Result<Self, Error> {
-        Self::from_game_args(&Args::parse())
+        Self::try_from(Args::parse())
     }
 
     pub fn play(&mut self) {
@@ -107,5 +103,13 @@ impl Game {
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.board.to_string(self.over))
+    }
+}
+
+impl TryFrom<Args> for Game {
+    type Error = Error;
+
+    fn try_from(args: Args) -> Result<Self, Self::Error> {
+        Self::new(args.width, args.height, args.mines, args.duds)
     }
 }
