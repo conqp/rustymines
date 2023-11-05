@@ -75,11 +75,18 @@ impl Field {
             VisitResult::Ok
         }
     }
+
+    #[must_use]
+    pub const fn displayable<F>(&self, game_over: bool, adjacent_mines: F) -> Displayable<F>
+    where
+        F: Fn() -> usize,
+    {
+        Displayable::new(self, game_over, adjacent_mines)
+    }
 }
 
-#[allow(clippy::module_name_repetitions)]
 #[derive(Debug)]
-pub struct DisplayableField<'field, F>
+pub struct Displayable<'field, F>
 where
     F: Fn() -> usize,
 {
@@ -88,7 +95,7 @@ where
     adjacent_mines: F,
 }
 
-impl<'field, F> DisplayableField<'field, F>
+impl<'field, F> Displayable<'field, F>
 where
     F: Fn() -> usize,
 {
@@ -102,7 +109,7 @@ where
     }
 }
 
-impl<'field, F> Display for DisplayableField<'field, F>
+impl<'field, F> Display for Displayable<'field, F>
 where
     F: Fn() -> usize,
 {

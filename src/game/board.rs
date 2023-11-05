@@ -3,7 +3,6 @@ mod field;
 mod move_result;
 mod neighbors_iterator;
 
-use crate::game::board::field::DisplayableField;
 pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
@@ -47,6 +46,7 @@ impl Board {
         })
     }
 
+    #[must_use]
     pub fn visit(&mut self, coordinate: &Coordinate) -> MoveResult {
         match self.make_move(coordinate) {
             MoveResult::Lost => MoveResult::Lost,
@@ -61,6 +61,7 @@ impl Board {
         }
     }
 
+    #[must_use]
     pub fn toggle_flag(&mut self, coordinate: &Coordinate) -> MoveResult {
         self.fields
             .get_mut(coordinate)
@@ -69,6 +70,8 @@ impl Board {
                 MoveResult::Continue
             })
     }
+
+    #[must_use]
 
     pub fn visit_unflagged_fields(&mut self) -> MoveResult {
         let mut result = MoveResult::Continue;
@@ -94,6 +97,11 @@ impl Board {
                 }
             }
         }
+    }
+
+    #[must_use]
+    pub const fn displayable(&self, game_over: bool) -> Displayable {
+        Displayable::new(self, game_over)
     }
 
     fn header(&self) -> String {
@@ -203,21 +211,20 @@ impl Board {
     }
 }
 
-#[allow(clippy::module_name_repetitions)]
 #[derive(Debug)]
-pub struct DisplayableBoard<'board> {
+pub struct Displayable<'board> {
     board: &'board Board,
     game_over: bool,
 }
 
-impl<'board> DisplayableBoard<'board> {
+impl<'board> Displayable<'board> {
     #[must_use]
     pub const fn new(board: &'board Board, game_over: bool) -> Self {
         Self { board, game_over }
     }
 }
 
-impl<'board> Display for DisplayableBoard<'board> {
+impl<'board> Display for Displayable<'board> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.board.header())?;
 
@@ -227,10 +234,11 @@ impl<'board> Display for DisplayableBoard<'board> {
                     .iter()
                     .enumerate()
                     .map(|(x, field)| {
-                        DisplayableField::new(field, self.game_over, || {
-                            self.board.neighboring_mines(&Coordinate::new(x, y))
-                        })
-                        .to_string()
+                        field
+                            .displayable(self.game_over, || {
+                                self.board.neighboring_mines(&Coordinate::new(x, y))
+                            })
+                            .to_string()
                     })
                     .join(" ")
         }) {
