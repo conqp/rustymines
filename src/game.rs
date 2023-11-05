@@ -3,6 +3,7 @@ mod args;
 mod board;
 mod io;
 
+use crate::game::board::DisplayableBoard;
 use action::Action;
 use args::Args;
 use board::{Board, Error, MoveResult};
@@ -102,7 +103,7 @@ impl Game {
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.board.to_string(self.over))
+        write!(f, "{}", DisplayableBoard::new(&self.board, self.over))
     }
 }
 

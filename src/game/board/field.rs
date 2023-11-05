@@ -77,7 +77,9 @@ impl Field {
     }
 }
 
-pub struct Printable<'field, F>
+#[allow(clippy::module_name_repetitions)]
+#[derive(Debug)]
+pub struct DisplayableField<'field, F>
 where
     F: Fn() -> usize,
 {
@@ -86,7 +88,7 @@ where
     adjacent_mines: F,
 }
 
-impl<'field, F> Printable<'field, F>
+impl<'field, F> DisplayableField<'field, F>
 where
     F: Fn() -> usize,
 {
@@ -100,7 +102,7 @@ where
     }
 }
 
-impl<'field, F> Display for Printable<'field, F>
+impl<'field, F> Display for DisplayableField<'field, F>
 where
     F: Fn() -> usize,
 {

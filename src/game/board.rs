@@ -3,7 +3,7 @@ mod field;
 mod move_result;
 mod neighbors_iterator;
 
-use crate::game::board::field::Printable;
+use crate::game::board::field::DisplayableField;
 pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
@@ -12,6 +12,7 @@ pub use move_result::MoveResult;
 use neighbors_iterator::NeighborsIterator;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
+use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
 pub struct Board {
@@ -93,28 +94,6 @@ impl Board {
                 }
             }
         }
-    }
-
-    pub fn to_string(&self, game_over: bool) -> String {
-        self.header()
-            + &self
-                .fields
-                .rows()
-                .enumerate()
-                .map(|(y, row)| {
-                    format!("{y:x}│")
-                        + &row
-                            .iter()
-                            .enumerate()
-                            .map(|(x, field)| {
-                                Printable::new(field, game_over, || {
-                                    self.neighboring_mines(&Coordinate::new(x, y))
-                                })
-                                .to_string()
-                            })
-                            .join(" ")
-                })
-                .join("\n")
     }
 
     fn header(&self) -> String {
@@ -221,5 +200,42 @@ impl Board {
             .iter()
             .filter(|field| !field.has_mine())
             .all(|&field| field.has_been_visited())
+    }
+}
+
+#[allow(clippy::module_name_repetitions)]
+#[derive(Debug)]
+pub struct DisplayableBoard<'board> {
+    board: &'board Board,
+    game_over: bool,
+}
+
+impl<'board> DisplayableBoard<'board> {
+    #[must_use]
+    pub const fn new(board: &'board Board, game_over: bool) -> Self {
+        Self { board, game_over }
+    }
+}
+
+impl<'board> Display for DisplayableBoard<'board> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.board.header())?;
+        for line in self.board.fields.rows().enumerate().map(|(y, row)| {
+            format!("{y:x}│")
+                + &row
+                    .iter()
+                    .enumerate()
+                    .map(|(x, field)| {
+                        DisplayableField::new(field, self.game_over, || {
+                            self.board.neighboring_mines(&Coordinate::new(x, y))
+                        })
+                        .to_string()
+                    })
+                    .join(" ")
+        }) {
+            writeln!(f, "{line}")?;
+        }
+
+        Ok(())
     }
 }
