@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 const MINED_MASK: u8 = 0b0000_0001;
 const VISITED_MASK: u8 = 0b0000_0010;
 const FLAGGED_MASK: u8 = 0b0000_0100;
@@ -73,24 +75,54 @@ impl Field {
             VisitResult::Ok
         }
     }
+}
 
-    pub fn to_string(self, game_over: bool, adjacent_mines: impl Fn() -> usize) -> String {
-        match (
+pub struct Printable<'a, F>
+where
+    F: Fn() -> usize,
+{
+    field: &'a Field,
+    game_over: bool,
+    adjacent_mines: F,
+}
+
+impl<'a, F> Printable<'a, F>
+where
+    F: Fn() -> usize,
+{
+    #[must_use]
+    pub const fn new(field: &'a Field, game_over: bool, adjacent_mines: F) -> Self {
+        Self {
+            field,
             game_over,
-            self.has_been_visited(),
-            self.is_flagged(),
-            self.has_mine(),
-            self.is_dud(),
+            adjacent_mines,
+        }
+    }
+}
+
+impl<'a, F> Display for Printable<'a, F>
+where
+    F: Fn() -> usize,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match (
+            self.game_over,
+            self.field.has_been_visited(),
+            self.field.is_flagged(),
+            self.field.has_mine(),
+            self.field.is_dud(),
         ) {
-            (false, false, true, _, _) | (true, false, true, true, _) => "⚐".to_string(),
-            (_, true, _, true, true) => "~".to_string(),
-            (_, true, _, true, false) => "☠".to_string(),
-            (false, true, false, false, _) | (true, _, _, false, _) => match adjacent_mines() {
-                0 => " ".to_string(),
-                mines => mines.to_string(),
-            },
-            (true, false, false, true, _) => "*".to_string(),
-            _ => "■".to_string(),
+            (false, false, true, _, _) | (true, false, true, true, _) => write!(f, "⚐"),
+            (_, true, _, true, true) => write!(f, "~"),
+            (_, true, _, true, false) => write!(f, "☠"),
+            (false, true, false, false, _) | (true, _, _, false, _) => {
+                match (self.adjacent_mines)() {
+                    0 => write!(f, " "),
+                    mines => write!(f, "{mines}"),
+                }
+            }
+            (true, false, false, true, _) => write!(f, "*"),
+            _ => write!(f, "■"),
         }
     }
 }

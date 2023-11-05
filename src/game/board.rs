@@ -3,6 +3,7 @@ mod field;
 mod move_result;
 mod neighbors_iterator;
 
+use crate::game::board::field::Printable;
 pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
@@ -106,9 +107,10 @@ impl Board {
                             .iter()
                             .enumerate()
                             .map(|(x, field)| {
-                                field.to_string(game_over, || {
+                                Printable::new(field, game_over, || {
                                     self.neighboring_mines(&Coordinate::new(x, y))
                                 })
+                                .to_string()
                             })
                             .join(" ")
                 })
