@@ -13,14 +13,12 @@ impl std::str::FromStr for Action {
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         let string = string.trim();
 
-        if string == "exit" {
-            Ok(Self::Exit)
+        Ok(if string == "exit" {
+            Self::Exit
         } else if string.starts_with('!') {
-            Ok(Self::ToggleFlag(Coordinate::from_str(
-                string.replace('!', "").trim(),
-            )?))
+            Self::ToggleFlag(Coordinate::from_str(string.replace('!', "").trim())?)
         } else {
-            Ok(Self::Visit(Coordinate::from_str(string)?))
-        }
+            Self::Visit(Coordinate::from_str(string)?)
+        })
     }
 }
