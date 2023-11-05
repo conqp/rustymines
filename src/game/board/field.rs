@@ -77,21 +77,21 @@ impl Field {
     }
 }
 
-pub struct Printable<'a, F>
+pub struct Printable<'field, F>
 where
     F: Fn() -> usize,
 {
-    field: &'a Field,
+    field: &'field Field,
     game_over: bool,
     adjacent_mines: F,
 }
 
-impl<'a, F> Printable<'a, F>
+impl<'field, F> Printable<'field, F>
 where
     F: Fn() -> usize,
 {
     #[must_use]
-    pub const fn new(field: &'a Field, game_over: bool, adjacent_mines: F) -> Self {
+    pub const fn new(field: &'field Field, game_over: bool, adjacent_mines: F) -> Self {
         Self {
             field,
             game_over,
@@ -100,7 +100,7 @@ where
     }
 }
 
-impl<'a, F> Display for Printable<'a, F>
+impl<'field, F> Display for Printable<'field, F>
 where
     F: Fn() -> usize,
 {
