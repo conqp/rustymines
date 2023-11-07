@@ -14,12 +14,12 @@ where
         print!("{prompt}");
         std::io::stdout().flush().expect("Could not flush stdout.");
 
-        if let Some(message) = std::io::stdin()
+        if let Some(value) = std::io::stdin()
             .read_line(&mut input)
             .ok()
             .and_then(|_| input.trim().parse::<T>().ok())
         {
-            return message;
+            return value;
         }
     }
 }
