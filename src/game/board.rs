@@ -11,6 +11,7 @@ pub use move_result::MoveResult;
 use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
+use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
@@ -112,11 +113,20 @@ impl Board {
             + "\n"
     }
 
-    fn neighboring_mines(&self, coordinate: &Coordinate) -> usize {
+    fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
         self.fields
             .neighbors(coordinate)
             .filter(|(_, field)| field.has_mine())
             .count()
+            .try_into()
+            .expect("Amount of neighbors out of bounds.")
+    }
+
+    fn count_all_adjacent_miens(&self) -> HashMap<Coordinate, u8> {
+        self.fields
+            .enumerate()
+            .map(|(coordinate, _)| (coordinate, self.count_adjacent_mines(&coordinate)))
+            .collect()
     }
 
     fn make_move(&mut self, coordinate: &Coordinate) -> MoveResult {
@@ -145,6 +155,10 @@ impl Board {
 
     fn initialize(&mut self, coordinate: Option<&Coordinate>) {
         self.populate_mines();
+        let adjacent_mines = self.count_all_adjacent_miens();
+        self.fields.enumerate_mut().for_each(|(coordinate, field)| {
+            field.set_adjacent_mines(adjacent_mines.get(&coordinate).copied().unwrap_or(0));
+        });
         self.populate_duds();
 
         if let Some(coordinate) = coordinate {
@@ -180,7 +194,7 @@ impl Board {
                     MoveResult::Continue
                 }
                 (_, _) => {
-                    if self.neighboring_mines(coordinate) == 0 {
+                    if field.adjacent_mines() == 0 {
                         self.visit_neighbors(coordinate);
                     }
                     MoveResult::Continue
@@ -232,14 +246,7 @@ impl<'board> Display for Displayable<'board> {
             format!("{y:x}│")
                 + &row
                     .iter()
-                    .enumerate()
-                    .map(|(x, field)| {
-                        field
-                            .displayable(self.game_over, || {
-                                self.board.neighboring_mines(&Coordinate::new(x, y))
-                            })
-                            .to_string()
-                    })
+                    .map(|field| field.displayable(self.game_over).to_string())
                     .join(" ")
         }) {
             writeln!(f, "{line}")?;

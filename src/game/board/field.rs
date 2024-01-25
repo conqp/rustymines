@@ -1,9 +1,11 @@
 use std::fmt::{Display, Formatter};
 
-const MINED_MASK: u8 = 0b0000_0001;
-const VISITED_MASK: u8 = 0b0000_0010;
-const FLAGGED_MASK: u8 = 0b0000_0100;
-const IS_DUD_MASK: u8 = 0b0000_1000;
+const FLAGS_MASK: u8 = 0b1111_0000;
+const ADJACENT_MINES_MASK: u8 = 0b0000_1111;
+const MINED_MASK: u8 = 0b0001_0000;
+const VISITED_MASK: u8 = 0b0010_0000;
+const FLAGGED_MASK: u8 = 0b0100_0000;
+const IS_DUD_MASK: u8 = 0b1000_0000;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
@@ -38,12 +40,21 @@ impl Field {
         self.0 & IS_DUD_MASK != 0
     }
 
+    #[must_use]
+    pub const fn adjacent_mines(&self) -> u8 {
+        self.0 & ADJACENT_MINES_MASK
+    }
+
     pub fn set_mine(&mut self) {
         self.0 |= MINED_MASK;
     }
 
     pub fn set_dud(&mut self) {
         self.0 |= IS_DUD_MASK;
+    }
+
+    pub fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
+        self.0 = (self.0 & FLAGS_MASK) + (adjacent_mines & ADJACENT_MINES_MASK);
     }
 
     pub fn visit(&mut self) -> VisitResult {
@@ -77,42 +88,25 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn displayable<F>(&self, game_over: bool, adjacent_mines: F) -> Displayable<F>
-    where
-        F: Fn() -> usize,
-    {
-        Displayable::new(self, game_over, adjacent_mines)
+    pub const fn displayable(&self, game_over: bool) -> Displayable {
+        Displayable::new(self, game_over)
     }
 }
 
 #[derive(Debug)]
-pub struct Displayable<'field, F>
-where
-    F: Fn() -> usize,
-{
+pub struct Displayable<'field> {
     field: &'field Field,
     game_over: bool,
-    adjacent_mines: F,
 }
 
-impl<'field, F> Displayable<'field, F>
-where
-    F: Fn() -> usize,
-{
+impl<'field> Displayable<'field> {
     #[must_use]
-    pub const fn new(field: &'field Field, game_over: bool, adjacent_mines: F) -> Self {
-        Self {
-            field,
-            game_over,
-            adjacent_mines,
-        }
+    pub const fn new(field: &'field Field, game_over: bool) -> Self {
+        Self { field, game_over }
     }
 }
 
-impl<'field, F> Display for Displayable<'field, F>
-where
-    F: Fn() -> usize,
-{
+impl<'field> Display for Displayable<'field> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match (
             self.game_over,
@@ -125,7 +119,7 @@ where
             (_, true, _, true, true) => write!(f, "~"),
             (_, true, _, true, false) => write!(f, "☠"),
             (false, true, false, false, _) | (true, _, _, false, _) => {
-                match (self.adjacent_mines)() {
+                match self.field.adjacent_mines() {
                     0 => write!(f, " "),
                     mines => write!(f, "{mines}"),
                 }
