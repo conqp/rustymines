@@ -50,7 +50,7 @@ impl<'grid> Iterator for SafeNeighbors<'grid> {
 
         self.processed.extend(&self.unprocessed);
 
-        if let Some(&coordinate) = self.unprocessed.get(0) {
+        if let Some(&coordinate) = self.unprocessed.first() {
             self.index = 1;
             return Some(coordinate);
         }

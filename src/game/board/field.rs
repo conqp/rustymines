@@ -41,7 +41,7 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn adjacent_mines(&self) -> u8 {
+    pub const fn adjacent_mines(self) -> u8 {
         self.0 & ADJACENT_MINES_MASK
     }
 
