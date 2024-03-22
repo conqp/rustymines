@@ -58,24 +58,23 @@ impl Field {
     }
 
     pub fn visit(&mut self) -> VisitResult {
-        match (
-            self.has_mine(),
-            self.is_dud(),
-            self.has_been_visited(),
-            self.is_flagged(),
-        ) {
-            (_, _, _, true) => VisitResult::Flagged,
-            (_, _, true, _) => VisitResult::AlreadyVisited,
-            (mine, dud, _, _) => {
-                self.0 |= VISITED_MASK;
-
-                match (mine, dud) {
-                    (false, _) => VisitResult::Ok,
-                    (true, false) => VisitResult::SteppedOnMine,
-                    (true, true) => VisitResult::SteppedOnDud,
-                }
-            }
+        if self.is_flagged() {
+            return VisitResult::Flagged;
         }
+
+        if self.has_been_visited() {
+            return VisitResult::AlreadyVisited;
+        }
+
+        if !self.has_mine() {
+            return VisitResult::Ok;
+        }
+
+        if self.is_dud() {
+            return VisitResult::SteppedOnDud;
+        }
+
+        VisitResult::SteppedOnMine
     }
 
     pub fn toggle_flag(&mut self) -> VisitResult {
