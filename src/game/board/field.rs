@@ -66,6 +66,8 @@ impl Field {
             return VisitResult::AlreadyVisited;
         }
 
+        self.0 |= VISITED_MASK;
+
         if !self.has_mine() {
             return VisitResult::Ok;
         }
