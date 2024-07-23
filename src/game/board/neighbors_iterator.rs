@@ -21,7 +21,7 @@ impl<'grid> SafeNeighbors<'grid> {
     }
 }
 
-impl<'grid> Iterator for SafeNeighbors<'grid> {
+impl Iterator for SafeNeighbors<'_> {
     type Item = Coordinate;
 
     fn next(&mut self) -> Option<Self::Item> {

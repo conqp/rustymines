@@ -238,7 +238,7 @@ impl<'board> Displayable<'board> {
     }
 }
 
-impl<'board> Display for Displayable<'board> {
+impl Display for Displayable<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.board.header())?;
 

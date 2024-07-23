@@ -107,7 +107,7 @@ impl<'field> Displayable<'field> {
     }
 }
 
-impl<'field> Display for Displayable<'field> {
+impl Display for Displayable<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match (
             self.game_over,
