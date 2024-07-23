@@ -3,6 +3,7 @@ use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
 use std::collections::HashSet;
 
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
     fields: &'grid Grid<Field>,
     processed: HashSet<Coordinate>,
