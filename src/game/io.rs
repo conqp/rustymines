@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use std::io::Write;
+use std::io::{stdin, stdout, Write};
 use std::str::FromStr;
 
 pub fn read<T>(prompt: &str) -> T
@@ -9,9 +9,9 @@ where
 {
     loop {
         print!("{prompt}");
-        std::io::stdout().flush().expect("Could not flush stdout.");
+        stdout().flush().expect("Could not flush stdout.");
 
-        if let Some(value) = std::io::stdin()
+        if let Some(value) = stdin()
             .lines()
             .find_map(Result::ok)
             .and_then(|line| line.trim().parse::<T>().ok())
