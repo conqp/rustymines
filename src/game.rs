@@ -46,7 +46,7 @@ impl Game {
                     return false;
                 }
             },
-            Err(msg) => eprintln!("Error: {msg}"),
+            Err(error) => eprintln!("Error: {error}"),
         }
 
         true
