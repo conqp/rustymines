@@ -10,8 +10,11 @@ pub enum Action {
     Exit,
 }
 
-impl Action {
-    fn from_trimmed_str(string: &str) -> Result<Self, CoordinateParseError> {
+impl FromStr for Action {
+    type Err = CoordinateParseError;
+
+    /// This assumes a trimmed `&str`.
+    fn from_str(string: &str) -> Result<Self, Self::Err> {
         if string == "exit" {
             Ok(Self::Exit)
         } else if string == "!!" {
@@ -21,13 +24,5 @@ impl Action {
         } else {
             Coordinate::from_str(string).map(Self::Visit)
         }
-    }
-}
-
-impl FromStr for Action {
-    type Err = CoordinateParseError;
-
-    fn from_str(string: &str) -> Result<Self, Self::Err> {
-        Self::from_trimmed_str(string.trim())
     }
 }
