@@ -40,7 +40,7 @@ impl Game {
             Ok(action) => match action {
                 Action::Visit(coordinate) => self.visit(&coordinate),
                 Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
-                Action::VisitAllNonFlaggedFields => self.visit_unflagged_fields(),
+                Action::VisitAllNonFlaggedFields => self.visit_non_flagged_fields(),
                 Action::Exit => {
                     println!("Bye!");
                     return false;
@@ -72,7 +72,7 @@ impl Game {
         }
     }
 
-    fn visit_unflagged_fields(&mut self) {
+    fn visit_non_flagged_fields(&mut self) {
         match self.board.visit_unflagged_fields() {
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
