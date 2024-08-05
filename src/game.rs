@@ -23,14 +23,6 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, Error> {
-        Board::new(width, height, mines, duds).map(|board| Self {
-            board,
-            start: Instant::now(),
-            over: false,
-        })
-    }
-
     pub fn from_args() -> Result<Self, Error> {
         Self::try_from(Args::parse())
     }
@@ -106,10 +98,20 @@ impl fmt::Display for Game {
     }
 }
 
+impl From<Board> for Game {
+    fn from(board: Board) -> Self {
+        Self {
+            board,
+            start: Instant::now(),
+            over: false,
+        }
+    }
+}
+
 impl TryFrom<Args> for Game {
     type Error = Error;
 
     fn try_from(args: Args) -> Result<Self, Self::Error> {
-        Self::new(args.width, args.height, args.mines, args.duds)
+        Board::new(args.width, args.height, args.mines, args.duds).map(Into::into)
     }
 }
