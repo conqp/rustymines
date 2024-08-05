@@ -1,18 +1,20 @@
+use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
+
+use grid2d::{Coordinate, Grid};
+use itertools::Itertools;
+use rand::rngs::ThreadRng;
+use rand::seq::IteratorRandom;
+
+pub use error::Error;
+use field::{Field, VisitResult};
+pub use move_result::MoveResult;
+use neighbors_iterator::SafeNeighbors;
+
 mod error;
 mod field;
 mod move_result;
 mod neighbors_iterator;
-
-pub use error::Error;
-use field::{Field, VisitResult};
-use grid2d::{Coordinate, Grid};
-use itertools::Itertools;
-pub use move_result::MoveResult;
-use neighbors_iterator::SafeNeighbors;
-use rand::rngs::ThreadRng;
-use rand::seq::IteratorRandom;
-use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
 pub struct Board {

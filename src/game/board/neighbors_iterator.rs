@@ -1,7 +1,9 @@
-use crate::game::board::field::Field;
+use std::collections::HashSet;
+
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
-use std::collections::HashSet;
+
+use super::field::Field;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
