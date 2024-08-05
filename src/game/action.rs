@@ -6,6 +6,7 @@ use grid2d::{Coordinate, CoordinateParseError};
 pub enum Action {
     Visit(Coordinate),
     ToggleFlag(Coordinate),
+    VisitAllNonFlaggedFields,
     Exit,
 }
 
@@ -13,6 +14,8 @@ impl Action {
     fn from_trimmed_str(string: &str) -> Result<Self, CoordinateParseError> {
         if string == "exit" {
             Ok(Self::Exit)
+        } else if string == "!!" {
+            Ok(Self::VisitAllNonFlaggedFields)
         } else if string.starts_with('!') {
             Coordinate::from_str(string.replace('!', "").trim()).map(Self::ToggleFlag)
         } else {

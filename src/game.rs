@@ -1,17 +1,19 @@
-mod action;
-mod args;
-mod board;
-mod io;
+use std::fmt;
+use std::str::FromStr;
+use std::time::Instant;
+
+use clap::Parser;
+use grid2d::Coordinate;
 
 use action::Action;
 use args::Args;
 use board::{Board, Error, MoveResult};
-use clap::Parser;
-use grid2d::Coordinate;
 use io::read;
-use std::fmt;
-use std::str::FromStr;
-use std::time::Instant;
+
+mod action;
+mod args;
+mod board;
+mod io;
 
 #[derive(Debug)]
 pub struct Game {
@@ -42,19 +44,17 @@ impl Game {
     }
 
     fn next_round(&mut self) -> bool {
-        match read::<String>("Enter action: ").trim() {
-            "!!" => self.visit_unflagged_fields(),
-            input => match Action::from_str(input) {
-                Ok(action) => match action {
-                    Action::Visit(coordinate) => self.visit(&coordinate),
-                    Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
-                    Action::Exit => {
-                        println!("Bye!");
-                        return false;
-                    }
-                },
-                Err(msg) => eprintln!("Error: {msg}"),
+        match Action::from_str(read::<String>("Enter action: ").trim()) {
+            Ok(action) => match action {
+                Action::Visit(coordinate) => self.visit(&coordinate),
+                Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
+                Action::VisitAllNonFlaggedFields => self.visit_unflagged_fields(),
+                Action::Exit => {
+                    println!("Bye!");
+                    return false;
+                }
             },
+            Err(msg) => eprintln!("Error: {msg}"),
         }
 
         true
