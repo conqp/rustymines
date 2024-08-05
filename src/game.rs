@@ -24,8 +24,8 @@ pub struct Game {
 
 impl Game {
     pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, Error> {
-        Ok(Self {
-            board: Board::new(width, height, mines, duds)?,
+        Board::new(width, height, mines, duds).map(|board| Self {
+            board,
             start: Instant::now(),
             over: false,
         })
