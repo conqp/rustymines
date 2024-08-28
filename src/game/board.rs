@@ -35,7 +35,11 @@ impl Board {
             return Err(Error::FieldTooFlat);
         }
 
-        if width * height <= mines.into() {
+        let Some(size) = width.checked_mul(height) else {
+            return Err(Error::FieldTooLarge);
+        };
+
+        if size <= mines.into() {
             return Err(Error::TooManyMines);
         }
 

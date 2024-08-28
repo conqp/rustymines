@@ -4,6 +4,7 @@ use std::fmt::{Display, Formatter};
 pub enum Error {
     FieldTooNarrow,
     FieldTooFlat,
+    FieldTooLarge,
     TooManyMines,
     TooManyDuds,
 }
@@ -13,6 +14,7 @@ impl Display for Error {
         match self {
             Self::FieldTooNarrow => write!(f, "field too narrow"),
             Self::FieldTooFlat => write!(f, "field too flat"),
+            Self::FieldTooLarge => write!(f, "field too large"),
             Self::TooManyMines => write!(f, "too many mines for field size"),
             Self::TooManyDuds => write!(f, "more duds than mines"),
         }
