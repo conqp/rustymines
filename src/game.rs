@@ -73,7 +73,7 @@ impl Game {
     }
 
     fn visit_non_flagged_fields(&mut self) {
-        match self.board.visit_unflagged_fields() {
+        match self.board.visit_non_flagged_fields() {
             MoveResult::Lost => self.game_over(false),
             MoveResult::Won => self.game_over(true),
             _ => println!("\n{self}"),

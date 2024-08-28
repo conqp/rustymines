@@ -82,7 +82,7 @@ impl Board {
     }
 
     #[must_use]
-    pub fn visit_unflagged_fields(&mut self) -> MoveResult {
+    pub fn visit_non_flagged_fields(&mut self) -> MoveResult {
         let mut result = MoveResult::Continue;
 
         if !self.initialized {
