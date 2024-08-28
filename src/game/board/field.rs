@@ -1,14 +1,19 @@
+use bitflags::bitflags;
 use std::fmt::{Display, Formatter};
-
-const FLAGS_MASK: u8 = 0b1111_0000;
-const ADJACENT_MINES_MASK: u8 = 0b0000_1111;
-const MINED_MASK: u8 = 0b0001_0000;
-const VISITED_MASK: u8 = 0b0010_0000;
-const FLAGGED_MASK: u8 = 0b0100_0000;
-const IS_DUD_MASK: u8 = 0b1000_0000;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
+
+bitflags! {
+    impl Field: u8 {
+        const FLAGS = 0b1111_0000;
+        const ADJACENT_MINES = 0b0000_1111;
+        const MINED = 0b0001_0000;
+        const VISITED = 0b0010_0000;
+        const FLAGGED = 0b0100_0000;
+        const IS_DUD = 0b1000_0000;
+    }
+}
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VisitResult {
@@ -22,39 +27,39 @@ pub enum VisitResult {
 impl Field {
     #[must_use]
     pub const fn has_mine(self) -> bool {
-        self.0 & MINED_MASK != 0
+        self.contains(Self::MINED)
     }
 
     #[must_use]
     pub const fn has_been_visited(self) -> bool {
-        self.0 & VISITED_MASK != 0
+        self.contains(Self::VISITED)
     }
 
     #[must_use]
     pub const fn is_flagged(self) -> bool {
-        self.0 & FLAGGED_MASK != 0
+        self.contains(Self::FLAGGED)
     }
 
     #[must_use]
     pub const fn is_dud(self) -> bool {
-        self.0 & IS_DUD_MASK != 0
+        self.contains(Self::IS_DUD)
     }
 
     #[must_use]
-    pub const fn adjacent_mines(self) -> u8 {
-        self.0 & ADJACENT_MINES_MASK
+    pub fn adjacent_mines(self) -> u8 {
+        (self & Self::ADJACENT_MINES).0
     }
 
     pub fn set_mine(&mut self) {
-        self.0 |= MINED_MASK;
+        *self |= Self::MINED;
     }
 
     pub fn set_dud(&mut self) {
-        self.0 |= IS_DUD_MASK;
+        *self |= Self::IS_DUD;
     }
 
     pub fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
-        self.0 = (self.0 & FLAGS_MASK) + (adjacent_mines & ADJACENT_MINES_MASK);
+        *self = *self & Self::FLAGS | Self::ADJACENT_MINES & Self(adjacent_mines);
     }
 
     pub fn visit(&mut self) -> VisitResult {
@@ -66,7 +71,7 @@ impl Field {
             return VisitResult::AlreadyVisited;
         }
 
-        self.0 |= VISITED_MASK;
+        *self |= Self::VISITED;
 
         if !self.has_mine() {
             return VisitResult::Ok;
@@ -83,7 +88,7 @@ impl Field {
         if self.has_been_visited() {
             VisitResult::AlreadyVisited
         } else {
-            self.0 ^= FLAGGED_MASK;
+            *self ^= Self::FLAGGED;
             VisitResult::Ok
         }
     }
