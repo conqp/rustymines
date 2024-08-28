@@ -30,12 +30,15 @@ impl Board {
         if width < 1 {
             return Err(Error::FieldTooNarrow);
         }
+
         if height < 1 {
             return Err(Error::FieldTooFlat);
         }
+
         if width * height <= mines.into() {
             return Err(Error::TooManyMines);
         }
+
         if duds > mines {
             return Err(Error::TooManyDuds);
         }
@@ -75,7 +78,6 @@ impl Board {
     }
 
     #[must_use]
-
     pub fn visit_unflagged_fields(&mut self) -> MoveResult {
         let mut result = MoveResult::Continue;
 
