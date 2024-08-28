@@ -39,7 +39,7 @@ impl Board {
             return Err(Error::FieldTooLarge);
         };
 
-        if size <= mines.into() {
+        if (size - 1) <= mines.into() {
             return Err(Error::TooManyMines);
         }
 
