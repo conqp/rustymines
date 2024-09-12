@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
+use std::num::NonZero;
 
 use grid2d::{Coordinate, Grid};
 use itertools::Itertools;
@@ -26,20 +27,17 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new(width: usize, height: usize, mines: u8, duds: u8) -> Result<Self, Error> {
-        if width < 1 {
-            return Err(Error::FieldTooNarrow);
-        }
-
-        if height < 1 {
-            return Err(Error::FieldTooFlat);
-        }
-
+    pub fn new(
+        width: NonZero<usize>,
+        height: NonZero<usize>,
+        mines: u8,
+        duds: u8,
+    ) -> Result<Self, Error> {
         let Some(size) = width.checked_mul(height) else {
             return Err(Error::FieldTooLarge);
         };
 
-        if (size - 1) <= mines.into() {
+        if (usize::from(size) - 1) <= mines.into() {
             return Err(Error::TooManyMines);
         }
 
@@ -115,9 +113,11 @@ impl Board {
 
     fn header(&self) -> String {
         " │".to_string()
-            + &(0..self.fields.width()).map(|x| format!("{x:x}")).join(" ")
+            + &(0..self.fields.width().into())
+                .map(|x| format!("{x:x}"))
+                .join(" ")
             + "\n─┼"
-            + &(0..self.fields.width()).map(|_| '─').join("─")
+            + &(0..self.fields.width().into()).map(|_| '─').join("─")
             + "\n"
     }
 
