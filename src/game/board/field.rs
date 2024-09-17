@@ -59,7 +59,8 @@ impl Field {
     }
 
     pub fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
-        *self = *self & Self::FLAGS | Self::ADJACENT_MINES & Self(adjacent_mines);
+        *self &= !Self::ADJACENT_MINES;
+        *self |= Self::ADJACENT_MINES & Self(adjacent_mines);
     }
 
     pub fn visit(&mut self) -> VisitResult {
