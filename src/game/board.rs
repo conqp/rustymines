@@ -107,18 +107,18 @@ impl Board {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<'_> {
         Displayable::new(self, game_over)
     }
 
     fn header(&self) -> String {
-        " │".to_string()
-            + &(0..self.fields.width().into())
+        format!(
+            " │{}\n─┼{}\n",
+            (0..self.fields.width().into())
                 .map(|x| format!("{x:x}"))
-                .join(" ")
-            + "\n─┼"
-            + &(0..self.fields.width().into()).map(|_| '─').join("─")
-            + "\n"
+                .join(" "),
+            (0..self.fields.width().into()).map(|_| '─').join("─")
+        )
     }
 
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
@@ -221,7 +221,7 @@ impl Board {
             });
     }
 
-    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> SafeNeighbors {
+    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> SafeNeighbors<'_> {
         SafeNeighbors::new(&self.fields, *coordinate)
     }
 
@@ -251,11 +251,12 @@ impl Display for Displayable<'_> {
         write!(f, "{}", self.board.header())?;
 
         for line in self.board.fields.rows().enumerate().map(|(y, row)| {
-            format!("{y:x}│")
-                + &row
-                    .iter()
+            format!(
+                "{y:x}│{}",
+                row.iter()
                     .map(|field| field.displayable(self.game_over).to_string())
                     .join(" ")
+            )
         }) {
             writeln!(f, "{line}")?;
         }

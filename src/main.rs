@@ -1,3 +1,5 @@
+//! A mine sweeping game with optional dud mines.
+
 mod game;
 
 use game::Game;

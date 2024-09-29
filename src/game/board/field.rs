@@ -95,7 +95,7 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<'_> {
         Displayable::new(self, game_over)
     }
 }

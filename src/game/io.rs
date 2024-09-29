@@ -10,12 +10,9 @@ where
     loop {
         print!("{prompt}");
         stdout().flush().expect("Could not flush stdout.");
+        let line = stdin().lines().find_map(Result::ok);
 
-        if let Some(value) = stdin()
-            .lines()
-            .find_map(Result::ok)
-            .and_then(|line| line.trim().parse::<T>().ok())
-        {
+        if let Some(value) = line.and_then(|line| line.trim().parse::<T>().ok()) {
             return value;
         }
     }
