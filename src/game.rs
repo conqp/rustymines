@@ -1,5 +1,4 @@
 use std::fmt;
-use std::str::FromStr;
 use std::time::Instant;
 
 use clap::Parser;
@@ -36,17 +35,14 @@ impl Game {
     }
 
     fn next_round(&mut self) -> bool {
-        match Action::from_str(read_until_valid::<String>("Enter action: ").trim()) {
-            Ok(action) => match action {
-                Action::Visit(coordinate) => self.visit(&coordinate),
-                Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
-                Action::VisitAllNonFlaggedFields => self.visit_non_flagged_fields(),
-                Action::Exit => {
-                    println!("Bye!");
-                    return false;
-                }
-            },
-            Err(error) => eprintln!("Error: {error}"),
+        match read_until_valid::<Action>("Enter action: ") {
+            Action::Visit(coordinate) => self.visit(&coordinate),
+            Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
+            Action::VisitAllNonFlaggedFields => self.visit_non_flagged_fields(),
+            Action::Exit => {
+                println!("Bye!");
+                return false;
+            }
         }
 
         true

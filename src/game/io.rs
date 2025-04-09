@@ -3,8 +3,6 @@ use std::fmt::Display;
 use std::io::{stdin, stdout, Write};
 use std::str::FromStr;
 
-use log::error;
-
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub enum ReadError<T> {
     InvalidInput,
@@ -18,7 +16,7 @@ where
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InvalidInput => write!(f, "Invalid input"),
-            Self::ParseError(error) => write!(f, "Parse error: {error}"),
+            Self::ParseError(error) => write!(f, "{error}"),
         }
     }
 }
@@ -59,7 +57,7 @@ where
     loop {
         match try_read(prompt) {
             Ok(value) => return value,
-            Err(error) => error!("{error}"),
+            Err(error) => eprintln!("{error}"),
         }
     }
 }
