@@ -1,6 +1,8 @@
-use crate::game::displayable::Displayable;
-use bitflags::bitflags;
 use std::fmt::{Display, Formatter};
+
+use bitflags::bitflags;
+
+use crate::game::displayable::Displayable;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
