@@ -1,25 +1,26 @@
 use std::collections::HashSet;
 
 use grid2d::{Coordinate, Grid};
-use itertools::Itertools;
 
 use super::field::Field;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
-    fields: &'grid Grid<Field>,
+    grid: &'grid Grid<Field>,
+    starting_points: HashSet<Coordinate>,
+    candidates: Vec<(Coordinate, &'grid Field)>,
+    neighbors: Vec<Coordinate>,
     processed: HashSet<Coordinate>,
-    unprocessed: Vec<Coordinate>,
-    index: usize,
 }
 
 impl<'grid> SafeNeighbors<'grid> {
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {
-            fields,
+            grid: fields,
+            starting_points: HashSet::from([start]),
+            candidates: Vec::new(),
+            neighbors: Vec::new(),
             processed: HashSet::new(),
-            unprocessed: Vec::from([start]),
-            index: 0,
         }
     }
 }
@@ -28,34 +29,38 @@ impl Iterator for SafeNeighbors<'_> {
     type Item = Coordinate;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(&coordinate) = self.unprocessed.get(self.index) {
-            self.index += 1;
-            return Some(coordinate);
+        if let Some(neighbor) = self.neighbors.pop() {
+            self.starting_points.insert(neighbor);
+            self.processed.insert(neighbor);
+            return Some(neighbor);
         }
 
-        self.unprocessed = self
-            .unprocessed
+        while let Some(starting_point) = self
+            .starting_points
             .iter()
-            .flat_map(|&coordinate| {
-                let neighbors = self.fields.neighbors(coordinate).collect_vec();
-                if neighbors
-                    .iter()
-                    .all(|(_, neighbor)| !neighbor.has_mine() && !neighbor.is_flagged())
-                {
-                    neighbors
-                } else {
-                    Vec::new()
-                }
-            })
-            .map(|(coordinate, _)| coordinate)
-            .filter(|coordinate| !self.processed.contains(coordinate))
-            .collect();
+            .copied()
+            .next()
+            .and_then(|starting_point| self.starting_points.take(&starting_point))
+        {
+            self.candidates.clear();
+            self.candidates.extend(self.grid.neighbors(starting_point));
 
-        self.processed.extend(&self.unprocessed);
-
-        if let Some(&coordinate) = self.unprocessed.first() {
-            self.index = 1;
-            return Some(coordinate);
+            if self
+                .candidates
+                .iter()
+                .all(|(_, neighbor)| !neighbor.has_mine() && !neighbor.is_flagged())
+            {
+                self.neighbors.extend(
+                    self.candidates
+                        .drain(..)
+                        .map(|(neighbor, _)| neighbor)
+                        .filter(|coordinate| {
+                            !self.processed.contains(coordinate)
+                                && !self.starting_points.contains(coordinate)
+                        }),
+                );
+                return self.next();
+            }
         }
 
         None
