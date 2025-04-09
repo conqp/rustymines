@@ -7,7 +7,7 @@ use crate::pop_set::PopSet;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
-    grid: &'grid Grid<Field>,
+    fields: &'grid Grid<Field>,
     starting_points: HashSet<Coordinate>,
     candidates: Vec<(Coordinate, &'grid Field)>,
     neighbors: Vec<Coordinate>,
@@ -17,7 +17,7 @@ pub struct SafeNeighbors<'grid> {
 impl<'grid> SafeNeighbors<'grid> {
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {
-            grid: fields,
+            fields,
             starting_points: HashSet::from([start]),
             candidates: Vec::new(),
             neighbors: Vec::new(),
@@ -38,7 +38,8 @@ impl Iterator for SafeNeighbors<'_> {
 
         while let Some(starting_point) = self.starting_points.pop() {
             self.candidates.clear();
-            self.candidates.extend(self.grid.neighbors(starting_point));
+            self.candidates
+                .extend(self.fields.neighbors(starting_point));
 
             if self
                 .candidates
