@@ -49,8 +49,8 @@ impl Field {
     }
 
     #[must_use]
-    pub fn adjacent_mines(self) -> u8 {
-        (self & Self::ADJACENT_MINES).0
+    pub const fn adjacent_mines(self) -> u8 {
+        self.0 & Self::ADJACENT_MINES.0
     }
 
     pub fn set_mine(&mut self) {
@@ -101,30 +101,34 @@ impl Field {
     pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
         Displayable::new(self, game_over)
     }
+
+    #[must_use]
+    pub const fn as_char(self, game_over: bool) -> char {
+        match (
+            game_over,
+            self.has_been_visited(),
+            self.is_flagged(),
+            self.has_mine(),
+            self.is_dud(),
+        ) {
+            (false, false, true, _, _) | (true, false, true, true, _) => '⚐',
+            (_, true, _, true, true) => '~',
+            (_, true, _, true, false) => '☠',
+            (false, true, false, false, _) | (true, _, _, false, _) => {
+                match self.adjacent_mines() {
+                    0 => ' ',
+                    mines => char::from_digit(mines as u32, 10)
+                        .expect("Amount of mines is not a single digit. This is a bug."),
+                }
+            }
+            (true, false, false, true, _) => '*',
+            _ => '■',
+        }
+    }
 }
 
 impl Display for Displayable<&'_ Field> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let field = self.subject();
-
-        match (
-            self.game_over(),
-            field.has_been_visited(),
-            field.is_flagged(),
-            field.has_mine(),
-            field.is_dud(),
-        ) {
-            (false, false, true, _, _) | (true, false, true, true, _) => write!(f, "⚐"),
-            (_, true, _, true, true) => write!(f, "~"),
-            (_, true, _, true, false) => write!(f, "☠"),
-            (false, true, false, false, _) | (true, _, _, false, _) => {
-                match field.adjacent_mines() {
-                    0 => write!(f, " "),
-                    mines => write!(f, "{mines}"),
-                }
-            }
-            (true, false, false, true, _) => write!(f, "*"),
-            _ => write!(f, "■"),
-        }
+        write!(f, "{}", self.subject().as_char(self.game_over()))
     }
 }
