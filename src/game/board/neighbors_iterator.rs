@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use grid2d::{Coordinate, Grid};
 
 use super::field::Field;
+use crate::pop_set::PopSet;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
@@ -35,13 +36,7 @@ impl Iterator for SafeNeighbors<'_> {
             return Some(neighbor);
         }
 
-        while let Some(starting_point) = self
-            .starting_points
-            .iter()
-            .copied()
-            .next()
-            .and_then(|starting_point| self.starting_points.take(&starting_point))
-        {
+        while let Some(starting_point) = self.starting_points.pop() {
             self.candidates.clear();
             self.candidates.extend(self.grid.neighbors(starting_point));
 

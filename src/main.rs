@@ -1,6 +1,7 @@
 //! A mine sweeping game with optional dud mines.
 
 mod game;
+mod pop_set;
 
 use game::Game;
 
