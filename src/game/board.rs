@@ -7,7 +7,7 @@ use itertools::Itertools;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
-use crate::game::displayable::Displayable;
+use crate::displayable::Displayable;
 pub use error::Error;
 use field::{Field, VisitResult};
 pub use move_result::MoveResult;
