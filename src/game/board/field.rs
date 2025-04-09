@@ -105,18 +105,20 @@ impl Field {
 
 impl Display for Displayable<&'_ Field> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let field = self.subject();
+
         match (
             self.game_over(),
-            self.subject().has_been_visited(),
-            self.subject().is_flagged(),
-            self.subject().has_mine(),
-            self.subject().is_dud(),
+            field.has_been_visited(),
+            field.is_flagged(),
+            field.has_mine(),
+            field.is_dud(),
         ) {
             (false, false, true, _, _) | (true, false, true, true, _) => write!(f, "⚐"),
             (_, true, _, true, true) => write!(f, "~"),
             (_, true, _, true, false) => write!(f, "☠"),
             (false, true, false, false, _) | (true, _, _, false, _) => {
-                match self.subject().adjacent_mines() {
+                match field.adjacent_mines() {
                     0 => write!(f, " "),
                     mines => write!(f, "{mines}"),
                 }

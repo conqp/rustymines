@@ -239,9 +239,10 @@ impl Board {
 
 impl Display for Displayable<&'_ Board> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.subject().header())?;
+        let board = self.subject();
+        write!(f, "{}", board.header())?;
 
-        for line in self.subject().fields.rows().enumerate().map(|(y, row)| {
+        for line in board.fields.rows().enumerate().map(|(y, row)| {
             let mut line = format!("{y:x}│");
             line.push_str(
                 &row.iter()
