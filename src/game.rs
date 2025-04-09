@@ -8,7 +8,7 @@ use grid2d::Coordinate;
 use action::Action;
 use args::Args;
 use board::{Board, Error, MoveResult};
-use io::read;
+use io::read_until_valid;
 
 mod action;
 mod args;
@@ -36,7 +36,7 @@ impl Game {
     }
 
     fn next_round(&mut self) -> bool {
-        match Action::from_str(read::<String>("Enter action: ").trim()) {
+        match Action::from_str(read_until_valid::<String>("Enter action: ").trim()) {
             Ok(action) => match action {
                 Action::Visit(coordinate) => self.visit(&coordinate),
                 Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),

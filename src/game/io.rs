@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::io::{stdin, stdout, Write};
 use std::str::FromStr;
 
-pub fn read<T>(prompt: &str) -> T
+pub fn read_until_valid<T>(prompt: &str) -> T
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
