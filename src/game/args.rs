@@ -1,7 +1,6 @@
 use clap::Parser;
 use std::num::NonZero;
 
-#[allow(unsafe_code)]
 // SAFETY: Non-zero constant.
 #[allow(unsafe_code)]
 const DEFAULT_SIZE: NonZero<usize> = unsafe { NonZero::new_unchecked(8) };
