@@ -1,3 +1,4 @@
+use crate::game::displayable::Displayable;
 use bitflags::bitflags;
 use std::fmt::{Display, Formatter};
 
@@ -95,38 +96,25 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
         Displayable::new(self, game_over)
     }
 }
 
-#[derive(Debug)]
-pub struct Displayable<'field> {
-    field: &'field Field,
-    game_over: bool,
-}
-
-impl<'field> Displayable<'field> {
-    #[must_use]
-    pub const fn new(field: &'field Field, game_over: bool) -> Self {
-        Self { field, game_over }
-    }
-}
-
-impl Display for Displayable<'_> {
+impl Display for Displayable<&'_ Field> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match (
-            self.game_over,
-            self.field.has_been_visited(),
-            self.field.is_flagged(),
-            self.field.has_mine(),
-            self.field.is_dud(),
+            self.game_over(),
+            self.subject().has_been_visited(),
+            self.subject().is_flagged(),
+            self.subject().has_mine(),
+            self.subject().is_dud(),
         ) {
             (false, false, true, _, _) | (true, false, true, true, _) => write!(f, "⚐"),
             (_, true, _, true, true) => write!(f, "~"),
             (_, true, _, true, false) => write!(f, "☠"),
             (false, true, false, false, _) | (true, _, _, false, _) => {
-                match self.field.adjacent_mines() {
+                match self.subject().adjacent_mines() {
                     0 => write!(f, " "),
                     mines => write!(f, "{mines}"),
                 }

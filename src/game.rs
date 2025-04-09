@@ -13,6 +13,7 @@ use io::read;
 mod action;
 mod args;
 mod board;
+mod displayable;
 mod io;
 
 #[derive(Debug)]

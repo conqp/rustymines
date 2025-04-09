@@ -7,6 +7,7 @@ use itertools::Itertools;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
+use crate::game::displayable::Displayable;
 pub use error::Error;
 use field::{Field, VisitResult};
 pub use move_result::MoveResult;
@@ -107,7 +108,7 @@ impl Board {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
         Displayable::new(self, game_over)
     }
 
@@ -233,28 +234,15 @@ impl Board {
     }
 }
 
-#[derive(Debug)]
-pub struct Displayable<'board> {
-    board: &'board Board,
-    game_over: bool,
-}
-
-impl<'board> Displayable<'board> {
-    #[must_use]
-    pub const fn new(board: &'board Board, game_over: bool) -> Self {
-        Self { board, game_over }
-    }
-}
-
-impl Display for Displayable<'_> {
+impl Display for Displayable<&'_ Board> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.board.header())?;
+        write!(f, "{}", self.subject().header())?;
 
-        for line in self.board.fields.rows().enumerate().map(|(y, row)| {
+        for line in self.subject().fields.rows().enumerate().map(|(y, row)| {
             format!("{y:x}│")
                 + &row
                     .iter()
-                    .map(|field| field.displayable(self.game_over).to_string())
+                    .map(|field| field.displayable(self.game_over()).to_string())
                     .join(" ")
         }) {
             writeln!(f, "{line}")?;
