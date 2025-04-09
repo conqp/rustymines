@@ -117,8 +117,9 @@ impl Field {
             (false, true, false, false, _) | (true, _, _, false, _) => {
                 match self.adjacent_mines() {
                     0 => ' ',
-                    mines => char::from_digit(mines as u32, 10)
-                        .expect("Amount of adjacent mines is not a single digit. This is a bug."),
+                    mines => char::from_digit(mines as u32, 10).expect(
+                        "Amount of adjacent mines is not a single decimal digit. This is a bug.",
+                    ),
                 }
             }
             (true, false, false, true, _) => '*',
