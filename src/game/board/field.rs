@@ -1,5 +1,8 @@
-use bitflags::bitflags;
 use std::fmt::{Display, Formatter};
+
+use bitflags::bitflags;
+
+use crate::displayable::Displayable;
 
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
@@ -46,8 +49,8 @@ impl Field {
     }
 
     #[must_use]
-    pub fn adjacent_mines(self) -> u8 {
-        (self & Self::ADJACENT_MINES).0
+    pub const fn adjacent_mines(self) -> u8 {
+        self.0 & Self::ADJACENT_MINES.0
     }
 
     pub fn set_mine(&mut self) {
@@ -95,44 +98,38 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable<'_> {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
         Displayable::new(self, game_over)
     }
-}
 
-#[derive(Debug)]
-pub struct Displayable<'field> {
-    field: &'field Field,
-    game_over: bool,
-}
-
-impl<'field> Displayable<'field> {
     #[must_use]
-    pub const fn new(field: &'field Field, game_over: bool) -> Self {
-        Self { field, game_over }
+    pub const fn as_char(self, game_over: bool) -> char {
+        match (
+            game_over,
+            self.has_been_visited(),
+            self.is_flagged(),
+            self.has_mine(),
+            self.is_dud(),
+        ) {
+            (false, false, true, _, _) | (true, false, true, true, _) => '⚐',
+            (_, true, _, true, true) => '~',
+            (_, true, _, true, false) => '☠',
+            (false, true, false, false, _) | (true, _, _, false, _) => {
+                match self.adjacent_mines() {
+                    0 => ' ',
+                    mines => char::from_digit(mines as u32, 10).expect(
+                        "Amount of adjacent mines is not a single decimal digit. This is a bug.",
+                    ),
+                }
+            }
+            (true, false, false, true, _) => '*',
+            _ => '■',
+        }
     }
 }
 
-impl Display for Displayable<'_> {
+impl Display for Displayable<&'_ Field> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match (
-            self.game_over,
-            self.field.has_been_visited(),
-            self.field.is_flagged(),
-            self.field.has_mine(),
-            self.field.is_dud(),
-        ) {
-            (false, false, true, _, _) | (true, false, true, true, _) => write!(f, "⚐"),
-            (_, true, _, true, true) => write!(f, "~"),
-            (_, true, _, true, false) => write!(f, "☠"),
-            (false, true, false, false, _) | (true, _, _, false, _) => {
-                match self.field.adjacent_mines() {
-                    0 => write!(f, " "),
-                    mines => write!(f, "{mines}"),
-                }
-            }
-            (true, false, false, true, _) => write!(f, "*"),
-            _ => write!(f, "■"),
-        }
+        write!(f, "{}", self.subject().as_char(self.game_over()))
     }
 }

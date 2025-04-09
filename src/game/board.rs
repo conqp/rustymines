@@ -7,6 +7,7 @@ use itertools::Itertools;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
+use crate::displayable::Displayable;
 pub use error::Error;
 use field::{Field, VisitResult};
 pub use move_result::MoveResult;
@@ -107,18 +108,21 @@ impl Board {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable<'_> {
+    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
         Displayable::new(self, game_over)
     }
 
     fn header(&self) -> String {
-        format!(
-            " │{}\n─┼{}\n",
-            (0..self.fields.width().into())
+        let mut header = " │".to_string();
+        header.push_str(
+            &(0..self.fields.width().into())
                 .map(|x| format!("{x:x}"))
                 .join(" "),
-            (0..self.fields.width().into()).map(|_| '─').join("─")
-        )
+        );
+        header.push_str("\n─┼");
+        header.push_str(&(0..self.fields.width().into()).map(|_| '─').join("─"));
+        header.push('\n');
+        header
     }
 
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
@@ -233,30 +237,19 @@ impl Board {
     }
 }
 
-#[derive(Debug)]
-pub struct Displayable<'board> {
-    board: &'board Board,
-    game_over: bool,
-}
-
-impl<'board> Displayable<'board> {
-    #[must_use]
-    pub const fn new(board: &'board Board, game_over: bool) -> Self {
-        Self { board, game_over }
-    }
-}
-
-impl Display for Displayable<'_> {
+impl Display for Displayable<&'_ Board> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.board.header())?;
+        let board = self.subject();
+        write!(f, "{}", board.header())?;
 
-        for line in self.board.fields.rows().enumerate().map(|(y, row)| {
-            format!(
-                "{y:x}│{}",
-                row.iter()
-                    .map(|field| field.displayable(self.game_over).to_string())
-                    .join(" ")
-            )
+        for line in board.fields.rows().enumerate().map(|(y, row)| {
+            let mut line = format!("{y:x}│");
+            line.push_str(
+                &row.iter()
+                    .map(|field| field.displayable(self.game_over()).to_string())
+                    .join(" "),
+            );
+            line
         }) {
             writeln!(f, "{line}")?;
         }
