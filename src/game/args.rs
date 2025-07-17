@@ -1,5 +1,6 @@
-use clap::Parser;
 use std::num::NonZero;
+
+use clap::Parser;
 
 // SAFETY: Non-zero constant.
 #[allow(unsafe_code)]

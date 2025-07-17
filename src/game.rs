@@ -1,12 +1,11 @@
 use std::fmt;
 use std::time::Instant;
 
-use clap::Parser;
-use grid2d::Coordinate;
-
 use action::Action;
 use args::Args;
 use board::{Board, Error, MoveResult};
+use clap::Parser;
+use grid2d::Coordinate;
 use io::read_until_valid;
 
 mod action;

@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fmt::Display;
-use std::io::{stdin, stdout, Write};
+use std::io::{Write, stdin, stdout};
 use std::str::FromStr;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
