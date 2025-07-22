@@ -2,9 +2,7 @@ use std::num::NonZero;
 
 use clap::Parser;
 
-// SAFETY: Non-zero constant.
-#[allow(unsafe_code)]
-const DEFAULT_SIZE: NonZero<usize> = unsafe { NonZero::new_unchecked(8) };
+const DEFAULT_SIZE: NonZero<usize> = NonZero::new(8).expect("Default size should be non-zero.");
 
 #[derive(Parser)]
 #[clap(about, author, version)]
