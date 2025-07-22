@@ -18,7 +18,7 @@ bitflags! {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VisitResult {
-    Ok,
+    Cleared,
     AlreadyVisited,
     Flagged,
     SteppedOnMine,
@@ -76,7 +76,7 @@ impl Field {
         *self |= Self::VISITED;
 
         if !self.has_mine() {
-            return VisitResult::Ok;
+            return VisitResult::Cleared;
         }
 
         if self.is_dud() {
@@ -91,7 +91,7 @@ impl Field {
             VisitResult::AlreadyVisited
         } else {
             *self ^= Self::FLAGGED;
-            VisitResult::Ok
+            VisitResult::Cleared
         }
     }
 
