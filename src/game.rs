@@ -89,7 +89,11 @@ impl Game {
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.board.displayable(self.over))
+        if self.over {
+            write!(f, "{:#}", self.board)
+        } else {
+            write!(f, "{}", self.board)
+        }
     }
 }
 

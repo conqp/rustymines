@@ -2,8 +2,6 @@ use std::fmt::{Display, Formatter};
 
 use bitflags::bitflags;
 
-use crate::displayable::Displayable;
-
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
 
@@ -98,11 +96,6 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
-        Displayable::new(self, game_over)
-    }
-
-    #[must_use]
     pub const fn as_char(self, game_over: bool) -> char {
         match (
             game_over,
@@ -128,8 +121,8 @@ impl Field {
     }
 }
 
-impl Display for Displayable<&'_ Field> {
+impl Display for Field {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.subject().as_char(self.game_over()))
+        write!(f, "{}", self.as_char(f.alternate()))
     }
 }

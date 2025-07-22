@@ -11,8 +11,6 @@ use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
-use crate::displayable::Displayable;
-
 mod error;
 mod field;
 mod move_result;
@@ -107,11 +105,6 @@ impl Board {
         }
     }
 
-    #[must_use]
-    pub const fn displayable(&self, game_over: bool) -> Displayable<&Self> {
-        Displayable::new(self, game_over)
-    }
-
     fn header(&self) -> String {
         let mut header = " │".to_string();
         header.push_str(
@@ -121,7 +114,6 @@ impl Board {
         );
         header.push_str("\n─┼");
         header.push_str(&(0..self.fields.width().into()).map(|_| '─').join("─"));
-        header.push('\n');
         header
     }
 
@@ -237,21 +229,23 @@ impl Board {
     }
 }
 
-impl Display for Displayable<&'_ Board> {
+impl Display for Board {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let board = self.subject();
-        write!(f, "{}", board.header())?;
+        writeln!(f, "{}", self.header())?;
 
-        for line in board.fields.rows().enumerate().map(|(y, row)| {
-            let mut line = format!("{y:x}│");
-            line.push_str(
-                &row.iter()
-                    .map(|field| field.displayable(self.game_over()).to_string())
-                    .join(" "),
-            );
-            line
-        }) {
-            writeln!(f, "{line}")?;
+        for (y, row) in self.fields.rows().enumerate() {
+            write!(f, "{y:x}│")?;
+            let max_index = row.len().checked_sub(1);
+
+            for (index, field) in row.iter().enumerate() {
+                field.fmt(f)?;
+
+                if max_index.is_some_and(|max_index| index < max_index) {
+                    write!(f, " ")?;
+                }
+            }
+
+            writeln!(f)?;
         }
 
         Ok(())
