@@ -222,7 +222,7 @@ impl Display for Board {
         writeln!(f, "{}", Header::new(self.fields.width().get()))?;
 
         let max_column = self.fields.width().get().saturating_sub(1);
-        let max_row = self.fields.height().get().checked_sub(1);
+        let max_row = self.fields.height().get().saturating_sub(1);
 
         for (y, row) in self.fields.rows().enumerate() {
             write!(f, "{y:x}│")?;
@@ -235,7 +235,7 @@ impl Display for Board {
                 }
             }
 
-            if max_row.is_some_and(|row| y < row) {
+            if y < max_row {
                 writeln!(f)?;
             }
         }
