@@ -123,6 +123,6 @@ impl Field {
 
 impl Display for Field {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.as_char(f.alternate()))
+        self.as_char(f.alternate()).fmt(f)
     }
 }
