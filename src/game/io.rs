@@ -33,7 +33,7 @@ where
     }
 }
 
-pub fn try_read<T>(prompt: &str) -> Result<T, ReadError<<T as FromStr>::Err>>
+pub fn try_read<T>(prompt: &str) -> Result<T, ReadError<T::Err>>
 where
     T: FromStr,
 {
@@ -44,13 +44,12 @@ where
         return Err(ReadError::InvalidInput);
     };
 
-    value.trim().parse::<T>().map_err(ReadError::ParseError)
+    value.trim().parse().map_err(ReadError::ParseError)
 }
 
 pub fn read_until_valid<T>(prompt: &str) -> T
 where
-    T: FromStr,
-    <T as FromStr>::Err: Display,
+    T: FromStr<Err: Display>,
 {
     loop {
         match try_read(prompt) {
