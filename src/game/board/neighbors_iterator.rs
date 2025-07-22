@@ -13,6 +13,7 @@ pub struct SafeNeighbors<'grid> {
 }
 
 impl<'grid> SafeNeighbors<'grid> {
+    #[must_use]
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {
             fields,
