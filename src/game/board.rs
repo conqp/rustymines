@@ -11,8 +11,11 @@ use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
+use crate::game::board::header::Header;
+
 mod error;
 mod field;
+mod header;
 mod move_result;
 mod neighbors_iterator;
 
@@ -103,18 +106,6 @@ impl Board {
                 }
             }
         }
-    }
-
-    fn header(&self) -> String {
-        let mut header = " │".to_string();
-        header.push_str(
-            &(0..self.fields.width().into())
-                .map(|x| format!("{x:x}"))
-                .join(" "),
-        );
-        header.push_str("\n─┼");
-        header.push_str(&(0..self.fields.width().into()).map(|_| '─').join("─"));
-        header
     }
 
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
@@ -231,21 +222,25 @@ impl Board {
 
 impl Display for Board {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{}", self.header())?;
+        writeln!(f, "{}", Header::new(self.fields.width().get()))?;
+
+        let max_column = self.fields.width().get().saturating_sub(1);
+        let max_row = self.fields.height().get().checked_sub(1);
 
         for (y, row) in self.fields.rows().enumerate() {
             write!(f, "{y:x}│")?;
-            let max_index = row.len().checked_sub(1);
 
-            for (index, field) in row.iter().enumerate() {
+            for (x, field) in row.iter().enumerate() {
                 field.fmt(f)?;
 
-                if max_index.is_some_and(|max_index| index < max_index) {
+                if x < max_column {
                     write!(f, " ")?;
                 }
             }
 
-            writeln!(f)?;
+            if max_row.is_some_and(|row| y < row) {
+                writeln!(f)?;
+            }
         }
 
         Ok(())

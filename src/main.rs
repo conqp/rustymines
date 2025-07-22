@@ -15,7 +15,7 @@ const HELP: [&str; 4] = [
 fn main() {
     match Game::from_args() {
         Ok(mut game) => {
-            println!("{game}");
+            println!("{game}\n");
             print_help();
             game.play();
         }
