@@ -1,4 +1,5 @@
 use std::collections::BTreeSet;
+use std::iter::once;
 
 use grid2d::{Coordinate, Grid};
 
@@ -15,7 +16,7 @@ impl<'grid> SafeNeighbors<'grid> {
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {
             fields,
-            starting_points: BTreeSet::from([start.into()]),
+            starting_points: once(start.into()).collect(),
             processed: BTreeSet::new(),
         }
     }
