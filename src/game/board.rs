@@ -5,7 +5,6 @@ use std::num::NonZero;
 pub use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
-use itertools::Itertools;
 pub use move_result::MoveResult;
 use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
@@ -201,7 +200,7 @@ impl Board {
 
     fn visit_neighbors(&mut self, coordinate: &Coordinate) {
         self.walk_safe_neighbors(coordinate)
-            .collect_vec()
+            .collect::<Vec<_>>()
             .iter()
             .for_each(|coordinate| {
                 self.fields.get_mut(coordinate).map(Field::visit);
