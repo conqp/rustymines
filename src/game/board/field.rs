@@ -48,20 +48,21 @@ impl Field {
 
     #[must_use]
     pub const fn adjacent_mines(self) -> u8 {
-        self.0 & Self::ADJACENT_MINES.0
+        self.intersection(Self::ADJACENT_MINES).0
     }
 
     pub fn set_mine(&mut self) {
-        *self |= Self::MINED;
+        self.insert(Self::MINED);
     }
 
     pub fn set_dud(&mut self) {
-        *self |= Self::IS_DUD;
+        self.insert(Self::IS_DUD);
     }
 
-    pub fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
-        *self &= !Self::ADJACENT_MINES;
-        *self |= Self::ADJACENT_MINES & Self(adjacent_mines);
+    pub const fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
+        *self = self
+            .intersection(Self::FLAGS)
+            .union(Self::ADJACENT_MINES.intersection(Self(adjacent_mines)));
     }
 
     pub fn visit(&mut self) -> VisitResult {
