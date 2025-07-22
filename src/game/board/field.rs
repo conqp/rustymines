@@ -51,6 +51,11 @@ impl Field {
         self.intersection(Self::ADJACENT_MINES).0
     }
 
+    #[must_use]
+    pub const fn is_safe(self) -> bool {
+        !self.has_mine() && !self.is_flagged()
+    }
+
     pub fn set_mine(&mut self) {
         self.insert(Self::MINED);
     }

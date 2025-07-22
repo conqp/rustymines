@@ -188,9 +188,7 @@ impl Board {
                     MoveResult::Continue
                 }
                 (_, _) => {
-                    if field.adjacent_mines() == 0 {
-                        self.visit_neighbors(coordinate);
-                    }
+                    self.visit_neighbors(coordinate);
                     MoveResult::Continue
                 }
             },
