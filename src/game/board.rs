@@ -126,7 +126,7 @@ impl Board {
             .expect("Amount of neighbors should fit into u8.")
     }
 
-    fn count_all_adjacent_miens(&self) -> HashMap<Coordinate, u8> {
+    fn count_all_adjacent_mines(&self) -> HashMap<Coordinate, u8> {
         self.fields
             .enumerate()
             .map(|(coordinate, _)| (coordinate, self.count_adjacent_mines(&coordinate)))
@@ -159,7 +159,7 @@ impl Board {
 
     fn initialize(&mut self, coordinate: Option<&Coordinate>) {
         self.populate_mines();
-        let adjacent_mines = self.count_all_adjacent_miens();
+        let adjacent_mines = self.count_all_adjacent_mines();
         self.fields.enumerate_mut().for_each(|(coordinate, field)| {
             field.set_adjacent_mines(adjacent_mines.get(&coordinate).copied().unwrap_or(0));
         });
