@@ -123,7 +123,7 @@ impl Board {
             .filter(|(_, field)| field.has_mine())
             .count()
             .try_into()
-            .expect("Amount of neighbors out of bounds.")
+            .expect("Amount of neighbors should fit into u8.")
     }
 
     fn count_all_adjacent_miens(&self) -> HashMap<Coordinate, u8> {

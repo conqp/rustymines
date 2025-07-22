@@ -38,9 +38,7 @@ where
     T: FromStr,
 {
     print!("{prompt}");
-    stdout()
-        .flush()
-        .expect("Could not flush stdout. This is a bug.");
+    stdout().flush().expect("Stdout should be able to flush.");
 
     let Some(value) = stdin().lines().find_map(Result::ok) else {
         return Err(ReadError::InvalidInput);
