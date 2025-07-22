@@ -227,7 +227,7 @@ impl Display for Board {
         for (y, row) in self.fields.rows().enumerate() {
             write!(f, "{y:x}│")?;
 
-            for (x, field) in row.iter().enumerate() {
+            for (x, field) in row.enumerate() {
                 field.fmt(f)?;
 
                 if x < max_column {

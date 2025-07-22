@@ -16,7 +16,7 @@ exclude = [".gitignore"]
 [dependencies]
 bitflags = "2.9"
 clap = { version = "4.5", features = ["derive"] }
-grid2d = { version = "0.6", features = ["display"] }
+grid2d = "1"
 rand = "0.9"
 
 [profile.release]
