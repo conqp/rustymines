@@ -102,7 +102,8 @@ impl fmt::Display for Game {
         if self.over {
             write!(f, "{:#}", self.board)
         } else {
-            write!(f, "{}", self.board)
+            writeln!(f, "{}", self.board,)?;
+            writeln!(f, "\nFlags: {}", self.board.flags())
         }
     }
 }

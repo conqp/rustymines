@@ -110,6 +110,14 @@ impl Board {
         }
     }
 
+    /// Return the amount of flags on the field.
+    pub fn flags(&self) -> usize {
+        self.fields
+            .iter()
+            .filter(|field| field.is_flagged())
+            .count()
+    }
+
     /// Return the amount of adjacent mines of the respective coordinate on the field.
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
         self.fields
