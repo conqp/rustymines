@@ -155,7 +155,7 @@ impl Board {
 
         if result == MoveResult::Continue {
             self.initialize(mines, duds);
-            self.visit_coordinate(coordinate);
+            self.visit_neighbors(coordinate);
         }
 
         result
