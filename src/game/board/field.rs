@@ -92,12 +92,9 @@ impl Field {
         VisitResult::SteppedOnMine
     }
 
-    pub fn toggle_flag(&mut self) -> VisitResult {
-        if self.has_been_visited() {
-            VisitResult::AlreadyVisited
-        } else {
+    pub fn toggle_flag(&mut self) {
+        if !self.has_been_visited() {
             *self ^= Self::FLAGGED;
-            VisitResult::Cleared
         }
     }
 
