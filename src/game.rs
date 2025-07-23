@@ -13,6 +13,7 @@ mod args;
 mod board;
 mod io;
 
+/// The game object with the board and metadata.
 #[derive(Debug)]
 pub struct Game {
     board: Board,
@@ -21,10 +22,12 @@ pub struct Game {
 }
 
 impl Game {
+    /// Crate a new game from the command line arguments.
     pub fn from_args() -> Result<Self, Error> {
         Self::try_from(Args::parse())
     }
 
+    /// Start the game.
     pub fn play(&mut self) {
         while !self.over {
             if !self.next_round() {
@@ -33,6 +36,9 @@ impl Game {
         }
     }
 
+    /// Play the next round.
+    ///
+    /// Return `true` if the player did not request to abort the game, otherwise `false`.
     fn next_round(&mut self) -> bool {
         match read_until_valid::<Action>("Enter action: ") {
             Action::Visit(coordinate) => self.visit(coordinate),
@@ -47,6 +53,7 @@ impl Game {
         true
     }
 
+    /// Visit the given coordinate.
     fn visit(&mut self, coordinate: Coordinate) {
         match self.board.visit(coordinate) {
             MoveResult::Continue => println!("\n{self}"),
@@ -58,6 +65,7 @@ impl Game {
         }
     }
 
+    /// Toggle the flag at the given coordinate.
     fn toggle_flag(&mut self, coordinate: Coordinate) {
         match self.board.toggle_flag(coordinate) {
             MoveResult::InvalidPosition => {
@@ -67,6 +75,7 @@ impl Game {
         }
     }
 
+    /// Visit all non-flagged fields.
     fn visit_non_flagged_fields(&mut self) {
         match self.board.visit_non_flagged_fields() {
             MoveResult::Lost => self.game_over(false),
@@ -75,6 +84,7 @@ impl Game {
         }
     }
 
+    /// Set the game to be over.
     fn game_over(&mut self, won: bool) {
         self.over = true;
         println!("\n{self}");

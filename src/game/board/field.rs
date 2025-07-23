@@ -2,26 +2,39 @@ use std::fmt::{Display, Formatter};
 
 use bitflags::bitflags;
 
+/// A field on the game board (aka. minefield).
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Field(u8);
 
 bitflags! {
     impl Field: u8 {
+        /// Mask for the field's flags.
         const FLAGS = 0b1111_0000;
+        /// Mask for the amount of the field's adjacent mines.
         const ADJACENT_MINES = 0b0000_1111;
+        /// If this flag is set, the field is considered to have a mine.
         const MINED = 0b0001_0000;
+        /// If this flag is set, the field is considered to have been visited.
         const VISITED = 0b0010_0000;
+        /// If this flag is set, the field is considered to have a flag on it.
         const FLAGGED = 0b0100_0000;
+        /// If this flag is set, the field is considered to be a dud.
         const IS_DUD = 0b1000_0000;
     }
 }
 
+/// Possible outcomes when visiting a field.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum VisitResult {
+    /// The field has been cleared.
     Cleared,
+    /// The field has already been visited.
     AlreadyVisited,
+    /// The field cannot be visited, because it is flagged.
     Flagged,
+    /// The player stepped onto a mine.
     SteppedOnMine,
+    /// The player stepped onto a dud.
     SteppedOnDud,
 }
 

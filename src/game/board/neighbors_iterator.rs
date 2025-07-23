@@ -5,6 +5,7 @@ use grid2d::{Coordinate, Grid};
 
 use super::field::Field;
 
+/// An iterator over neighbors of a coordinate, which are deemed safe to uncover.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
     fields: &'grid Grid<Field>,
@@ -13,6 +14,7 @@ pub struct SafeNeighbors<'grid> {
 }
 
 impl<'grid> SafeNeighbors<'grid> {
+    /// Create a new [`SafeNeighbors`] iterator from the given [`Grid`] and starting coordinate.
     #[must_use]
     pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
         Self {

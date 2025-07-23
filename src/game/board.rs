@@ -18,6 +18,7 @@ mod header;
 mod move_result;
 mod neighbors_iterator;
 
+/// The game board, aka. the minefield.
 #[derive(Debug)]
 pub struct Board {
     fields: Grid<Field>,
@@ -26,6 +27,7 @@ pub struct Board {
 }
 
 impl Board {
+    /// Crate a new game board with the respective parameters.
     pub fn new(
         width: NonZero<usize>,
         height: NonZero<usize>,
@@ -51,6 +53,7 @@ impl Board {
         })
     }
 
+    /// Visit the field at the given coordinate.
     #[must_use]
     pub fn visit(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.make_move(coordinate) {
@@ -66,6 +69,7 @@ impl Board {
         }
     }
 
+    /// Toggle the flag on the field under the given coordinate.
     #[must_use]
     pub fn toggle_flag(&mut self, coordinate: Coordinate) -> MoveResult {
         self.fields
@@ -76,12 +80,15 @@ impl Board {
             })
     }
 
+    /// Visit all fields on the grid, which have not been flagged.
+    ///
+    /// This is a convenience function to quickly uncover all fields, which are deemed safe to conclude the game.
     #[must_use]
     pub fn visit_non_flagged_fields(&mut self) -> MoveResult {
         let mut result = MoveResult::Continue;
 
         if let Some((mines, duds)) = self.init.take() {
-            self.initialize(mines, duds, None);
+            self.initialize(mines, duds);
         }
 
         self.fields.iter_mut().for_each(|field| {
@@ -103,6 +110,7 @@ impl Board {
         }
     }
 
+    /// Return the amount of adjacent mines of the respective coordinate on the field.
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
         self.fields
             .neighbors(coordinate)
@@ -112,6 +120,7 @@ impl Board {
             .expect("Amount of neighbors should fit into u8.")
     }
 
+    /// Count adjacent mines of all coordinates of the field.
     fn count_all_adjacent_mines(&self) -> HashMap<Coordinate, u8> {
         self.fields
             .enumerate()
@@ -119,6 +128,9 @@ impl Board {
             .collect()
     }
 
+    /// Visit the given coordinate.
+    ///
+    /// Check if we need to initialize the mines and duds first, in case we haven't made a move yet.
     fn make_move(&mut self, coordinate: Coordinate) -> MoveResult {
         if let Some((mines, duds)) = self.init.take() {
             self.first_move(mines, duds, coordinate)
@@ -127,6 +139,11 @@ impl Board {
         }
     }
 
+    /// Make the first move.
+    ///
+    /// Mark initially visited field as visited, then populate mines and duds.
+    ///
+    /// This is to prevent stepping on a mine on first move, where we do not yet have any information about the grid yet.
     fn first_move(&mut self, mines: u8, duds: u8, coordinate: Coordinate) -> MoveResult {
         let result = self
             .fields
@@ -137,25 +154,26 @@ impl Board {
             });
 
         if result == MoveResult::Continue {
-            self.initialize(mines, duds, Some(coordinate));
+            self.initialize(mines, duds);
+            self.visit_coordinate(coordinate);
         }
 
         result
     }
 
-    fn initialize(&mut self, mines: u8, duds: u8, coordinate: Option<Coordinate>) {
+    /// Populate the field with mines and duds.
+    ///
+    /// We defer this after the first move to prevent stepping on a mine on the first move.
+    fn initialize(&mut self, mines: u8, duds: u8) {
         self.populate_mines(mines);
         let adjacent_mines = self.count_all_adjacent_mines();
         self.fields.enumerate_mut().for_each(|(coordinate, field)| {
             field.set_adjacent_mines(adjacent_mines.get(&coordinate).copied().unwrap_or(0));
         });
         self.populate_duds(duds);
-
-        if let Some(coordinate) = coordinate {
-            self.visit_coordinate(coordinate);
-        }
     }
 
+    /// Populate the field with mines.
     fn populate_mines(&mut self, mines: u8) {
         self.fields
             .iter_mut()
@@ -165,6 +183,7 @@ impl Board {
             .for_each(Field::set_mine);
     }
 
+    /// Populate the field with duds.
     fn populate_duds(&mut self, duds: u8) {
         self.fields
             .iter_mut()
@@ -174,6 +193,9 @@ impl Board {
             .for_each(Field::set_dud);
     }
 
+    /// Actually visit the given coordinate.
+    ///
+    /// We only call this through [`Self::make_move()`] to ensure that the grid is initialized.
     fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
         let Some(field) = self.fields.get_mut(coordinate) else {
             return MoveResult::InvalidPosition;
@@ -189,6 +211,9 @@ impl Board {
         }
     }
 
+    /// Visit the neighbors of the given coordinate, if it is safe to do so.
+    ///
+    /// We do this for convenience, to uncover all adjacent fields that do not contain a mine.
     fn visit_neighbors(&mut self, coordinate: Coordinate) {
         self.walk_safe_neighbors(coordinate)
             .collect::<Vec<_>>()
@@ -198,10 +223,16 @@ impl Board {
             });
     }
 
+    /// Return an iterator over neighbors of the given coordinate that are safe to visit.
+    ///
+    /// This will include the original coordinate, if it is considered safe.
     fn walk_safe_neighbors(&self, coordinate: Coordinate) -> SafeNeighbors<'_> {
         SafeNeighbors::new(&self.fields, coordinate)
     }
 
+    /// Return `true` if all mines on the grid have been cleared.
+    ///
+    /// This is the case, if all fields, which do not contain a mine, have been visited.
     fn all_mines_cleared(&self) -> bool {
         self.fields
             .iter()
