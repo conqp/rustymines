@@ -1,6 +1,6 @@
 [package]
 name = "rustymines"
-version = "1.1.24"
+version = "1.1.25"
 edition = "2024"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
 description = "A mine sweeping game with optional duds."
