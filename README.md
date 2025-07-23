@@ -42,7 +42,7 @@ You can abort and quit the game at any time by typing: `exit`
 - `■`: An unvisited field.
 - `*`: A mine that has not been triggered.
 - ` ` (a space): A cleared field with no surrounding mines.
-- `0..8` (a decimal digit): A cleared field with the respective amount of surrounding mines.
+- `1..8` (a decimal digit): A cleared field with the respective amount of surrounding mines.
 - `☠`: A mine that has been stepped on and exploded. Better luck next time!
 - `~`: A mine that has been stepped on, but turned out to be a dud. Lucky you!
 - `⚐`: A flagged field with a potential mine underneath it. Flagged fields cannot be accidentally stepped on.
