@@ -56,7 +56,7 @@ impl Board {
     }
 
     #[must_use]
-    pub fn visit(&mut self, coordinate: &Coordinate) -> MoveResult {
+    pub fn visit(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.make_move(coordinate) {
             MoveResult::Lost => MoveResult::Lost,
             MoveResult::InvalidPosition => MoveResult::InvalidPosition,
@@ -71,7 +71,7 @@ impl Board {
     }
 
     #[must_use]
-    pub fn toggle_flag(&mut self, coordinate: &Coordinate) -> MoveResult {
+    pub fn toggle_flag(&mut self, coordinate: Coordinate) -> MoveResult {
         self.fields
             .get_mut(coordinate)
             .map_or(MoveResult::InvalidPosition, |field| {
@@ -123,7 +123,7 @@ impl Board {
             .collect()
     }
 
-    fn make_move(&mut self, coordinate: &Coordinate) -> MoveResult {
+    fn make_move(&mut self, coordinate: Coordinate) -> MoveResult {
         if self.initialized {
             self.visit_coordinate(coordinate)
         } else {
@@ -131,7 +131,7 @@ impl Board {
         }
     }
 
-    fn first_move(&mut self, coordinate: &Coordinate) -> MoveResult {
+    fn first_move(&mut self, coordinate: Coordinate) -> MoveResult {
         let result = self
             .fields
             .get_mut(coordinate)
@@ -147,7 +147,7 @@ impl Board {
         result
     }
 
-    fn initialize(&mut self, coordinate: Option<&Coordinate>) {
+    fn initialize(&mut self, coordinate: Option<Coordinate>) {
         self.populate_mines();
         let adjacent_mines = self.count_all_adjacent_mines();
         self.fields.enumerate_mut().for_each(|(coordinate, field)| {
@@ -180,7 +180,7 @@ impl Board {
             .for_each(Field::set_dud);
     }
 
-    fn visit_coordinate(&mut self, coordinate: &Coordinate) -> MoveResult {
+    fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
             Some(field) => match (field.visit(), self.initialized) {
                 (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
@@ -196,7 +196,7 @@ impl Board {
         }
     }
 
-    fn visit_neighbors(&mut self, coordinate: &Coordinate) {
+    fn visit_neighbors(&mut self, coordinate: Coordinate) {
         self.walk_safe_neighbors(coordinate)
             .collect::<Vec<_>>()
             .iter()
@@ -205,8 +205,8 @@ impl Board {
             });
     }
 
-    fn walk_safe_neighbors(&self, coordinate: &Coordinate) -> SafeNeighbors<'_> {
-        SafeNeighbors::new(&self.fields, *coordinate)
+    fn walk_safe_neighbors(&self, coordinate: Coordinate) -> SafeNeighbors<'_> {
+        SafeNeighbors::new(&self.fields, coordinate)
     }
 
     fn all_mines_cleared(&self) -> bool {

@@ -35,8 +35,8 @@ impl Game {
 
     fn next_round(&mut self) -> bool {
         match read_until_valid::<Action>("Enter action: ") {
-            Action::Visit(coordinate) => self.visit(&coordinate),
-            Action::ToggleFlag(coordinate) => self.toggle_flag(&coordinate),
+            Action::Visit(coordinate) => self.visit(coordinate),
+            Action::ToggleFlag(coordinate) => self.toggle_flag(coordinate),
             Action::VisitAllNonFlaggedFields => self.visit_non_flagged_fields(),
             Action::Exit => {
                 println!("Bye!");
@@ -47,7 +47,7 @@ impl Game {
         true
     }
 
-    fn visit(&mut self, coordinate: &Coordinate) {
+    fn visit(&mut self, coordinate: Coordinate) {
         match self.board.visit(coordinate) {
             MoveResult::Continue => println!("\n{self}"),
             MoveResult::InvalidPosition => {
@@ -58,7 +58,7 @@ impl Game {
         }
     }
 
-    fn toggle_flag(&mut self, coordinate: &Coordinate) {
+    fn toggle_flag(&mut self, coordinate: Coordinate) {
         match self.board.toggle_flag(coordinate) {
             MoveResult::InvalidPosition => {
                 println!("The field at {coordinate} is not on the board.");
