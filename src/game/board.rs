@@ -175,18 +175,17 @@ impl Board {
     }
 
     fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
-        match self.fields.get_mut(coordinate) {
-            Some(field) => match (field.visit(), self.init.is_none()) {
-                (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
-                (VisitResult::AlreadyVisited, true) | (VisitResult::Flagged, _) => {
-                    MoveResult::Continue
-                }
-                (_, _) => {
-                    self.visit_neighbors(coordinate);
-                    MoveResult::Continue
-                }
-            },
-            None => MoveResult::InvalidPosition,
+        let Some(field) = self.fields.get_mut(coordinate) else {
+            return MoveResult::InvalidPosition;
+        };
+
+        match field.visit() {
+            VisitResult::SteppedOnMine => MoveResult::Lost,
+            VisitResult::AlreadyVisited | VisitResult::Flagged => MoveResult::Continue,
+            _ => {
+                self.visit_neighbors(coordinate);
+                MoveResult::Continue
+            }
         }
     }
 
