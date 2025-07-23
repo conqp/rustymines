@@ -21,9 +21,7 @@ mod neighbors_iterator;
 #[derive(Debug)]
 pub struct Board {
     fields: Grid<Field>,
-    mines: u8,
-    duds: u8,
-    initialized: bool,
+    init: Option<(u8, u8)>,
     rng: ThreadRng,
 }
 
@@ -48,9 +46,7 @@ impl Board {
 
         Ok(Self {
             fields: Grid::new_default(width, height),
-            mines,
-            duds,
-            initialized: false,
+            init: Some((mines, duds)),
             rng: ThreadRng::default(),
         })
     }
@@ -84,8 +80,8 @@ impl Board {
     pub fn visit_non_flagged_fields(&mut self) -> MoveResult {
         let mut result = MoveResult::Continue;
 
-        if !self.initialized {
-            self.initialize(None);
+        if let Some((mines, duds)) = self.init.take() {
+            self.initialize(mines, duds, None);
         }
 
         self.fields.iter_mut().for_each(|field| {
@@ -124,14 +120,14 @@ impl Board {
     }
 
     fn make_move(&mut self, coordinate: Coordinate) -> MoveResult {
-        if self.initialized {
-            self.visit_coordinate(coordinate)
+        if let Some((mines, duds)) = self.init.take() {
+            self.first_move(mines, duds, coordinate)
         } else {
-            self.first_move(coordinate)
+            self.visit_coordinate(coordinate)
         }
     }
 
-    fn first_move(&mut self, coordinate: Coordinate) -> MoveResult {
+    fn first_move(&mut self, mines: u8, duds: u8, coordinate: Coordinate) -> MoveResult {
         let result = self
             .fields
             .get_mut(coordinate)
@@ -141,48 +137,46 @@ impl Board {
             });
 
         if result == MoveResult::Continue {
-            self.initialize(Some(coordinate));
+            self.initialize(mines, duds, Some(coordinate));
         }
 
         result
     }
 
-    fn initialize(&mut self, coordinate: Option<Coordinate>) {
-        self.populate_mines();
+    fn initialize(&mut self, mines: u8, duds: u8, coordinate: Option<Coordinate>) {
+        self.populate_mines(mines);
         let adjacent_mines = self.count_all_adjacent_mines();
         self.fields.enumerate_mut().for_each(|(coordinate, field)| {
             field.set_adjacent_mines(adjacent_mines.get(&coordinate).copied().unwrap_or(0));
         });
-        self.populate_duds();
+        self.populate_duds(duds);
 
         if let Some(coordinate) = coordinate {
             self.visit_coordinate(coordinate);
         }
-
-        self.initialized = true;
     }
 
-    fn populate_mines(&mut self) {
+    fn populate_mines(&mut self, mines: u8) {
         self.fields
             .iter_mut()
             .filter(|field| !field.has_been_visited())
-            .choose_multiple(&mut self.rng, self.mines.into())
+            .choose_multiple(&mut self.rng, mines.into())
             .into_iter()
             .for_each(Field::set_mine);
     }
 
-    fn populate_duds(&mut self) {
+    fn populate_duds(&mut self, duds: u8) {
         self.fields
             .iter_mut()
             .filter(|field| field.has_mine())
-            .choose_multiple(&mut self.rng, self.duds.into())
+            .choose_multiple(&mut self.rng, duds.into())
             .into_iter()
             .for_each(Field::set_dud);
     }
 
     fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.fields.get_mut(coordinate) {
-            Some(field) => match (field.visit(), self.initialized) {
+            Some(field) => match (field.visit(), self.init.is_none()) {
                 (VisitResult::SteppedOnMine, _) => MoveResult::Lost,
                 (VisitResult::AlreadyVisited, true) | (VisitResult::Flagged, _) => {
                     MoveResult::Continue
