@@ -20,6 +20,7 @@ mod web_ui;
 mod wrapper;
 
 type Games = Arc<RwLock<BTreeMap<IpAddr, Wrapper>>>;
+const TITLE: &str = "RustyMines";
 
 #[launch]
 fn rocket() -> Rocket<Build> {
@@ -32,7 +33,9 @@ fn rocket() -> Rocket<Build> {
     rocket::build().manage(games).mount(
         "/",
         routes![
-            new_game::new_game,
+            new_game::default,
+            new_game::configure_custom,
+            new_game::create_custom,
             make_move::make_move,
             toggle_mode::toggle_mode,
         ],

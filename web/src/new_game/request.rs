@@ -22,6 +22,17 @@ pub struct Request {
     duds: u8,
 }
 
+impl Default for Request {
+    fn default() -> Self {
+        Self {
+            width: DEFAULT_SIZE,
+            height: DEFAULT_SIZE,
+            mines: DEFAULT_MINES,
+            duds: DEFAULT_DUDS,
+        }
+    }
+}
+
 impl TryFrom<Request> for Board {
     type Error = rustymines::Error;
 

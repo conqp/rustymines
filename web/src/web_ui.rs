@@ -10,10 +10,10 @@ use rocket::http::{ContentType, Status};
 use rocket::response::Responder;
 use rocket::{Request, Response, response};
 
+use crate::TITLE;
 use crate::wrapper::Wrapper;
 
-const HEADER: &str = "RustyMines";
-const TITLE: &str = "RustyMines";
+const HEADER: &str = TITLE;
 const BUTTON_SIZE: &str = "30px";
 
 /// The web UI.
@@ -113,9 +113,12 @@ impl Html for WebUi<'_, '_> {
 #[repr(transparent)]
 pub struct View(String);
 
-impl From<WebUi<'_, '_>> for View {
-    fn from(web_ui: WebUi<'_, '_>) -> Self {
-        Self(web_ui.to_html_string())
+impl<T> From<T> for View
+where
+    T: Html,
+{
+    fn from(src: T) -> Self {
+        Self(src.to_html_string())
     }
 }
 
