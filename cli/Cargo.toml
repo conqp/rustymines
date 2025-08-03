@@ -1,6 +1,6 @@
 [package]
 name = "rustymines-cli"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
 description = "A mine sweeping game for the console."
