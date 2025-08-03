@@ -139,9 +139,9 @@ impl Field {
             (false, false, true, _, _) | (true, false, true, true, _) => View::Flag,
             (_, true, _, true, true) => View::SteppedOnDud,
             (_, true, _, true, false) => View::SteppedOnMine,
-            (false, true, false, false, _) | (true, _, _, false, _) => {
-                View::Clear(self.adjacent_mines())
-            }
+            (false, true, false, false, _) | (true, _, _, false, _) => View::Clear {
+                adjacent_mines: self.adjacent_mines(),
+            },
             (true, false, false, true, _) => View::Mine,
             _ => View::Covered,
         }

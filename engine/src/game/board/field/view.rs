@@ -12,8 +12,8 @@ pub enum View {
     SteppedOnDud,
     /// The player stepped on a live mine.
     SteppedOnMine,
-    /// The field is clear. The inner number is the amount of surrounding mines.
-    Clear(u8),
+    /// The field is clear with the respective amount of adjacent mines.
+    Clear { adjacent_mines: u8 },
     /// The field contains a mine.
     Mine,
 }
@@ -28,7 +28,7 @@ impl View {
             Self::Flag => '⚐',
             Self::SteppedOnDud => '~',
             Self::SteppedOnMine => '☠',
-            Self::Clear(surrounding_mines) => match surrounding_mines {
+            Self::Clear { adjacent_mines } => match adjacent_mines {
                 0 => ' ',
                 mines => char::from_digit(mines as u32, 10)
                     .expect("Amount of adjacent mines should be a single decimal digit."),
