@@ -31,7 +31,7 @@ impl Board {
     ///
     /// # Errors
     ///
-    /// Returns an [`Error`] if the grid parameters are out of bounds.
+    /// Returns an [`Error`] if the grid size or amount of mines and duds is out of bounds.
     pub fn new(
         width: NonZero<usize>,
         height: NonZero<usize>,

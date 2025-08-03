@@ -1,4 +1,5 @@
 use std::fmt;
+use std::num::NonZero;
 use std::time::{Duration, Instant};
 
 use action::Action;
@@ -6,6 +7,8 @@ use board::field::View;
 use board::{Board, MoveResult};
 use grid2d::Coordinate;
 use state::State;
+
+use crate::Error;
 
 pub mod action;
 pub mod board;
@@ -21,13 +24,17 @@ pub struct Game {
 
 impl Game {
     /// Crate a new game.
-    #[must_use]
-    pub fn new(board: Board) -> Self {
-        Self {
-            board,
-            start: Instant::now(),
-            end: None,
-        }
+    ///
+    /// # Errors
+    ///
+    /// Returns an [`Error`] if the grid size or amount of mines and duds is out of bounds.
+    pub fn new(
+        width: NonZero<usize>,
+        height: NonZero<usize>,
+        mines: u8,
+        duds: u8,
+    ) -> Result<Self, Error> {
+        Board::new(width, height, mines, duds).map(Self::from)
     }
 
     /// Return an iterator of field views over the game board's rows.
@@ -124,6 +131,10 @@ impl fmt::Display for Game {
 
 impl From<Board> for Game {
     fn from(board: Board) -> Self {
-        Self::new(board)
+        Self {
+            board,
+            start: Instant::now(),
+            end: None,
+        }
     }
 }
