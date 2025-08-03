@@ -6,7 +6,7 @@ use rustymines::{Board, Game};
 
 use crate::games_util::GamesUtil;
 use crate::web_ui::View;
-use crate::{Error, Games, IpAddr, TITLE};
+use crate::{Error, FONT_SIZE, Games, IpAddr, TITLE};
 
 mod request;
 
@@ -40,11 +40,19 @@ pub fn create_custom(
 }
 
 fn custom_game_config_page() -> View {
-    let width = r#"<input type="number" name="width" placeholder="width">"#;
-    let height = r#"<input type="number" name="height" placeholder="height">"#;
-    let mines = r#"<input type="number" name="mines" placeholder="mines">"#;
-    let duds = r#"<input type="number" name="duds" placeholder="duds">"#;
-    let button = r#"<input type="submit" value="Start">"#;
+    let width = format!(
+        r#"<input type="number" name="width" placeholder="width" style="font-size: {FONT_SIZE};">"#
+    );
+    let height = format!(
+        r#"<input type="number" name="height" placeholder="height" style="font-size: {FONT_SIZE};">"#
+    );
+    let mines = format!(
+        r#"<input type="number" name="mines" placeholder="mines" style="font-size: {FONT_SIZE};">"#
+    );
+    let duds = format!(
+        r#"<input type="number" name="duds" placeholder="duds" style="font-size: {FONT_SIZE};">"#
+    );
+    let button = format!(r#"<input type="submit" value="Start" style="font-size: {FONT_SIZE};">"#);
     let form = format!(
         r#"<form action="/custom" method="post">{width}<br/>{height}<br/>{mines}<br/>{duds}<br/>{button}</form>"#
     );

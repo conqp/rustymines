@@ -21,6 +21,7 @@ mod wrapper;
 
 type Games = Arc<RwLock<BTreeMap<IpAddr, Wrapper>>>;
 const TITLE: &str = "RustyMines";
+const FONT_SIZE: &str = "2em";
 
 #[launch]
 fn rocket() -> Rocket<Build> {

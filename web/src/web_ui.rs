@@ -10,11 +10,11 @@ use rocket::http::{ContentType, Status};
 use rocket::response::Responder;
 use rocket::{Request, Response, response};
 
-use crate::TITLE;
 use crate::wrapper::Wrapper;
+use crate::{FONT_SIZE, TITLE};
 
 const HEADER: &str = TITLE;
-const BUTTON_SIZE: &str = "30px";
+const BUTTON_SIZE: &str = FONT_SIZE;
 
 /// The web UI.
 #[derive(Debug)]
@@ -61,7 +61,7 @@ impl WebUi<'_, '_> {
                     self.wrapper.flag
                 );
                 let button = format!(
-                    r#"<input type="submit" value="{}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE};">"#,
+                    r#"<input type="submit" value="{}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};"">"#,
                     field.view(self.wrapper.game.end().is_some())
                 );
                 let form = format!(
@@ -80,7 +80,7 @@ impl WebUi<'_, '_> {
     fn footer(&self) -> Container {
         let mut container =Container::new(ContainerType::Footer)
             .with_raw(format!(
-                r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}"></form>"#,
+                r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}" style="font-size: {FONT_SIZE};"></form>"#,
                     if self.wrapper.flag { "flag" } else { "visit" }
                 )
             );
@@ -88,10 +88,10 @@ impl WebUi<'_, '_> {
         if let Some(message) = self.message {
             container.add_html(match message {
                 Ok(message) => HtmlElement::new(HtmlTag::ParagraphText)
-                    .with_attribute("style", "color: green;")
+                    .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))
                     .with_raw(message),
                 Err(error) => HtmlElement::new(HtmlTag::ParagraphText)
-                    .with_attribute("style", "color: red;")
+                    .with_attribute("style", format!("color: red; font-size: {FONT_SIZE};"))
                     .with_raw(error),
             });
         }
