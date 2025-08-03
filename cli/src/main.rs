@@ -38,7 +38,10 @@ fn main() {
 
                         break;
                     }
-                    State::Aborted => println!("Bye!"),
+                    State::Aborted => {
+                        println!("Bye!");
+                        break;
+                    }
                     State::InvalidMove => println!("Invalid move."),
                     State::Continue => (),
                 }
