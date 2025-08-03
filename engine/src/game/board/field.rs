@@ -43,50 +43,60 @@ pub enum VisitResult {
 }
 
 impl Field {
+    /// Return `true` if the field contains a mine.
     #[must_use]
     pub const fn has_mine(self) -> bool {
         self.contains(Self::MINED)
     }
 
+    /// Return `true` if the field has been visited.
     #[must_use]
     pub const fn has_been_visited(self) -> bool {
         self.contains(Self::VISITED)
     }
 
+    /// Return `true` if the field has been flagged.
     #[must_use]
     pub const fn is_flagged(self) -> bool {
         self.contains(Self::FLAGGED)
     }
 
+    /// Return `true` if the field is a dud.
     #[must_use]
     pub const fn is_dud(self) -> bool {
         self.contains(Self::IS_DUD)
     }
 
+    /// Return the amount of mines adjacent to the field.
     #[must_use]
     pub const fn adjacent_mines(self) -> u8 {
         self.intersection(Self::ADJACENT_MINES).0
     }
 
+    /// Return `true` if the field is safe to visit.
     #[must_use]
     pub const fn is_safe(self) -> bool {
         !self.has_mine() && !self.is_flagged()
     }
 
+    /// Set the field to contain a mine.
     pub fn set_mine(&mut self) {
         self.insert(Self::MINED);
     }
 
+    /// Set the field to be a dud.
     pub fn set_dud(&mut self) {
         self.insert(Self::IS_DUD);
     }
 
+    /// Set the field's amount of adjacent mines.
     pub const fn set_adjacent_mines(&mut self, adjacent_mines: u8) {
         *self = self
             .intersection(Self::FLAGS)
             .union(Self::ADJACENT_MINES.intersection(Self(adjacent_mines)));
     }
 
+    /// Visit the field.
     pub fn visit(&mut self) -> VisitResult {
         if self.is_flagged() {
             return VisitResult::Flagged;
@@ -109,12 +119,14 @@ impl Field {
         VisitResult::SteppedOnMine
     }
 
+    /// Toggle the flag on the field.
     pub fn toggle_flag(&mut self) {
         if !self.has_been_visited() {
             *self ^= Self::FLAGGED;
         }
     }
 
+    /// Return the expected view of the field.
     #[must_use]
     pub const fn view(self, game_over: bool) -> View {
         match (
