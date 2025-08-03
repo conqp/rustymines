@@ -4,14 +4,15 @@ use std::time::Instant;
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Outcome {
     /// Flag whether the game was won.
-    pub won: bool,
+    won: bool,
     /// Time when the game ended.
-    pub end: Instant,
+    end: Instant,
 }
 
 impl Outcome {
     /// Crate a new instance of a game outcome.
-    pub fn new(won: bool) -> Self {
+    #[must_use]
+    pub(crate) fn new(won: bool) -> Self {
         Self {
             won,
             end: Instant::now(),
@@ -19,12 +20,26 @@ impl Outcome {
     }
 
     /// Crate a new outcome for a win.
-    pub fn won() -> Self {
+    #[must_use]
+    pub(crate) fn won() -> Self {
         Self::new(true)
     }
 
     /// Crate a new outcome for a loss.
-    pub fn lost() -> Self {
+    #[must_use]
+    pub(crate) fn lost() -> Self {
         Self::new(false)
+    }
+
+    /// Returns `true` if the game is won, else `false`.
+    #[must_use]
+    pub const fn is_won(self) -> bool {
+        self.won
+    }
+
+    /// Returns the instant when the game ended.
+    #[must_use]
+    pub const fn end(self) -> Instant {
+        self.end
     }
 }

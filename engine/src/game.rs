@@ -95,10 +95,16 @@ impl Game {
         self.start
     }
 
+    /// Returns the outcome, if the game has ended.
+    #[must_use]
+    pub const fn outcome(&self) -> Option<Outcome> {
+        self.outcome
+    }
+
     /// Returns the instance of then the game ended, if applicable.
     #[must_use]
     pub fn end(&self) -> Option<Instant> {
-        self.outcome.map(|outcome| outcome.end)
+        self.outcome.map(Outcome::end)
     }
 
     /// Returns `true` if the game is over.
@@ -123,7 +129,7 @@ impl Game {
     /// - `None` if the game is still running.
     #[must_use]
     pub fn is_won(&self) -> Option<bool> {
-        self.outcome.map(|outcome| outcome.won)
+        self.outcome.map(Outcome::is_won)
     }
 
     /// Play the next round.
