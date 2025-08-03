@@ -1,13 +1,13 @@
 use std::fmt;
 use std::time::{Duration, Instant};
 
+use action::Action;
 use board::move_result::MoveResult;
 use board::Board;
 use grid2d::Coordinate;
 use state::State;
 
-use crate::action::Action;
-
+pub mod action;
 pub mod board;
 pub mod state;
 
