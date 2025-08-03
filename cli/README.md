@@ -1,4 +1,4 @@
-# rustymines
+# rustymines-cli
 
 A mine sweeping game for the console with optional dud mines.
 
