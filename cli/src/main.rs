@@ -6,7 +6,7 @@ use action::Action;
 use args::Args;
 use clap::Parser;
 use io::read_until_valid;
-use rustymines::{Board, Game, State};
+use rustymines::{Game, State};
 
 mod action;
 mod args;
@@ -20,7 +20,7 @@ const HELP: [&str; 4] = [
 ];
 
 fn main() -> ExitCode {
-    match Board::try_from(Args::parse()).map(Game::new) {
+    match Game::try_from(Args::parse()) {
         Ok(mut game) => {
             println!("{game}\n");
             print_help();

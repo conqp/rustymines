@@ -1,6 +1,6 @@
 [package]
 name = "rustymines-cli"
-version = "1.2.2"
+version = "1.3.0"
 edition = "2024"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
 description = "A mine sweeping game for the console."
@@ -15,7 +15,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
-rustymines = "2.2"
+rustymines = "2.3"
 
 [lints]
 workspace = true

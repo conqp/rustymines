@@ -1,7 +1,7 @@
 use std::num::NonZero;
 
 use clap::Parser;
-use rustymines::{Board, Error};
+use rustymines::{Error, Game};
 
 const DEFAULT_SIZE: NonZero<usize> = NonZero::new(8).expect("Default size should be non-zero.");
 
@@ -23,7 +23,7 @@ pub struct Args {
     pub duds: u8,
 }
 
-impl TryFrom<Args> for Board {
+impl TryFrom<Args> for Game {
     type Error = Error;
 
     fn try_from(args: Args) -> Result<Self, Self::Error> {
