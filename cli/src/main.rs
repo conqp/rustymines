@@ -27,9 +27,10 @@ fn main() {
                     break;
                 };
 
-                println!("{game}\n");
                 match state {
                     State::GameOver { won } => {
+                        println!("{game}\n");
+
                         if won {
                             println!("\nYou won the game.\nTime: {:?}", game.duration());
                         } else {
@@ -43,7 +44,7 @@ fn main() {
                         break;
                     }
                     State::InvalidMove => println!("Invalid move."),
-                    State::Continue => (),
+                    State::Continue => println!("{game}\n"),
                 }
             }
         }
