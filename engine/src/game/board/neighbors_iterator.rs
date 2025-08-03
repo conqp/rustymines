@@ -3,7 +3,7 @@ use std::iter::once;
 
 use grid2d::{Coordinate, Grid};
 
-use super::field::Field;
+use crate::game::board::field::Field;
 
 /// An iterator over neighbors of a coordinate, which are deemed safe to uncover.
 #[derive(Clone, Debug, Eq, PartialEq)]

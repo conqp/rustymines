@@ -11,8 +11,8 @@ pub enum Action {
     ToggleFlag(Coordinate),
     /// Visit all non-flagged fields.
     VisitAllNonFlaggedFields,
-    /// Exit the game.
-    Exit,
+    /// Abort the game.
+    Abort,
 }
 
 impl FromStr for Action {
@@ -21,7 +21,7 @@ impl FromStr for Action {
     /// This assumes a trimmed `&str`.
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         if string == "exit" {
-            Ok(Self::Exit)
+            Ok(Self::Abort)
         } else if string == "!!" {
             Ok(Self::VisitAllNonFlaggedFields)
         } else if string.starts_with('!') {

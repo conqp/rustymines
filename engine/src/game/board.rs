@@ -2,20 +2,19 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::num::NonZero;
 
-pub use error::Error;
+use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
-pub use move_result::MoveResult;
+use header::Header;
+use move_result::MoveResult;
 use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
-use crate::game::board::header::Header;
-
-mod error;
+pub mod error;
 mod field;
 mod header;
-mod move_result;
+pub mod move_result;
 mod neighbors_iterator;
 
 /// The game board, aka. the minefield.
@@ -28,6 +27,10 @@ pub struct Board {
 
 impl Board {
     /// Crate a new game board with the respective parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an [`Error`] if the grid parameters are out of bounds.
     pub fn new(
         width: NonZero<usize>,
         height: NonZero<usize>,
@@ -111,6 +114,7 @@ impl Board {
     }
 
     /// Return the amount of flags on the field.
+    #[must_use]
     pub fn flags(&self) -> usize {
         self.fields
             .iter()

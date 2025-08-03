@@ -1,6 +1,7 @@
 use std::num::NonZero;
 
 use clap::Parser;
+use rustymines::{Board, Error};
 
 const DEFAULT_SIZE: NonZero<usize> = NonZero::new(8).expect("Default size should be non-zero.");
 
@@ -15,4 +16,12 @@ pub struct Args {
     pub mines: u8,
     #[clap(short, long, name = "duds", value_parser, default_value_t = 0)]
     pub duds: u8,
+}
+
+impl TryFrom<Args> for Board {
+    type Error = Error;
+
+    fn try_from(args: Args) -> Result<Self, Self::Error> {
+        Self::new(args.width, args.height, args.mines, args.duds)
+    }
 }
