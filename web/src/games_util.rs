@@ -48,16 +48,16 @@ impl GamesUtil for Games {
             .unwrap_or_else(PoisonError::into_inner)
             .get_mut(client_addr)
             .ok_or(Error::NotPlaying)
-            .and_then(|wrapper| {
+            .map(|wrapper| {
                 let Some(state) = wrapper.game.next_round(action) else {
-                    return Err(Error::GameOver(WebUi::new(wrapper, None).into()));
+                    return WebUi::new(wrapper, None).into();
                 };
 
-                Ok(match state {
+                match state {
                     State::Continue | State::GameOver { .. } => WebUi::new(wrapper, None),
                     State::InvalidMove => WebUi::new(wrapper, Some("Invalid coordinate.")),
                 }
-                .into())
+                .into()
             })
     }
 }
