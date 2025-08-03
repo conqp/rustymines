@@ -1,6 +1,6 @@
 [package]
 name = "rustymines"
-version = "1.1.25"
+version = "2.0.0"
 edition = "2024"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
 description = "A mine sweeping game with optional duds."
@@ -9,8 +9,8 @@ readme = "../README.md"
 homepage = "https://github.com/conqp/rustymines/"
 repository = "https://github.com/conqp/rustymines/"
 documentation = "https://docs.rs/rustymines"
-keywords = ["mine", "mines", "sweeper", "game", "console"]
-categories = ["games"]
+keywords = ["mine", "mines", "sweeper", "game"]
+categories = ["games", "game-engines"]
 exclude = [".gitignore"]
 
 [dependencies]

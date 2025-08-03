@@ -2,6 +2,16 @@
 name = "rustymines-cli"
 version = "0.1.0"
 edition = "2024"
+authors = ["Richard Neumann <mail@richard-neumann.de>"]
+description = "A mine sweeping game with optional duds."
+license = "MIT"
+readme = "../README.md"
+homepage = "https://github.com/conqp/rustymines/"
+repository = "https://github.com/conqp/rustymines/"
+documentation = "https://docs.rs/rustymines-cli"
+keywords = ["mine", "mines", "sweeper", "game", "console"]
+categories = ["games"]
+exclude = [".gitignore"]
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
