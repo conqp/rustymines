@@ -4,7 +4,7 @@ use rocket::form::Form;
 use rocket::{State, post};
 use rustymines::{Board, Game};
 
-use crate::{Games, IpAddr};
+use crate::{Games, IpAddr, MUTEX_NOT_POISONED};
 
 mod error;
 mod request;
@@ -17,7 +17,7 @@ pub fn new_game(
 ) -> Result<(), Error> {
     if games
         .read()
-        .expect("Mutex should not be poisoned")
+        .expect(MUTEX_NOT_POISONED)
         .contains_key(&client_addr)
     {
         return Err(Error::AlreadyPlaying);
@@ -27,7 +27,7 @@ pub fn new_game(
         Ok(game) => {
             games
                 .write()
-                .expect("Mutex should not be poisoned.")
+                .expect(MUTEX_NOT_POISONED)
                 .insert(client_addr, game);
             Ok(())
         }

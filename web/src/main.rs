@@ -9,6 +9,8 @@ use rustymines::Game;
 
 mod new_game;
 
+const MUTEX_NOT_POISONED: &str = "Mutex should not be poisoned.";
+
 type Games = Arc<RwLock<BTreeMap<IpAddr, Game>>>;
 
 #[launch]
