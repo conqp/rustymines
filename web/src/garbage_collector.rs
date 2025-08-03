@@ -34,7 +34,7 @@ impl GarbageCollector {
         }
     }
 
-    /// Remove timed-out games.
+    /// Remove finished or timed-out games.
     fn collect(&self) {
         self.games
             .write()
