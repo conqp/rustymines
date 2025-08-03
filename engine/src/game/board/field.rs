@@ -1,6 +1,9 @@
 use std::fmt::{Display, Formatter};
 
 use bitflags::bitflags;
+pub use view::View;
+
+mod view;
 
 /// A field on the game board (aka. minefield).
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
@@ -113,7 +116,7 @@ impl Field {
     }
 
     #[must_use]
-    pub const fn as_char(self, game_over: bool) -> char {
+    pub const fn view(self, game_over: bool) -> View {
         match (
             game_over,
             self.has_been_visited(),
@@ -121,24 +124,20 @@ impl Field {
             self.has_mine(),
             self.is_dud(),
         ) {
-            (false, false, true, _, _) | (true, false, true, true, _) => '⚐',
-            (_, true, _, true, true) => '~',
-            (_, true, _, true, false) => '☠',
+            (false, false, true, _, _) | (true, false, true, true, _) => View::Flag,
+            (_, true, _, true, true) => View::SteppedOnDud,
+            (_, true, _, true, false) => View::SteppedOnMine,
             (false, true, false, false, _) | (true, _, _, false, _) => {
-                match self.adjacent_mines() {
-                    0 => ' ',
-                    mines => char::from_digit(mines as u32, 10)
-                        .expect("Amount of adjacent mines should be a single decimal digit."),
-                }
+                View::Clear(self.adjacent_mines())
             }
-            (true, false, false, true, _) => '*',
-            _ => '■',
+            (true, false, false, true, _) => View::Mine,
+            _ => View::Covered,
         }
     }
 }
 
 impl Display for Field {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        self.as_char(f.alternate()).fmt(f)
+        self.view(f.alternate()).fmt(f)
     }
 }

@@ -12,7 +12,7 @@ use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
 pub mod error;
-mod field;
+pub mod field;
 mod header;
 mod move_result;
 mod neighbors_iterator;
