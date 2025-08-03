@@ -106,7 +106,7 @@ impl Field {
             return VisitResult::AlreadyVisited;
         }
 
-        *self |= Self::VISITED;
+        self.insert(Self::VISITED);
 
         if !self.has_mine() {
             return VisitResult::Cleared;
@@ -122,7 +122,7 @@ impl Field {
     /// Toggle the flag on the field.
     pub fn toggle_flag(&mut self) {
         if !self.has_been_visited() {
-            *self ^= Self::FLAGGED;
+            self.toggle(Self::FLAGGED);
         }
     }
 
