@@ -78,19 +78,25 @@ impl WebUi<'_, '_> {
     }
 
     fn footer(&self) -> Container {
-        Container::new(ContainerType::Footer)
+        let mut container =Container::new(ContainerType::Footer)
             .with_raw(format!(
                 r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}"></form>"#,
                     if self.wrapper.flag { "flag" } else { "make_move" }
                 )
-            )
-            .with_html(
-                HtmlElement::new(HtmlTag::ParagraphText).with_raw(self.message.map_or("",| message| match message {
-                        Ok(msg) => msg,
-                        Err(error) => error,
-                    }
-                )),
-            )
+            );
+
+        if let Some(message) = self.message {
+            container.add_html(match message {
+                Ok(message) => HtmlElement::new(HtmlTag::ParagraphText)
+                    .with_attribute("style", "color: green;")
+                    .with_raw(message),
+                Err(error) => HtmlElement::new(HtmlTag::ParagraphText)
+                    .with_attribute("style", "color: red;")
+                    .with_raw(error),
+            });
+        }
+
+        container
     }
 }
 
