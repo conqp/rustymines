@@ -1,6 +1,7 @@
 use std::net::IpAddr;
 use std::sync::PoisonError;
 
+use rocket::debug;
 use rustymines::{Action, Game, State};
 
 use crate::Games;
@@ -19,6 +20,9 @@ pub trait GamesUtil {
 
     /// Perform a user action.
     fn make_move(&self, client_addr: &IpAddr, action: Action) -> Result<View, Error>;
+
+    /// List current game keys.
+    fn games(&self) -> Vec<IpAddr>;
 }
 
 impl GamesUtil for Games {
@@ -29,6 +33,7 @@ impl GamesUtil for Games {
         self.write()
             .unwrap_or_else(PoisonError::into_inner)
             .insert(client_addr, wrapper);
+        debug!("Current games: {:?}", self.games());
         view
     }
 
@@ -59,5 +64,13 @@ impl GamesUtil for Games {
                 }
                 .into()
             })
+    }
+
+    fn games(&self) -> Vec<IpAddr> {
+        self.read()
+            .unwrap_or_else(PoisonError::into_inner)
+            .keys()
+            .copied()
+            .collect()
     }
 }
