@@ -4,6 +4,7 @@ use bitflags::bitflags;
 
 /// A field on the game board (aka. minefield).
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
+#[repr(transparent)]
 pub struct Field(u8);
 
 bitflags! {
