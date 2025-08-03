@@ -57,7 +57,7 @@ impl Game {
 
     /// Play the next round.
     ///
-    /// Return `true` if the player did not request to abort the game, otherwise `false`.
+    /// Return `Some(State)` if the player did not request to abort the game, otherwise `None`.
     pub fn next_round(&mut self, action: Action) -> Option<State> {
         if self.end.is_some() {
             return None;
