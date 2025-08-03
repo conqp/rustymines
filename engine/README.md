@@ -8,4 +8,4 @@ For documentation, please refer to: https://docs.rs/rustymines
 
 ## Where did the CLI game go?
 
-The CLI implementation of the game has been outsourced to [rustymines-cli](https://crates.io/crates/rustymines).
+The CLI implementation of the game has been outsourced to [rustymines-cli](https://crates.io/crates/rustymines-cli).
