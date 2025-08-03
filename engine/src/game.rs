@@ -2,6 +2,7 @@ use std::fmt;
 use std::time::{Duration, Instant};
 
 use action::Action;
+use board::field::View;
 use board::{Board, MoveResult};
 use grid2d::Coordinate;
 use state::State;
@@ -29,10 +30,28 @@ impl Game {
         }
     }
 
-    /// Return a shared reference to the underlying game board.
-    #[must_use]
-    pub const fn board(&self) -> &Board {
-        &self.board
+    /// Return an iterator of field views over the game board's rows.
+    pub fn rows(&self) -> impl Iterator<Item = impl Iterator<Item = View>> {
+        self.board
+            .fields()
+            .rows()
+            .map(|row| row.map(|field| field.view(self.end.is_some())))
+    }
+
+    /// Return an iterator of field views over the game board's columns.
+    pub fn columns(&self) -> impl Iterator<Item = impl Iterator<Item = View>> {
+        self.board
+            .fields()
+            .columns()
+            .map(|column| column.map(|field| field.view(self.end.is_some())))
+    }
+
+    /// Return an iterator oif field views over the game board's fields.
+    pub fn iter(&self) -> impl Iterator<Item = View> {
+        self.board
+            .fields()
+            .iter()
+            .map(|field| field.view(self.end.is_some()))
     }
 
     /// Returns the instance of when the game was started.
