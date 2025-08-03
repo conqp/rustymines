@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use grid2d::{Coordinate, CoordinateParseError};
+use rustymines::grid::{Coordinate, CoordinateParseError};
 
 /// Possible player actions during a game.
 #[derive(Clone, Copy, Debug)]
