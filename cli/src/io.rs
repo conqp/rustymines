@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fmt::Display;
-use std::io::{stdin, stdout, Write};
+use std::io::{Write, stdin, stdout};
 use std::str::FromStr;
 
 /// An error when reading data from the standard input.
