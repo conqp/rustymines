@@ -1,5 +1,7 @@
 //! A mine sweeping game with optional dud mines.
 
+use std::process::ExitCode;
+
 use action::Action;
 use args::Args;
 use clap::Parser;
@@ -17,7 +19,7 @@ const HELP: [&str; 4] = [
     "Abort:                        exit",
 ];
 
-fn main() {
+fn main() -> ExitCode {
     match Board::try_from(Args::parse()).map(Game::new) {
         Ok(mut game) => {
             println!("{game}\n");
@@ -30,11 +32,11 @@ fn main() {
 
                         if won {
                             println!("\nYou won the game.\nTime: {:?}", game.duration());
-                        } else {
-                            println!("\nYou lost the game.");
+                            return ExitCode::SUCCESS;
                         }
 
-                        break;
+                        println!("\nYou lost the game.");
+                        return ExitCode::FAILURE;
                     }
                     State::InvalidMove => println!("Invalid move."),
                     State::Continue => println!("{game}\n"),
@@ -43,6 +45,8 @@ fn main() {
         }
         Err(msg) => eprintln!("Error: {msg}"),
     }
+
+    ExitCode::FAILURE
 }
 
 fn print_help() {
