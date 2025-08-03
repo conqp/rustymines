@@ -182,7 +182,7 @@ impl Board {
 
     /// Populate the field with mines and duds.
     ///
-    /// We defer this after the first move to prevent stepping on a mine on the first move.
+    /// We defer this after the first move to prevent stepping onto a mine on the first move.
     fn initialize(&mut self, mines: u8, duds: u8) {
         self.populate_mines(mines);
         let adjacent_mines = self.count_all_adjacent_mines();

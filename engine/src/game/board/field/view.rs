@@ -8,9 +8,9 @@ pub enum View {
     Covered,
     /// The field is flagged.
     Flag,
-    /// The player stepped on a dud.
+    /// The player stepped onto a dud.
     SteppedOnDud,
-    /// The player stepped on a live mine.
+    /// The player stepped onto a live mine.
     SteppedOnMine,
     /// The field is clear with the respective amount of adjacent mines.
     Clear { adjacent_mines: u8 },
