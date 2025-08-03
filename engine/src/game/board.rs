@@ -212,7 +212,7 @@ impl Board {
             .for_each(Field::set_dud);
     }
 
-    /// Actually make_move the given coordinate.
+    /// Actually visit the given coordinate.
     ///
     /// We only call this through [`Self::make_move()`] to ensure that the grid is initialized.
     fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
@@ -242,7 +242,7 @@ impl Board {
             });
     }
 
-    /// Return an iterator over neighbors of the given coordinate that are safe to make_move.
+    /// Return an iterator over neighbors of the given coordinate that are safe to visit.
     ///
     /// This will include the original coordinate, if it is considered safe.
     fn walk_safe_neighbors(&self, coordinate: Coordinate) -> SafeNeighbors<'_> {

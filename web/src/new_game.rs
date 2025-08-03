@@ -1,8 +1,6 @@
-use std::num::NonZero;
-
 use request::Request;
 use rocket::form::Form;
-use rocket::{State, get, post};
+use rocket::{State, get};
 use rustymines::{Board, Game};
 
 use crate::games_util::GamesUtil;
