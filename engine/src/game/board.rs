@@ -162,7 +162,7 @@ impl Board {
     ///
     /// Mark initially visited field as visited, then populate mines and duds.
     ///
-    /// This is to prevent stepping on a mine on first move, where we do not yet have any information about the grid yet.
+    /// This is to prevent stepping on a mine on first move, where we do not have any information about the grid yet.
     fn first_move(&mut self, mines: u8, duds: u8, coordinate: Coordinate) -> MoveResult {
         let result = self
             .fields
