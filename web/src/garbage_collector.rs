@@ -3,6 +3,8 @@ use std::sync::{Arc, PoisonError};
 use std::thread::{JoinHandle, sleep, spawn};
 use std::time::Duration;
 
+use rocket::debug;
+
 use crate::Games;
 
 const MAX_GAME_DURATION: Duration = Duration::from_secs(60 * 60 * 24); // One day.
@@ -39,6 +41,13 @@ impl GarbageCollector {
         self.games
             .write()
             .unwrap_or_else(PoisonError::into_inner)
-            .retain(|_, wrapper| wrapper.duration() < MAX_GAME_DURATION);
+            .retain(|key, wrapper| {
+                if wrapper.duration() > MAX_GAME_DURATION {
+                    debug!("Dropping game: {key}");
+                    false
+                } else {
+                    true
+                }
+            });
     }
 }
