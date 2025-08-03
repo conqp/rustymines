@@ -96,7 +96,7 @@ impl Board {
         }
 
         self.fields.iter_mut().for_each(|field| {
-            // Will only make_move non-flagged fields.
+            // Will only visit non-flagged fields.
             if field.visit() == VisitResult::SteppedOnMine {
                 result = MoveResult::Lost;
             }
