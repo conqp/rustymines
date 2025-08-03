@@ -8,7 +8,7 @@ use crate::error::Error;
 use crate::web_ui::{View, WebUi};
 use crate::wrapper::Wrapper;
 
-/// Crate a new game.
+/// Trit to easily access the shared games map behind an `Arc` and `Mutex`.
 pub trait GamesUtil {
     /// Start a new game for the given client.
     fn new_game(&self, client_addr: IpAddr, game: Game) -> View;
