@@ -8,7 +8,7 @@ use rocket::{Request, Response, response};
 pub enum Error {
     /// There is no game for the current player.
     NotPlaying,
-    /// There is no game for the current player.
+    /// An error occurred when constructing the game board.
     BoardError(rustymines::Error),
 }
 
