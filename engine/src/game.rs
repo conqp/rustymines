@@ -61,6 +61,12 @@ impl Game {
             .map(|field| field.view(self.is_over()))
     }
 
+    /// Return the amount of flags on the game board.
+    #[must_use]
+    pub fn flags(&self) -> usize {
+        self.board.flags()
+    }
+
     /// Returns the instance of when the game was started.
     #[must_use]
     pub const fn start(&self) -> Instant {
