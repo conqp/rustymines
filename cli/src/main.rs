@@ -1,11 +1,12 @@
 //! A mine sweeping game with optional dud mines.
 
+use action::Action;
 use args::Args;
 use clap::Parser;
+use io::read_until_valid;
 use rustymines::{Board, Game, State};
 
-use crate::io::read_until_valid;
-
+mod action;
 mod args;
 mod io;
 
@@ -23,7 +24,15 @@ fn main() {
             print_help();
 
             loop {
-                let Some(state) = game.next_round(read_until_valid("Enter action: ")) else {
+                let action = match read_until_valid("Enter action: ") {
+                    Action::Action(action) => action,
+                    Action::Abort => {
+                        println!("Bye!");
+                        break;
+                    }
+                };
+
+                let Some(state) = game.next_round(action) else {
                     break;
                 };
 
@@ -37,10 +46,6 @@ fn main() {
                             println!("\nYou lost the game.");
                         }
 
-                        break;
-                    }
-                    State::Aborted => {
-                        println!("Bye!");
                         break;
                     }
                     State::InvalidMove => println!("Invalid move."),

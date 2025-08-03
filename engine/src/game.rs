@@ -67,10 +67,6 @@ impl Game {
             Action::Visit(coordinate) => self.visit(coordinate).into(),
             Action::ToggleFlag(coordinate) => self.board.toggle_flag(coordinate).into(),
             Action::VisitAllNonFlaggedFields => self.board.visit_non_flagged_fields().into(),
-            Action::Abort => {
-                self.end.replace(Instant::now());
-                State::Aborted
-            }
         })
     }
 
