@@ -49,10 +49,10 @@ impl WebUi<'_, '_> {
     fn grid(&self) -> Table {
         let mut grid = Table::new().with_attributes([("style", "margin: 0 auto;")]);
 
-        for (y, fields) in self.wrapper.game.board().fields().rows().enumerate() {
+        for (y, fields) in self.wrapper.game.rows().enumerate() {
             let mut row = TableRow::new();
 
-            for (x, field) in fields.enumerate() {
+            for (x, view) in fields.enumerate() {
                 let mut cell = TableCell::new(TableCellType::Data);
                 let x_input = format!(r#"<input type="hidden" name="x" value="{x}">"#);
                 let y_input = format!(r#"<input type="hidden" name="y" value="{y}">"#);
@@ -61,8 +61,7 @@ impl WebUi<'_, '_> {
                     self.wrapper.flag
                 );
                 let button = format!(
-                    r#"<input type="submit" value="{}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};">"#,
-                    field.view(self.wrapper.game.end().is_some())
+                    r#"<input type="submit" value="{view}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};">"#,
                 );
                 let form = format!(
                     r#"<form action="/" method="post">{button}{x_input}{y_input}{flag}</form>"#
@@ -94,7 +93,7 @@ impl WebUi<'_, '_> {
             .with_html(
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("font-size: {FONT_SIZE};"))
-                    .with_raw(format!("Flags: {}", self.wrapper.game.board().flags())),
+                    .with_raw(format!("Flags: {}", self.wrapper.game.flags())),
             )
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_game_button)

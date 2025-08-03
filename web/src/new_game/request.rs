@@ -3,7 +3,7 @@
 use std::num::NonZero;
 
 use rocket::FromForm;
-use rustymines::Board;
+use rustymines::Game;
 
 const DEFAULT_SIZE: NonZero<u8> = NonZero::new(8).expect("Default size should be non-zero.");
 const DEFAULT_MINES: u8 = 10;
@@ -33,7 +33,7 @@ impl Default for Request {
     }
 }
 
-impl TryFrom<Request> for Board {
+impl TryFrom<Request> for Game {
     type Error = rustymines::Error;
 
     fn try_from(request: Request) -> Result<Self, Self::Error> {

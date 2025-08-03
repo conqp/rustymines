@@ -2,7 +2,6 @@ use build_html::{Container, ContainerType, HtmlContainer, HtmlPage};
 use request::Request;
 use rocket::form::Form;
 use rocket::{State, get, post};
-use rustymines::{Board, Game};
 
 use crate::games_util::GamesUtil;
 use crate::web_ui::View;
@@ -12,8 +11,8 @@ mod request;
 
 #[get("/")]
 pub fn default(games: &State<Games>, client_addr: IpAddr) -> Result<View, Error> {
-    Board::try_from(Request::default())
-        .map(Game::new)
+    Request::default()
+        .try_into()
         .map(|game| games.new_game(client_addr, game))
         .map_err(Into::into)
 }
@@ -33,8 +32,9 @@ pub fn create_custom(
     client_addr: IpAddr,
     request: Form<Request>,
 ) -> Result<View, Error> {
-    Board::try_from(request.into_inner())
-        .map(Game::new)
+    request
+        .into_inner()
+        .try_into()
         .map(|game| games.new_game(client_addr, game))
         .map_err(Into::into)
 }
