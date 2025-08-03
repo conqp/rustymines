@@ -11,11 +11,7 @@ use crate::web_ui::View;
 
 mod request;
 
-#[post(
-    "/make_move",
-    format = "application/x-www-form-urlencoded",
-    data = "<request>"
-)]
+#[post("/", format = "application/x-www-form-urlencoded", data = "<request>")]
 pub fn make_move(
     games: &rocket::State<Games>,
     client_addr: IpAddr,

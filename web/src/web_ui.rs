@@ -65,7 +65,7 @@ impl WebUi<'_, '_> {
                     field.view(self.wrapper.game.end().is_some())
                 );
                 let form = format!(
-                    r#"<form action="/make_move" method="post">{button}{x_input}{y_input}{flag}</form>"#
+                    r#"<form action="/" method="post">{button}{x_input}{y_input}{flag}</form>"#
                 );
                 cell.add_raw(&form);
                 row.add_cell(cell);
@@ -81,7 +81,7 @@ impl WebUi<'_, '_> {
         let mut container =Container::new(ContainerType::Footer)
             .with_raw(format!(
                 r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}"></form>"#,
-                    if self.wrapper.flag { "flag" } else { "make_move" }
+                    if self.wrapper.flag { "flag" } else { "visit" }
                 )
             );
 
