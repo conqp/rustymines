@@ -23,19 +23,7 @@ fn main() {
             println!("{game}\n");
             print_help();
 
-            loop {
-                let action = match read_until_valid("Enter action: ") {
-                    Action::Action(action) => action,
-                    Action::Abort => {
-                        println!("Bye!");
-                        break;
-                    }
-                };
-
-                let Some(state) = game.next_round(action) else {
-                    break;
-                };
-
+            while let Some(state) = get_action().and_then(|action| game.next_round(action)) {
                 match state {
                     State::GameOver { won } => {
                         println!("{game}\n");
@@ -60,5 +48,15 @@ fn main() {
 fn print_help() {
     for line in HELP {
         println!("{line}");
+    }
+}
+
+fn get_action() -> Option<rustymines::Action> {
+    match read_until_valid("Enter action: ") {
+        Action::Action(action) => Some(action),
+        Action::Abort => {
+            println!("Bye!");
+            None
+        }
     }
 }
