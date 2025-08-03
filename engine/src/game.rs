@@ -18,6 +18,8 @@ pub mod state;
 #[derive(Debug)]
 pub struct Game {
     board: Board,
+    mines: u8,
+    duds: u8,
     start: Instant,
     end: Option<Instant>,
 }
@@ -34,7 +36,13 @@ impl Game {
         mines: u8,
         duds: u8,
     ) -> Result<Self, Error> {
-        Board::new(width, height, mines, duds).map(Self::from)
+        Board::new(width, height, mines, duds).map(|board| Self {
+            board,
+            mines,
+            duds,
+            start: Instant::now(),
+            end: None,
+        })
     }
 
     /// Return an iterator of field views over the game board's rows.
@@ -59,6 +67,18 @@ impl Game {
             .fields()
             .iter()
             .map(|field| field.view(self.is_over()))
+    }
+
+    /// Returns the amount of mines in the game.
+    #[must_use]
+    pub const fn mines(&self) -> u8 {
+        self.mines
+    }
+
+    /// Returns the amount of duds in the game.
+    #[must_use]
+    pub const fn duds(&self) -> u8 {
+        self.duds
     }
 
     /// Return the amount of flags on the game board.
@@ -131,16 +151,6 @@ impl fmt::Display for Game {
         } else {
             writeln!(f, "{}", self.board,)?;
             writeln!(f, "\nFlags: {}", self.board.flags())
-        }
-    }
-}
-
-impl From<Board> for Game {
-    fn from(board: Board) -> Self {
-        Self {
-            board,
-            start: Instant::now(),
-            end: None,
         }
     }
 }
