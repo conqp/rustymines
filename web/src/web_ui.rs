@@ -61,7 +61,7 @@ impl WebUi<'_, '_> {
                     self.wrapper.flag
                 );
                 let button = format!(
-                    r#"<input type="submit" value="{}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};"">"#,
+                    r#"<input type="submit" value="{}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};">"#,
                     field.view(self.wrapper.game.end().is_some())
                 );
                 let form = format!(
