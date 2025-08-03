@@ -17,5 +17,5 @@ pub fn make_move(
     client_addr: IpAddr,
     request: Form<Request>,
 ) -> Result<View, Error> {
-    games.make_move(client_addr, request.into_inner().into())
+    games.make_move(&client_addr, request.into_inner().into())
 }

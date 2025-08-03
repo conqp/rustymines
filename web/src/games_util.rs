@@ -17,7 +17,7 @@ pub trait GamesUtil {
     fn toggle_flag(&self, client_addr: &IpAddr) -> Result<View, Error>;
 
     /// Perform a user action.
-    fn make_move(&self, client_addr: IpAddr, action: Action) -> Result<View, Error>;
+    fn make_move(&self, client_addr: &IpAddr, action: Action) -> Result<View, Error>;
 }
 
 impl GamesUtil for Games {
@@ -42,10 +42,10 @@ impl GamesUtil for Games {
             })
     }
 
-    fn make_move(&self, client_addr: IpAddr, action: Action) -> Result<View, Error> {
+    fn make_move(&self, client_addr: &IpAddr, action: Action) -> Result<View, Error> {
         self.write()
             .unwrap_or_else(PoisonError::into_inner)
-            .get_mut(&client_addr)
+            .get_mut(client_addr)
             .ok_or(Error::NotPlaying)
             .and_then(|wrapper| {
                 let Some(state) = wrapper.game.next_round(action) else {
