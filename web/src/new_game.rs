@@ -46,7 +46,7 @@ fn custom_game_config_page() -> View {
     let duds = r#"<input type="number" name="duds" placeholder="duds">"#;
     let button = r#"<input type="submit" value="Start">"#;
     let form = format!(
-        r#"<form action="/custom" method="post">{width}{height}{mines}{duds}{button}</form>"#
+        r#"<form action="/custom" method="post">{width}<br/>{height}<br/>{mines}<br/>{duds}<br/>{button}</form>"#
     );
     HtmlPage::new()
         .with_title(TITLE)
