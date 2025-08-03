@@ -8,6 +8,8 @@ use rocket::{Request, Response, response};
 pub enum Error {
     /// There is no game for the current player.
     NotPlaying,
+    /// The game has concluded, so no more moves are possible.
+    GameOver,
     /// An error occurred when constructing the game board.
     BoardError(rustymines::Error),
 }
@@ -26,6 +28,7 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for Error {
                 .streamed_body(Cursor::new("You currently have no running game."))
                 .status(Status::NotFound)
                 .ok(),
+            Self::GameOver => Response::build().status(Status::NotModified).ok(),
             Self::BoardError(error) => Response::build()
                 .header(ContentType::HTML)
                 .streamed_body(Cursor::new(error.to_string()))

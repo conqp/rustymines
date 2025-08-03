@@ -50,7 +50,7 @@ impl GamesUtil for Games {
             .ok_or(Error::NotPlaying)
             .and_then(|wrapper| {
                 let Some(state) = wrapper.game.next_round(action) else {
-                    return Err(Error::NotPlaying);
+                    return Err(Error::GameOver);
                 };
 
                 Ok(match state {
