@@ -1,36 +1,24 @@
-use error::Error;
+use std::num::NonZero;
+
 use request::Request;
 use rocket::form::Form;
-use rocket::{State, post};
+use rocket::{State, get, post};
 use rustymines::{Board, Game};
 
-use crate::{Games, IpAddr, MUTEX_NOT_POISONED};
+use crate::games_util::GamesUtil;
+use crate::web_ui::View;
+use crate::{Error, Games, IpAddr};
 
-mod error;
 mod request;
 
-#[post("/", format = "application/x-www-form-urlencoded", data = "<request>")]
+#[get("/", format = "application/x-www-form-urlencoded", data = "<request>")]
 pub fn new_game(
     games: &State<Games>,
     client_addr: IpAddr,
     request: Form<Request>,
-) -> Result<(), Error> {
-    if games
-        .read()
-        .expect(MUTEX_NOT_POISONED)
-        .contains_key(&client_addr)
-    {
-        return Err(Error::AlreadyPlaying);
-    }
-
-    match Board::try_from(request.into_inner()).map(Game::new) {
-        Ok(game) => {
-            games
-                .write()
-                .expect(MUTEX_NOT_POISONED)
-                .insert(client_addr, game);
-            Ok(())
-        }
-        Err(error) => Err(Error::BoardError(error)),
-    }
+) -> Result<View, Error> {
+    Board::try_from(request.into_inner())
+        .map(Game::new)
+        .map(|game| games.new_game(client_addr, game))
+        .map_err(Into::into)
 }

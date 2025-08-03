@@ -4,23 +4,33 @@ use std::collections::BTreeMap;
 use std::net::IpAddr;
 use std::sync::{Arc, RwLock};
 
+pub use error::Error;
 use rocket::{Build, Rocket, launch, routes};
-use rustymines::Game;
+use wrapper::Wrapper;
 
+mod error;
+mod games_util;
+mod make_move;
 mod new_game;
+mod toggle_mode;
+mod web_ui;
+mod wrapper;
 
-const MUTEX_NOT_POISONED: &str = "Mutex should not be poisoned.";
-
-type Games = Arc<RwLock<BTreeMap<IpAddr, Game>>>;
+type Games = Arc<RwLock<BTreeMap<IpAddr, Wrapper>>>;
 
 #[launch]
 fn rocket() -> Rocket<Build> {
-    env_logger::init();
+    //env_logger::init();
 
     let games: Games = Arc::new(RwLock::new(BTreeMap::new()));
 
     #[allow(clippy::redundant_type_annotations)]
-    rocket::build()
-        .manage(games)
-        .mount("/", routes![new_game::new_game])
+    rocket::build().manage(games).mount(
+        "/",
+        routes![
+            new_game::new_game,
+            make_move::make_move,
+            toggle_mode::toggle_mode,
+        ],
+    )
 }

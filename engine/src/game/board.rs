@@ -96,7 +96,7 @@ impl Board {
         }
 
         self.fields.iter_mut().for_each(|field| {
-            // Will only visit non-flagged fields.
+            // Will only make_move non-flagged fields.
             if field.visit() == VisitResult::SteppedOnMine {
                 result = MoveResult::Lost;
             }
@@ -212,7 +212,7 @@ impl Board {
             .for_each(Field::set_dud);
     }
 
-    /// Actually visit the given coordinate.
+    /// Actually make_move the given coordinate.
     ///
     /// We only call this through [`Self::make_move()`] to ensure that the grid is initialized.
     fn visit_coordinate(&mut self, coordinate: Coordinate) -> MoveResult {
@@ -242,7 +242,7 @@ impl Board {
             });
     }
 
-    /// Return an iterator over neighbors of the given coordinate that are safe to visit.
+    /// Return an iterator over neighbors of the given coordinate that are safe to make_move.
     ///
     /// This will include the original coordinate, if it is considered safe.
     fn walk_safe_neighbors(&self, coordinate: Coordinate) -> SafeNeighbors<'_> {

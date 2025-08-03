@@ -73,7 +73,7 @@ impl Field {
         self.intersection(Self::ADJACENT_MINES).0
     }
 
-    /// Return `true` if the field is safe to visit.
+    /// Return `true` if the field is safe to make_move.
     #[must_use]
     pub const fn is_safe(self) -> bool {
         !self.has_mine() && !self.is_flagged()
