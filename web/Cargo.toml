@@ -1,0 +1,20 @@
+[package]
+name = "rustymines-web"
+version = "1.0.0"
+edition = "2024"
+authors = ["Richard Neumann <mail@richard-neumann.de>"]
+description = "A mine sweeping game for the console."
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/conqp/rustymines/"
+repository = "https://github.com/conqp/rustymines/"
+documentation = "https://docs.rs/rustymines-web"
+keywords = ["mine", "mines", "sweeper", "game", "web"]
+categories = ["games"]
+exclude = [".gitignore"]
+
+[dependencies]
+rustymines = "2.2"
+
+[lints]
+workspace = true
