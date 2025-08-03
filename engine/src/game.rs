@@ -6,12 +6,14 @@ use action::Action;
 use board::field::View;
 use board::{Board, MoveResult};
 use grid2d::Coordinate;
+use outcome::Outcome;
 use state::State;
 
 use crate::Error;
 
 pub mod action;
 pub mod board;
+mod outcome;
 pub mod state;
 
 /// The game object with the board and metadata.
@@ -21,7 +23,7 @@ pub struct Game {
     mines: u8,
     duds: u8,
     start: Instant,
-    end: Option<Instant>,
+    outcome: Option<Outcome>,
 }
 
 impl Game {
@@ -41,7 +43,7 @@ impl Game {
             mines,
             duds,
             start: Instant::now(),
-            end: None,
+            outcome: None,
         })
     }
 
@@ -95,22 +97,33 @@ impl Game {
 
     /// Returns the instance of then the game ended, if applicable.
     #[must_use]
-    pub const fn end(&self) -> Option<Instant> {
-        self.end
+    pub fn end(&self) -> Option<Instant> {
+        self.outcome.map(|outcome| outcome.end)
     }
 
     /// Returns `true` if the game is over.
     #[must_use]
     pub const fn is_over(&self) -> bool {
-        self.end.is_some()
+        self.outcome.is_some()
     }
 
     /// Returns the duration of the game.
     #[must_use]
     pub fn duration(&self) -> Duration {
-        self.end
+        self.end()
             .unwrap_or_else(Instant::now)
             .duration_since(self.start)
+    }
+
+    /// Return the outcome of the game, if it has concluded.
+    ///
+    /// # Returns
+    /// - `Some(true)` if the game is won.
+    /// - `Some(false)` if the game is lost.
+    /// - `None` if the game is still running.
+    #[must_use]
+    pub fn is_won(&self) -> Option<bool> {
+        self.outcome.map(|outcome| outcome.won)
     }
 
     /// Play the next round.
@@ -132,11 +145,11 @@ impl Game {
     fn visit(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.board.visit(coordinate) {
             MoveResult::Lost => {
-                self.end.replace(Instant::now());
+                self.outcome.replace(Outcome::lost());
                 MoveResult::Lost
             }
             MoveResult::Won => {
-                self.end.replace(Instant::now());
+                self.outcome.replace(Outcome::lost());
                 MoveResult::Won
             }
             result => result,
