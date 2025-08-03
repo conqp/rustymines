@@ -23,12 +23,7 @@ impl From<rustymines::Error> for Error {
 impl<'r, 'o: 'r> Responder<'r, 'o> for Error {
     fn respond_to(self, _: &Request<'_>) -> response::Result<'o> {
         match self {
-            Self::NotPlaying => Response::build()
-                .header(ContentType::HTML)
-                .streamed_body(Cursor::new("You currently have no running game."))
-                .status(Status::NotFound)
-                .ok(),
-            Self::GameOver => Response::build().status(Status::NotModified).ok(),
+            Self::NotPlaying | Self::GameOver => Response::build().status(Status::NotModified).ok(),
             Self::BoardError(error) => Response::build()
                 .header(ContentType::HTML)
                 .streamed_body(Cursor::new(error.to_string()))
