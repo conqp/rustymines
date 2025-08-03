@@ -9,6 +9,4 @@ pub enum State {
         /// If `true` the game was won, else the game was lost.
         won: bool,
     },
-    /// The game was aborted by the player.
-    Aborted,
 }
