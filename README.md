@@ -12,4 +12,4 @@ A CLI game for the console is available at [cli](./cli).
 
 ## Web
 
-A web application is planned. Stay tuned.
+A server-side web application without the use of JavaScript is available [here](./web).
