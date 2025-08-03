@@ -122,6 +122,12 @@ impl Board {
             .count()
     }
 
+    /// Return a shared reference to the inner fields.
+    #[must_use]
+    pub const fn fields(&self) -> &Grid<Field> {
+        &self.fields
+    }
+
     /// Return the amount of adjacent mines of the respective coordinate on the field.
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
         self.fields
