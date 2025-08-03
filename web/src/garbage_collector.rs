@@ -3,7 +3,7 @@ use std::sync::{Arc, PoisonError};
 use std::thread::{JoinHandle, sleep, spawn};
 use std::time::Duration;
 
-use rocket::debug;
+use rocket::info;
 
 use crate::Games;
 
@@ -43,7 +43,7 @@ impl GarbageCollector {
             .unwrap_or_else(PoisonError::into_inner)
             .retain(|key, wrapper| {
                 if wrapper.duration() > MAX_GAME_DURATION {
-                    debug!("Dropping game: {key}");
+                    info!("Dropping game: {key}");
                     false
                 } else {
                     true
