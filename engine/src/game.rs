@@ -149,7 +149,7 @@ impl Game {
                 MoveResult::Lost
             }
             MoveResult::Won => {
-                self.outcome.replace(Outcome::lost());
+                self.outcome.replace(Outcome::won());
                 MoveResult::Won
             }
             result => result,
