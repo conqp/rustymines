@@ -5,7 +5,8 @@ use rustymines::{Action, Game, State};
 
 use crate::Games;
 use crate::error::Error;
-use crate::web_ui::{View, WebUi};
+use crate::view::View;
+use crate::web_ui::WebUi;
 use crate::wrapper::Wrapper;
 
 /// Trait to easily access the shared games map behind an `Arc` and `Mutex`.

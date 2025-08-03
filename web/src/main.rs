@@ -16,6 +16,7 @@ mod garbage_collector;
 mod make_move;
 mod new_game;
 mod toggle_mode;
+mod view;
 mod web_ui;
 mod wrapper;
 

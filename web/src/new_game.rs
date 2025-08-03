@@ -4,7 +4,7 @@ use rocket::form::Form;
 use rocket::{State, get, post};
 
 use crate::games_util::GamesUtil;
-use crate::web_ui::View;
+use crate::view::View;
 use crate::{Error, FONT_SIZE, Games, IpAddr, TITLE};
 
 mod request;

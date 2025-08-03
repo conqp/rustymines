@@ -7,7 +7,7 @@ use rocket::post;
 use crate::Games;
 use crate::error::Error;
 use crate::games_util::GamesUtil;
-use crate::web_ui::View;
+use crate::view::View;
 
 mod request;
 
