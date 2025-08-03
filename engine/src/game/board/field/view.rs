@@ -12,8 +12,11 @@ pub enum View {
     SteppedOnDud,
     /// The player stepped onto a live mine.
     SteppedOnMine,
-    /// The field is clear with the respective amount of adjacent mines.
-    Clear { adjacent_mines: u8 },
+    /// The field is clear.
+    Clear {
+        /// The amount of mines adjacent to the field.
+        adjacent_mines: u8,
+    },
     /// The field contains a mine.
     Mine,
 }
