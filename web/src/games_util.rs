@@ -2,6 +2,7 @@ use std::net::IpAddr;
 use std::sync::PoisonError;
 
 use rocket::debug;
+use rocket::log::private::info;
 use rustymines::{Action, Game, State};
 
 use crate::Games;
@@ -33,7 +34,7 @@ impl GamesUtil for Games {
         self.write()
             .unwrap_or_else(PoisonError::into_inner)
             .insert(client_addr, wrapper);
-        debug!("Current games: {:?}", self.games());
+        info!("Current games: {:?}", self.games());
         view
     }
 
