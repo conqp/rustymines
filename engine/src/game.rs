@@ -35,7 +35,7 @@ impl Game {
         self.board
             .fields()
             .rows()
-            .map(|row| row.map(|field| field.view(self.end.is_some())))
+            .map(|row| row.map(|field| field.view(self.is_over())))
     }
 
     /// Return an iterator of field views over the game board's columns.
@@ -43,7 +43,7 @@ impl Game {
         self.board
             .fields()
             .columns()
-            .map(|column| column.map(|field| field.view(self.end.is_some())))
+            .map(|column| column.map(|field| field.view(self.is_over())))
     }
 
     /// Return an iterator oif field views over the game board's fields.
@@ -51,7 +51,7 @@ impl Game {
         self.board
             .fields()
             .iter()
-            .map(|field| field.view(self.end.is_some()))
+            .map(|field| field.view(self.is_over()))
     }
 
     /// Returns the instance of when the game was started.
@@ -66,6 +66,12 @@ impl Game {
         self.end
     }
 
+    /// Returns `true` if the game is over.
+    #[must_use]
+    pub const fn is_over(&self) -> bool {
+        self.end.is_some()
+    }
+
     /// Returns the duration of the game.
     #[must_use]
     pub fn duration(&self) -> Duration {
@@ -78,7 +84,7 @@ impl Game {
     ///
     /// Return `Some(State)` if the player did not request to abort the game, otherwise `None`.
     pub fn next_round(&mut self, action: Action) -> Option<State> {
-        if self.end.is_some() {
+        if self.is_over() {
             return None;
         }
 
@@ -107,7 +113,7 @@ impl Game {
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if self.end.is_some() {
+        if self.is_over() {
             write!(f, "{:#}", self.board)
         } else {
             writeln!(f, "{}", self.board,)?;
