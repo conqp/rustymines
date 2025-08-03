@@ -1,8 +1,7 @@
 use std::net::IpAddr;
 use std::sync::PoisonError;
 
-use rocket::debug;
-use rocket::log::private::info;
+use rocket::info;
 use rustymines::{Action, Game, State};
 
 use crate::Games;
