@@ -15,15 +15,12 @@ const BUTTON_SIZE: &str = FONT_SIZE;
 #[derive(Debug)]
 pub struct WebUi<'game, 'message> {
     wrapper: &'game Wrapper,
-    message: Option<Result<&'message str, &'message str>>,
+    message: Option<&'message str>,
 }
 
 impl<'game, 'message> WebUi<'game, 'message> {
     /// Create a new web UI instance.
-    pub const fn new(
-        wrapper: &'game Wrapper,
-        message: Option<Result<&'message str, &'message str>>,
-    ) -> Self {
+    pub const fn new(wrapper: &'game Wrapper, message: Option<&'message str>) -> Self {
         Self { wrapper, message }
     }
 }
@@ -95,15 +92,22 @@ impl WebUi<'_, '_> {
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_custom_game_button);
 
-        if let Some(message) = self.message {
-            container.add_html(match message {
-                Ok(message) => HtmlElement::new(HtmlTag::ParagraphText)
+        if let Some(won) = self.wrapper.game.is_won() {
+            container.add_html(if won {
+                HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))
-                    .with_raw(message),
-                Err(error) => HtmlElement::new(HtmlTag::ParagraphText)
+                    .with_raw("You won the game.")
+            } else {
+                HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("color: red; font-size: {FONT_SIZE};"))
-                    .with_raw(error),
+                    .with_raw("You lost the game.")
             });
+        } else if let Some(message) = self.message {
+            container.add_html(
+                HtmlElement::new(HtmlTag::ParagraphText)
+                    .with_attribute("style", format!("font-size: {FONT_SIZE};"))
+                    .with_raw(message),
+            );
         }
 
         container

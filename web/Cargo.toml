@@ -16,7 +16,7 @@ exclude = [".gitignore"]
 [dependencies]
 build_html = "2.6.0"
 rocket = "0.5.1"
-rustymines = { version = "2.4" }
+rustymines = { version = "2.5" }
 
 [lints]
 workspace = true

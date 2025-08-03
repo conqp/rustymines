@@ -50,20 +50,12 @@ impl GamesUtil for Games {
             .ok_or(Error::NotPlaying)
             .and_then(|wrapper| {
                 let Some(state) = wrapper.game.next_round(action) else {
-                    return Err(Error::GameOver);
+                    return Err(Error::GameOver(WebUi::new(wrapper, None).into()));
                 };
 
                 Ok(match state {
-                    State::GameOver { won } => WebUi::new(
-                        wrapper,
-                        if won {
-                            Some(Ok("You won the game."))
-                        } else {
-                            Some(Err("You lost the game."))
-                        },
-                    ),
-                    State::Continue => WebUi::new(wrapper, None),
-                    State::InvalidMove => WebUi::new(wrapper, Some(Err("Invalid coordinate."))),
+                    State::Continue | State::GameOver { .. } => WebUi::new(wrapper, None),
+                    State::InvalidMove => WebUi::new(wrapper, Some("Invalid coordinate.")),
                 }
                 .into())
             })
