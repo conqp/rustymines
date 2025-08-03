@@ -3,9 +3,9 @@ name = "rustymines"
 version = "2.0.0"
 edition = "2024"
 authors = ["Richard Neumann <mail@richard-neumann.de>"]
-description = "A mine sweeping game with optional duds."
+description = "A mine sweeping game engine with optional duds."
 license = "MIT"
-readme = "../README.md"
+readme = "README.md"
 homepage = "https://github.com/conqp/rustymines/"
 repository = "https://github.com/conqp/rustymines/"
 documentation = "https://docs.rs/rustymines"
@@ -15,7 +15,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 bitflags = "2.9"
-grid2d = "1"
+grid2d = "1.2"
 rand = "0.9"
 
 [lints]

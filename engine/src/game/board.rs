@@ -6,7 +6,7 @@ use error::Error;
 use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
 use header::Header;
-use move_result::MoveResult;
+pub use move_result::MoveResult;
 use neighbors_iterator::SafeNeighbors;
 use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
@@ -14,7 +14,7 @@ use rand::seq::IteratorRandom;
 pub mod error;
 mod field;
 mod header;
-pub mod move_result;
+mod move_result;
 mod neighbors_iterator;
 
 /// The game board, aka. the minefield.

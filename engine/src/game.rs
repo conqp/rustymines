@@ -2,8 +2,7 @@ use std::fmt;
 use std::time::{Duration, Instant};
 
 use action::Action;
-use board::move_result::MoveResult;
-use board::Board;
+use board::{Board, MoveResult};
 use grid2d::Coordinate;
 use state::State;
 
