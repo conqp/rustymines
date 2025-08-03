@@ -78,21 +78,27 @@ impl WebUi<'_, '_> {
     }
 
     fn footer(&self) -> Container {
+        let mode_button = format!(
+            r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}" style="font-size: {FONT_SIZE};"></form>"#,
+            if self.wrapper.flag { "flag" } else { "visit" }
+        );
+        let new_game_button = format!(
+            r#"<form action="/" method="get"><input type="submit" value="New game" style="font-size: {FONT_SIZE};"></form>"#,
+        );
+        let new_custom_game_button = format!(
+            r#"<form action="/custom" method="get"><input type="submit" value="Custom game" style="font-size: {FONT_SIZE};"></form>"#,
+        );
         let mut container = Container::new(ContainerType::Footer)
-            .with_raw(format!(
-                r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}" style="font-size: {FONT_SIZE};"></form>"#,
-                    if self.wrapper.flag { "flag" } else { "visit" }
-                )
+            .with_raw(mode_button)
+            .with_html(HtmlElement::new(HtmlTag::LineBreak))
+            .with_html(
+                HtmlElement::new(HtmlTag::ParagraphText)
+                    .with_raw(format!("Flags: {}", self.wrapper.game.board().flags())),
             )
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
-            .with_raw(format!(
-                r#"<form action="/" method="get"><input type="submit" value="New game" style="font-size: {FONT_SIZE};"></form>"#,
-            ))
-            .with_html(HtmlElement::new(HtmlTag::Span).with_raw("&nbsp;"))
-            .with_raw(format!(
-                r#"<form action="/custom" method="get"><input type="submit" value="Custom game" style="font-size: {FONT_SIZE};"></form>"#,
-            )
-        );
+            .with_raw(new_game_button)
+            .with_html(HtmlElement::new(HtmlTag::LineBreak))
+            .with_raw(new_custom_game_button);
 
         if let Some(message) = self.message {
             container.add_html(match message {
