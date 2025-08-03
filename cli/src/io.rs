@@ -6,7 +6,9 @@ use std::str::FromStr;
 /// An error when reading data from the standard input.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub enum ReadError<T> {
+    /// The data could not be read from `STDIN`.
     InvalidInput,
+    /// The user entered invalid data.
     ParseError(T),
 }
 
