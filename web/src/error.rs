@@ -15,8 +15,8 @@ pub enum Error {
 }
 
 impl From<rustymines::Error> for Error {
-    fn from(err: rustymines::Error) -> Self {
-        Self::BoardError(err)
+    fn from(error: rustymines::Error) -> Self {
+        Self::BoardError(error)
     }
 }
 
