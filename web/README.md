@@ -2,4 +2,4 @@
 
 A mine sweeping game for the web with optional dud mines.
 
-*Coming soon!*
+*It's JavaScript free!*
