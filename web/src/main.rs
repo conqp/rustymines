@@ -25,8 +25,6 @@ const FONT_SIZE: &str = "2em";
 
 #[launch]
 fn rocket() -> Rocket<Build> {
-    //env_logger::init();
-
     let games: Games = Arc::new(RwLock::new(BTreeMap::new()));
     GarbageCollector::spawn(games.clone(), Arc::new(AtomicBool::new(true)));
 
