@@ -4,11 +4,11 @@ A mine sweeping game engine with optional dud mines with some frontends.
 
 ## Engine
 
-The game can be found [here](./engine).
+The game engine can be found [here](./engine).
 
 ## CLI
 
-A CLI game for the console is available at [cli](./cli).
+A CLI game for the console is available [here](./cli).
 
 ## Web
 
