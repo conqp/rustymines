@@ -1,4 +1,4 @@
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use rustymines::Game;
 
@@ -7,18 +7,13 @@ use rustymines::Game;
 pub struct Wrapper {
     pub game: Game,
     pub flag: bool,
-    pub started: Instant,
 }
 
 impl Wrapper {
     /// Crate a new game wrapper.
     #[must_use]
-    pub fn new(game: Game) -> Self {
-        Self {
-            game,
-            flag: false,
-            started: Instant::now(),
-        }
+    pub const fn new(game: Game) -> Self {
+        Self { game, flag: false }
     }
 
     /// Toggle the flag.
@@ -28,7 +23,7 @@ impl Wrapper {
 
     /// Returns the duration of the game.
     pub fn duration(&self) -> Duration {
-        self.started.elapsed()
+        self.game.duration()
     }
 }
 
