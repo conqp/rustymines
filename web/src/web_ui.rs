@@ -88,7 +88,7 @@ impl WebUi<'_, '_> {
             .with_raw(format!(
                 r#"<form action="/" method="get"><input type="submit" value="New game" style="font-size: {FONT_SIZE};"></form>"#,
             ))
-            .with_html(HtmlElement::new(HtmlTag::Span))
+            .with_html(HtmlElement::new(HtmlTag::Span).with_raw("&nbsp;"))
             .with_raw(format!(
                 r#"<form action="/custom" method="get"><input type="submit" value="Custom game" style="font-size: {FONT_SIZE};"></form>"#,
             )
