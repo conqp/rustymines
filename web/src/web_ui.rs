@@ -93,7 +93,7 @@ impl WebUi<'_, '_> {
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_html(
                 HtmlElement::new(HtmlTag::ParagraphText)
-                    .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))
+                    .with_attribute("style", format!("font-size: {FONT_SIZE};"))
                     .with_raw(format!("Flags: {}", self.wrapper.game.board().flags())),
             )
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
