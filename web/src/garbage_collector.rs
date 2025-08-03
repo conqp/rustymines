@@ -39,8 +39,6 @@ impl GarbageCollector {
         self.games
             .write()
             .unwrap_or_else(PoisonError::into_inner)
-            .retain(|_, wrapper| {
-                wrapper.game.end().is_none() && wrapper.duration() < MAX_GAME_DURATION
-            });
+            .retain(|_, wrapper| wrapper.duration() < MAX_GAME_DURATION);
     }
 }
