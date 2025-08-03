@@ -8,7 +8,8 @@ use grid2d::{Coordinate, Grid};
 use header::Header;
 pub use move_result::MoveResult;
 use neighbors_iterator::SafeNeighbors;
-use rand::rngs::ThreadRng;
+use rand::SeedableRng;
+use rand::rngs::SmallRng;
 use rand::seq::IteratorRandom;
 
 pub mod error;
@@ -22,7 +23,7 @@ mod neighbors_iterator;
 pub struct Board {
     fields: Grid<Field>,
     init: Option<(u8, u8)>,
-    rng: ThreadRng,
+    rng: SmallRng,
 }
 
 impl Board {
@@ -52,7 +53,7 @@ impl Board {
         Ok(Self {
             fields: Grid::new_default(width, height),
             init: Some((mines, duds)),
-            rng: ThreadRng::default(),
+            rng: SmallRng::from_os_rng(),
         })
     }
 
