@@ -2,6 +2,8 @@ use std::str::FromStr;
 
 use rustymines::grid::{Coordinate, CoordinateParseError};
 
+use crate::BASE;
+
 /// Possible player actions during a game.
 #[derive(Clone, Copy, Debug)]
 pub enum Action {
@@ -21,13 +23,28 @@ impl FromStr for Action {
         } else if string == "!!" {
             Ok(Self::Action(rustymines::Action::VisitAllNonFlaggedFields))
         } else if string.starts_with('!') {
-            Coordinate::from_str(string.replace('!', "").trim())
+            parse_coordinate(&string.replace('!', ""))
                 .map(rustymines::Action::ToggleFlag)
                 .map(Self::Action)
         } else {
-            Coordinate::from_str(string)
+            parse_coordinate(string)
                 .map(rustymines::Action::Visit)
                 .map(Self::Action)
         }
     }
+}
+
+fn parse_coordinate(input: &str) -> Result<Coordinate, CoordinateParseError> {
+    let mut split = input.split_whitespace();
+    let x = split.next().ok_or(CoordinateParseError::NotTwoNumbers)?;
+    let y = split.next().ok_or(CoordinateParseError::NotTwoNumbers)?;
+
+    if split.next().is_some() {
+        return Err(CoordinateParseError::NotTwoNumbers);
+    }
+
+    Ok(Coordinate::new(
+        usize::from_str_radix(x, BASE).map_err(CoordinateParseError::InvalidXValue)?,
+        usize::from_str_radix(y, BASE).map_err(CoordinateParseError::InvalidXValue)?,
+    ))
 }
