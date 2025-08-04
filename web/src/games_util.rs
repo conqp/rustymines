@@ -15,7 +15,7 @@ pub trait GamesUtil {
     /// Start a new game for the given client.
     fn new_game(&self, client_addr: IpAddr, game: Game) -> View;
 
-    /// Toggle the flag og the given game.
+    /// Toggle between flagging mode or visiting fields for the given game.
     fn toggle_flag(&self, client_addr: &IpAddr) -> Result<View, Error>;
 
     /// Perform a user action.
