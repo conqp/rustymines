@@ -234,19 +234,13 @@ impl Board {
     ///
     /// We do this for convenience, to uncover all adjacent fields that do not contain a mine.
     fn visit_neighbors(&mut self, coordinate: Coordinate) {
-        self.walk_safe_neighbors(coordinate)
-            .collect::<Vec<_>>()
-            .iter()
-            .for_each(|coordinate| {
-                self.fields.get_mut(coordinate).map(Field::visit);
-            });
-    }
+        let mut iterator = SafeNeighbors::new(&mut self.fields, coordinate);
 
-    /// Return an iterator over neighbors of the given coordinate that are safe to visit.
-    ///
-    /// This will include the original coordinate, if it is considered safe.
-    fn walk_safe_neighbors(&self, coordinate: Coordinate) -> SafeNeighbors<'_> {
-        SafeNeighbors::new(&self.fields, coordinate)
+        while let Some(field) = iterator.next() {
+            if !field.is_flagged() {
+                field.insert(Field::VISITED);
+            }
+        }
     }
 
     /// Return `true` if all mines on the grid have been cleared.

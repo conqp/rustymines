@@ -73,12 +73,6 @@ impl Field {
         self.intersection(Self::ADJACENT_MINES).0
     }
 
-    /// Return `true` if the field is safe to visit.
-    #[must_use]
-    pub const fn is_safe(self) -> bool {
-        !self.has_mine() && !self.is_flagged()
-    }
-
     /// Set the field to contain a mine.
     pub fn set_mine(&mut self) {
         self.insert(Self::MINED);

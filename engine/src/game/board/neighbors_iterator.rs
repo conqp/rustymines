@@ -1,14 +1,13 @@
 use std::collections::BTreeSet;
-use std::iter::once;
 
 use grid2d::{Coordinate, Grid};
 
 use crate::game::board::field::Field;
 
 /// An iterator over neighbors of a coordinate, which are deemed safe to uncover.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct SafeNeighbors<'grid> {
-    fields: &'grid Grid<Field>,
+    fields: &'grid mut Grid<Field>,
     starting_points: BTreeSet<(usize, usize)>,
     processed: BTreeSet<(usize, usize)>,
 }
@@ -16,26 +15,20 @@ pub struct SafeNeighbors<'grid> {
 impl<'grid> SafeNeighbors<'grid> {
     /// Create a new [`SafeNeighbors`] iterator from the given [`Grid`] and starting coordinate.
     #[must_use]
-    pub fn new(fields: &'grid Grid<Field>, start: Coordinate) -> Self {
+    pub fn new(fields: &'grid mut Grid<Field>, start: Coordinate) -> Self {
         Self {
             fields,
-            starting_points: once(start.into()).collect(),
+            starting_points: BTreeSet::from([start.into()]),
             processed: BTreeSet::new(),
         }
     }
-}
 
-impl Iterator for SafeNeighbors<'_> {
-    type Item = Coordinate;
-
-    fn next(&mut self) -> Option<Self::Item> {
+    /// Returns the next reference to a safe neighboring field.
+    pub fn next(&mut self) -> Option<&mut Field> {
         let starting_point = self.starting_points.pop_first()?;
+        self.processed.insert(starting_point);
 
-        if self
-            .fields
-            .neighbors(starting_point)
-            .all(|(_, neighbor)| neighbor.is_safe())
-        {
+        if self.fields.get(starting_point)?.adjacent_mines() == 0 {
             self.starting_points.extend(
                 self.fields
                     .neighbors(starting_point)
@@ -44,7 +37,6 @@ impl Iterator for SafeNeighbors<'_> {
             );
         }
 
-        self.processed.insert(starting_point);
-        Some(starting_point.into())
+        self.fields.get_mut(starting_point)
     }
 }
