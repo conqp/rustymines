@@ -12,8 +12,6 @@ mod action;
 mod args;
 mod io;
 
-const BASE: u32 = 34;
-
 const HELP: [&str; 4] = [
     "Visit a field:                x y",
     "Toggle flag on a field:       !x y",

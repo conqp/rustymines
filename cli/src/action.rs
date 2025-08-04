@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use rustymines::grid::{Coordinate, CoordinateParseError};
 
-use crate::BASE;
+const BASE: u32 = 16;
 
 /// Possible player actions during a game.
 #[derive(Clone, Copy, Debug)]
