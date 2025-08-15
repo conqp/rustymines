@@ -2,8 +2,10 @@ use std::fmt::{Display, Formatter};
 
 use bitflags::bitflags;
 pub use view::View;
+pub use visit_result::VisitResult;
 
 mod view;
+mod visit_result;
 
 /// A field on the game board (aka. minefield).
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
@@ -25,21 +27,6 @@ bitflags! {
         /// If this flag is set, the field is considered to be a dud.
         const IS_DUD = 0b1000_0000;
     }
-}
-
-/// Possible outcomes when visiting a field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub enum VisitResult {
-    /// The field has been cleared.
-    Cleared,
-    /// The field has already been visited.
-    AlreadyVisited,
-    /// The field cannot be visited, because it is flagged.
-    Flagged,
-    /// The player stepped onto a mine.
-    SteppedOnMine,
-    /// The player stepped onto a dud.
-    SteppedOnDud,
 }
 
 impl Field {
