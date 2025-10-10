@@ -102,15 +102,12 @@ impl Board {
             }
         });
 
-        match result {
-            MoveResult::Lost => MoveResult::Lost,
-            _ => {
-                if self.all_mines_cleared() {
-                    MoveResult::Won
-                } else {
-                    MoveResult::Continue
-                }
-            }
+        if result == MoveResult::Lost {
+            MoveResult::Lost
+        } else if self.all_mines_cleared() {
+            MoveResult::Won
+        } else {
+            MoveResult::Continue
         }
     }
 
