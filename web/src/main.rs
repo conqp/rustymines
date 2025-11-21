@@ -29,7 +29,7 @@ fn rocket() -> Rocket<Build> {
     let games = Games::default();
     GarbageCollector::spawn(games.clone(), Arc::new(AtomicBool::new(true)));
 
-    #[allow(clippy::redundant_type_annotations)]
+    #[expect(clippy::redundant_type_annotations)]
     rocket::build().manage(games).mount(
         "/",
         routes![

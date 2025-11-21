@@ -23,7 +23,7 @@ pub enum View {
 
 impl View {
     /// Returns a char representation of the field's view.
-    #[allow(clippy::missing_panics_doc)]
+    #[expect(clippy::missing_panics_doc)]
     #[must_use]
     pub const fn as_char(self) -> char {
         match self {

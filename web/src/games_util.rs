@@ -26,7 +26,6 @@ pub trait GamesUtil {
 }
 
 impl GamesUtil for Games {
-    #[allow(clippy::unwrap_in_result)]
     fn new_game(&self, client_addr: IpAddr, game: Game) -> View {
         let game_state: GameState = game.into();
         let view = WebUi::new(&game_state, None).into();

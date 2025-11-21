@@ -1,4 +1,4 @@
-#![allow(clippy::unwrap_in_result)]
+#![expect(clippy::unwrap_in_result)]
 
 use std::num::NonZero;
 
