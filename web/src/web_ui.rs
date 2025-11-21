@@ -41,7 +41,7 @@ impl WebUi<'_, '_> {
     fn grid(&self) -> Table {
         let mut grid = Table::new().with_attributes([("style", "margin: 0 auto;")]);
 
-        for (y, fields) in self.wrapper.game.rows().enumerate() {
+        for (y, fields) in self.wrapper.rows().enumerate() {
             let mut row = TableRow::new();
 
             for (x, view) in fields.enumerate() {
@@ -50,7 +50,7 @@ impl WebUi<'_, '_> {
                 let y_input = format!(r#"<input type="hidden" name="y" value="{y}">"#);
                 let flag = format!(
                     r#"<input type="hidden" name="flag" value="{}">"#,
-                    self.wrapper.flag
+                    self.wrapper.flag()
                 );
                 let button = format!(
                     r#"<input type="submit" value="{view}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};">"#,
@@ -71,7 +71,7 @@ impl WebUi<'_, '_> {
     fn footer(&self) -> Container {
         let mode_button = format!(
             r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}" style="font-size: {FONT_SIZE};"></form>"#,
-            if self.wrapper.flag { "flag" } else { "visit" }
+            if self.wrapper.flag() { "flag" } else { "visit" }
         );
         let new_game_button = format!(
             r#"<form action="/" method="get"><input type="submit" value="New game" style="font-size: {FONT_SIZE};"></form>"#,
@@ -85,14 +85,14 @@ impl WebUi<'_, '_> {
             .with_html(
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("font-size: {FONT_SIZE};"))
-                    .with_raw(format!("Flags: {}", self.wrapper.game.flags())),
+                    .with_raw(format!("Flags: {}", self.wrapper.flags())),
             )
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_game_button)
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_custom_game_button);
 
-        if let Some(won) = self.wrapper.game.is_won() {
+        if let Some(won) = self.wrapper.is_won() {
             container.add_html(if won {
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))

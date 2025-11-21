@@ -28,7 +28,7 @@ pub trait GamesUtil {
 impl GamesUtil for Games {
     #[allow(clippy::unwrap_in_result)]
     fn new_game(&self, client_addr: IpAddr, game: Game) -> View {
-        let wrapper = Wrapper::new(game);
+        let wrapper: Wrapper = game.into();
         let view = WebUi::new(&wrapper, None).into();
         self.write()
             .unwrap_or_else(PoisonError::into_inner)
@@ -54,7 +54,7 @@ impl GamesUtil for Games {
             .get_mut(client_addr)
             .ok_or(Error::NotPlaying)
             .map(|wrapper| {
-                let Some(state) = wrapper.game.next_round(action) else {
+                let Some(state) = wrapper.next_round(action) else {
                     return WebUi::new(wrapper, None).into();
                 };
 
