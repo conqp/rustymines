@@ -5,7 +5,7 @@ use build_html::{
     TableCell, TableCellType, TableRow,
 };
 
-use crate::wrapper::Wrapper;
+use crate::game_state::GameState;
 use crate::{FONT_SIZE, TITLE};
 
 const HEADER: &str = TITLE;
@@ -14,14 +14,17 @@ const BUTTON_SIZE: &str = FONT_SIZE;
 /// The web UI.
 #[derive(Debug)]
 pub struct WebUi<'game, 'message> {
-    wrapper: &'game Wrapper,
+    game_state: &'game GameState,
     message: Option<&'message str>,
 }
 
 impl<'game, 'message> WebUi<'game, 'message> {
     /// Create a new web UI instance.
-    pub const fn new(wrapper: &'game Wrapper, message: Option<&'message str>) -> Self {
-        Self { wrapper, message }
+    pub const fn new(game_state: &'game GameState, message: Option<&'message str>) -> Self {
+        Self {
+            game_state,
+            message,
+        }
     }
 }
 
@@ -41,7 +44,7 @@ impl WebUi<'_, '_> {
     fn grid(&self) -> Table {
         let mut grid = Table::new().with_attributes([("style", "margin: 0 auto;")]);
 
-        for (y, fields) in self.wrapper.rows().enumerate() {
+        for (y, fields) in self.game_state.rows().enumerate() {
             let mut row = TableRow::new();
 
             for (x, view) in fields.enumerate() {
@@ -50,7 +53,7 @@ impl WebUi<'_, '_> {
                 let y_input = format!(r#"<input type="hidden" name="y" value="{y}">"#);
                 let flag = format!(
                     r#"<input type="hidden" name="flag" value="{}">"#,
-                    self.wrapper.flag()
+                    self.game_state.flag()
                 );
                 let button = format!(
                     r#"<input type="submit" value="{view}" style="width: {BUTTON_SIZE}; height: {BUTTON_SIZE}; font-size: {FONT_SIZE};">"#,
@@ -71,7 +74,11 @@ impl WebUi<'_, '_> {
     fn footer(&self) -> Container {
         let mode_button = format!(
             r#"<form action="/toggle-mode" method="post"><input type="submit" value="Mode: {}" style="font-size: {FONT_SIZE};"></form>"#,
-            if self.wrapper.flag() { "flag" } else { "visit" }
+            if self.game_state.flag() {
+                "flag"
+            } else {
+                "visit"
+            }
         );
         let new_game_button = format!(
             r#"<form action="/" method="get"><input type="submit" value="New game" style="font-size: {FONT_SIZE};"></form>"#,
@@ -85,14 +92,14 @@ impl WebUi<'_, '_> {
             .with_html(
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("font-size: {FONT_SIZE};"))
-                    .with_raw(format!("Flags: {}", self.wrapper.flags())),
+                    .with_raw(format!("Flags: {}", self.game_state.flags())),
             )
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_game_button)
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_custom_game_button);
 
-        if let Some(won) = self.wrapper.is_won() {
+        if let Some(won) = self.game_state.is_won() {
             container.add_html(if won {
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))

@@ -6,9 +6,9 @@ use rustymines::{Action, Game, State};
 
 use crate::Games;
 use crate::error::Error;
+use crate::game_state::GameState;
 use crate::view::View;
 use crate::web_ui::WebUi;
-use crate::wrapper::Wrapper;
 
 /// Trait to easily access the shared games map behind an `Arc` and `Mutex`.
 pub trait GamesUtil {
@@ -28,11 +28,11 @@ pub trait GamesUtil {
 impl GamesUtil for Games {
     #[allow(clippy::unwrap_in_result)]
     fn new_game(&self, client_addr: IpAddr, game: Game) -> View {
-        let wrapper: Wrapper = game.into();
-        let view = WebUi::new(&wrapper, None).into();
+        let game_state: GameState = game.into();
+        let view = WebUi::new(&game_state, None).into();
         self.write()
             .unwrap_or_else(PoisonError::into_inner)
-            .insert(client_addr, wrapper);
+            .insert(client_addr, game_state);
         info!("Current games: {:?}", self.games());
         view
     }

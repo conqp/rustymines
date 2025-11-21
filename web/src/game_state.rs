@@ -4,12 +4,12 @@ use rustymines::Game;
 
 /// Wrapper around a game.
 #[derive(Debug)]
-pub struct Wrapper {
+pub struct GameState {
     game: Game,
     flag: bool,
 }
 
-impl Wrapper {
+impl GameState {
     /// Toggle the flag.
     pub const fn toggle_flag(&mut self) {
         self.flag = !self.flag;
@@ -22,7 +22,7 @@ impl Wrapper {
     }
 }
 
-impl Deref for Wrapper {
+impl Deref for GameState {
     type Target = Game;
 
     fn deref(&self) -> &Self::Target {
@@ -30,13 +30,13 @@ impl Deref for Wrapper {
     }
 }
 
-impl DerefMut for Wrapper {
+impl DerefMut for GameState {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.game
     }
 }
 
-impl From<Game> for Wrapper {
+impl From<Game> for GameState {
     fn from(game: Game) -> Self {
         Self { game, flag: false }
     }

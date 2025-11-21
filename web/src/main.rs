@@ -6,11 +6,12 @@ use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, RwLock};
 
 pub use error::Error;
+use game_state::GameState;
 use garbage_collector::GarbageCollector;
 use rocket::{Build, Rocket, launch, routes};
-use wrapper::Wrapper;
 
 mod error;
+mod game_state;
 mod games_util;
 mod garbage_collector;
 mod make_move;
@@ -18,9 +19,8 @@ mod new_game;
 mod toggle_mode;
 mod view;
 mod web_ui;
-mod wrapper;
 
-type Games = Arc<RwLock<BTreeMap<IpAddr, Wrapper>>>;
+type Games = Arc<RwLock<BTreeMap<IpAddr, GameState>>>;
 const TITLE: &str = "RustyMines";
 const FONT_SIZE: &str = "2em";
 
