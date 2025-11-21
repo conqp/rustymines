@@ -14,7 +14,7 @@ categories = ["games"]
 exclude = [".gitignore"]
 
 [dependencies]
-build_html = "2.6"
+build_html = "2.7"
 rocket = "0.5"
 rustymines = { version = "2.6" }
 
