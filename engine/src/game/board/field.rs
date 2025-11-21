@@ -1,8 +1,9 @@
 use std::fmt::{Display, Formatter};
 
 use bitflags::bitflags;
-pub use view::View;
-pub use visit_result::VisitResult;
+
+pub use self::view::View;
+pub use self::visit_result::VisitResult;
 
 mod view;
 mod visit_result;

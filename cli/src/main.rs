@@ -2,11 +2,12 @@
 
 use std::process::ExitCode;
 
-use action::Action;
-use args::Args;
 use clap::Parser;
-use io::read_until_valid;
 use rustymines::{Game, State};
+
+use self::action::Action;
+use self::args::Args;
+use self::io::read_until_valid;
 
 mod action;
 mod args;

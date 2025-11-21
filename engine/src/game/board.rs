@@ -2,15 +2,16 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::num::NonZero;
 
-use error::Error;
-use field::{Field, VisitResult};
 use grid2d::{Coordinate, Grid};
-use header::Header;
-pub use move_result::MoveResult;
-use neighbors_iterator::SafeNeighbors;
 use rand::SeedableRng;
 use rand::rngs::SmallRng;
 use rand::seq::IteratorRandom;
+
+use self::error::Error;
+use self::field::{Field, VisitResult};
+use self::header::Header;
+pub use self::move_result::MoveResult;
+use self::neighbors_iterator::SafeNeighbors;
 
 pub mod error;
 pub mod field;

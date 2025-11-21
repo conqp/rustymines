@@ -2,13 +2,13 @@ use std::fmt;
 use std::num::NonZero;
 use std::time::{Duration, Instant};
 
-use action::Action;
-use board::field::View;
-use board::{Board, MoveResult};
 use grid2d::Coordinate;
-use outcome::Outcome;
-use state::State;
 
+use self::action::Action;
+use self::board::field::View;
+use self::board::{Board, MoveResult};
+use self::outcome::Outcome;
+use self::state::State;
 use crate::Error;
 
 pub mod action;
