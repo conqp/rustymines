@@ -1,9 +1,9 @@
 use std::net::IpAddr;
 
-use request::Request;
 use rocket::form::Form;
 use rocket::post;
 
+use self::request::Request;
 use crate::Games;
 use crate::error::Error;
 use crate::games_util::GamesUtil;

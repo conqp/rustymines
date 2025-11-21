@@ -5,10 +5,10 @@ use std::net::IpAddr;
 use std::sync::atomic::AtomicBool;
 use std::sync::{Arc, RwLock};
 
-pub use error::Error;
-use game_state::GameState;
-use garbage_collector::GarbageCollector;
 use rocket::{Build, Rocket, launch, routes};
+
+use self::game_state::GameState;
+use self::garbage_collector::GarbageCollector;
 
 mod error;
 mod game_state;

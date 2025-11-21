@@ -1,11 +1,12 @@
 use build_html::{Container, ContainerType, HtmlContainer, HtmlPage};
-use request::Request;
 use rocket::form::Form;
 use rocket::{State, get, post};
 
+use self::request::Request;
+use crate::error::Error;
 use crate::games_util::GamesUtil;
 use crate::view::View;
-use crate::{Error, FONT_SIZE, Games, IpAddr, TITLE};
+use crate::{FONT_SIZE, Games, IpAddr, TITLE};
 
 mod request;
 
