@@ -42,6 +42,7 @@ where
 ///
 /// Returns [`ReadError::InvalidInput`] if the input did not contain a valid string or
 /// [`ReadError::ParseError`] if the requested type could not be parsed from the given input.
+#[expect(clippy::unwrap_in_result)]
 pub fn try_read<T>(prompt: &str) -> Result<T, ReadError<T::Err>>
 where
     T: FromStr,

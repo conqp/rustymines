@@ -1,5 +1,3 @@
-#![expect(clippy::unwrap_in_result)]
-
 use rocket::FromForm;
 use rustymines::Action;
 use rustymines::grid::Coordinate;

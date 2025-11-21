@@ -1,5 +1,3 @@
-#![expect(clippy::unwrap_in_result)]
-
 use std::num::NonZero;
 
 use rocket::FromForm;
