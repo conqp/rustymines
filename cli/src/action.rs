@@ -45,6 +45,6 @@ fn parse_coordinate(input: &str) -> Result<Coordinate, CoordinateParseError> {
 
     Ok(Coordinate::new(
         usize::from_str_radix(x, BASE).map_err(CoordinateParseError::InvalidXValue)?,
-        usize::from_str_radix(y, BASE).map_err(CoordinateParseError::InvalidXValue)?,
+        usize::from_str_radix(y, BASE).map_err(CoordinateParseError::InvalidYValue)?,
     ))
 }
