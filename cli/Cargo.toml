@@ -15,7 +15,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
-rustymines = "2.6"
+rustymines = { path = "../engine", version = "3.0" }
 
 [lints]
 workspace = true
