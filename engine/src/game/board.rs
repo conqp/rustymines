@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter};
 use std::num::NonZero;
 
 use grid2d::{Coordinate, Grid};
-use rand::SeedableRng;
+use rand::make_rng;
 use rand::rngs::SmallRng;
 use rand::seq::IteratorRandom;
 
@@ -54,7 +54,7 @@ impl Board {
         Ok(Self {
             fields: Grid::new_default(width, height),
             init: Some((mines, duds)),
-            rng: SmallRng::from_os_rng(),
+            rng: make_rng(),
         })
     }
 
@@ -195,7 +195,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| !field.has_been_visited())
-            .choose_multiple(&mut self.rng, mines.into())
+            .sample(&mut self.rng, mines.into())
             .into_iter()
             .for_each(Field::set_mine);
     }
@@ -205,7 +205,7 @@ impl Board {
         self.fields
             .iter_mut()
             .filter(|field| field.has_mine())
-            .choose_multiple(&mut self.rng, duds.into())
+            .sample(&mut self.rng, duds.into())
             .into_iter()
             .for_each(Field::set_dud);
     }
