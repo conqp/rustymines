@@ -3,7 +3,7 @@
 use std::process::ExitCode;
 
 use clap::Parser;
-use rustymines::{Game, State};
+use rustymines::{Game, Outcome, State};
 
 use self::action::Action;
 use self::args::Args;
@@ -28,15 +28,18 @@ fn main() -> ExitCode {
 
             while let Some(state) = get_action().and_then(|action| game.next_round(action)) {
                 match state {
-                    State::Won => {
+                    State::GameOver(outcome) => {
                         println!("{game}\n");
-                        println!("\nYou won the game.\nTime: {:?}", game.duration());
-                        return ExitCode::SUCCESS;
-                    }
-                    State::Lost => {
-                        println!("{game}\n");
-                        println!("\nYou lost the game.");
-                        return ExitCode::FAILURE;
+                        return match outcome {
+                            Outcome::Won(_) => {
+                                println!("\nYou won the game.\nTime: {:?}", game.duration());
+                                ExitCode::SUCCESS
+                            }
+                            Outcome::Lost(_) => {
+                                println!("\nYou lost the game.");
+                                ExitCode::FAILURE
+                            }
+                        };
                     }
                     State::InvalidMove => println!("Invalid move."),
                     State::Continue => println!("{game}\n"),

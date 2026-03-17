@@ -13,7 +13,7 @@ use crate::Error;
 
 pub mod action;
 pub mod board;
-mod outcome;
+pub mod outcome;
 pub mod state;
 
 /// The game object with the board and metadata.
@@ -121,17 +121,6 @@ impl Game {
             .duration_since(self.start)
     }
 
-    /// Return the outcome of the game, if it has concluded.
-    ///
-    /// # Returns
-    /// - `Some(true)` if the game is won.
-    /// - `Some(false)` if the game is lost.
-    /// - `None` if the game is still running.
-    #[must_use]
-    pub fn is_won(&self) -> Option<bool> {
-        self.outcome.map(Outcome::is_won)
-    }
-
     /// Play the next round.
     ///
     /// Return `Some(State)` if the player did not request to abort the game, otherwise `None`.
@@ -151,11 +140,11 @@ impl Game {
     fn visit(&mut self, coordinate: Coordinate) -> MoveResult {
         match self.board.visit(coordinate) {
             MoveResult::Lost => {
-                self.outcome.replace(Outcome::lost());
+                self.outcome.replace(Outcome::Lost(Instant::now()));
                 MoveResult::Lost
             }
             MoveResult::Won => {
-                self.outcome.replace(Outcome::won());
+                self.outcome.replace(Outcome::Won(Instant::now()));
                 MoveResult::Won
             }
             result => result,

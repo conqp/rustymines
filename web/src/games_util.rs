@@ -58,7 +58,7 @@ impl GamesUtil for Games {
                 };
 
                 match state {
-                    State::Continue | State::GameOver { .. } => WebUi::new(wrapper, None),
+                    State::Continue | State::GameOver(_) => WebUi::new(wrapper, None),
                     State::InvalidMove => WebUi::new(wrapper, Some("Invalid coordinate.")),
                 }
                 .into()

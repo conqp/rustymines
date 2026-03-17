@@ -6,6 +6,7 @@ pub use self::game::Game;
 pub use self::game::action::Action;
 pub use self::game::board::error::Error;
 pub use self::game::board::field::View;
+pub use self::game::outcome::Outcome;
 pub use self::game::state::State;
 
 mod game;

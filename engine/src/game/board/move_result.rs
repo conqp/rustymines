@@ -1,4 +1,6 @@
-use crate::State;
+use std::time::Instant;
+
+use crate::{Outcome, State};
 
 /// Possible outcomes of a player's move on the grid.
 #[derive(Debug, PartialEq, Eq)]
@@ -18,8 +20,8 @@ impl From<MoveResult> for State {
         match result {
             MoveResult::InvalidPosition => Self::InvalidMove,
             MoveResult::Continue => Self::Continue,
-            MoveResult::Lost => Self::Lost,
-            MoveResult::Won => Self::Won,
+            MoveResult::Lost => Self::GameOver(Outcome::Lost(Instant::now())),
+            MoveResult::Won => Self::GameOver(Outcome::Won(Instant::now())),
         }
     }
 }

@@ -4,6 +4,7 @@ use build_html::{
     Container, ContainerType, Html, HtmlContainer, HtmlElement, HtmlPage, HtmlTag, Table,
     TableCell, TableCellType, TableRow,
 };
+use rustymines::Outcome;
 
 use crate::game_state::GameState;
 use crate::{FONT_SIZE, TITLE};
@@ -99,8 +100,8 @@ impl WebUi<'_, '_> {
             .with_html(HtmlElement::new(HtmlTag::LineBreak))
             .with_raw(new_custom_game_button);
 
-        if let Some(won) = self.game_state.is_won() {
-            container.add_html(if won {
+        if let Some(outcome) = self.game_state.outcome() {
+            container.add_html(if let Outcome::Won(_) = outcome {
                 HtmlElement::new(HtmlTag::ParagraphText)
                     .with_attribute("style", format!("color: green; font-size: {FONT_SIZE};"))
                     .with_raw("You won the game.")
