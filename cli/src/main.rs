@@ -17,7 +17,7 @@ const HELP: [&str; 4] = [
     "Visit a field:                x y",
     "Toggle flag on a field:       !x y",
     "Visit all non-flagged fields: !!",
-    "Abort:                        exit",
+    "Abort:                        exit | quit | q",
 ];
 
 fn main() -> ExitCode {
