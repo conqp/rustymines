@@ -4,9 +4,8 @@ pub enum State {
     InvalidMove,
     /// The game may continue.
     Continue,
-    /// The game is over
-    GameOver {
-        /// If `true` the game was won, else the game was lost.
-        won: bool,
-    },
+    /// The game was won by the player.
+    Won,
+    /// The game was lost by the player.
+    Lost,
 }

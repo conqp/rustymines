@@ -18,8 +18,8 @@ impl From<MoveResult> for State {
         match result {
             MoveResult::InvalidPosition => Self::InvalidMove,
             MoveResult::Continue => Self::Continue,
-            MoveResult::Lost => Self::GameOver { won: false },
-            MoveResult::Won => Self::GameOver { won: true },
+            MoveResult::Lost => Self::Lost,
+            MoveResult::Won => Self::Won,
         }
     }
 }
