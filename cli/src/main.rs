@@ -31,8 +31,11 @@ fn main() -> ExitCode {
                     State::GameOver(outcome) => {
                         println!("{game}\n");
                         return match outcome {
-                            Outcome::Won(_) => {
-                                println!("\nYou won the game.\nTime: {:?}", game.duration());
+                            Outcome::Won(end) => {
+                                println!(
+                                    "\nYou won the game.\nTime: {:?}",
+                                    end.duration_since(game.start())
+                                );
                                 ExitCode::SUCCESS
                             }
                             Outcome::Lost(_) => {
