@@ -18,18 +18,20 @@ impl FromStr for Action {
 
     /// This assumes a trimmed `&str`.
     fn from_str(string: &str) -> Result<Self, Self::Err> {
-        if string == "exit" {
-            Ok(Self::Abort)
-        } else if string == "!!" {
-            Ok(Self::Action(rustymines::Action::VisitAllNonFlaggedFields))
-        } else if string.starts_with('!') {
-            parse_coordinate(&string.replace('!', ""))
-                .map(rustymines::Action::ToggleFlag)
-                .map(Self::Action)
-        } else {
-            parse_coordinate(string)
-                .map(rustymines::Action::Visit)
-                .map(Self::Action)
+        match string {
+            "exit" | "quit" | "q" => Ok(Self::Abort),
+            "!!" => Ok(Self::Action(rustymines::Action::VisitAllNonFlaggedFields)),
+            string => {
+                if string.starts_with('!') {
+                    parse_coordinate(&string.replace('!', ""))
+                        .map(rustymines::Action::ToggleFlag)
+                        .map(Self::Action)
+                } else {
+                    parse_coordinate(string)
+                        .map(rustymines::Action::Visit)
+                        .map(Self::Action)
+                }
+            }
         }
     }
 }
