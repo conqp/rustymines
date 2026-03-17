@@ -28,14 +28,13 @@ fn main() -> ExitCode {
 
             while let Some(state) = get_action().and_then(|action| game.next_round(action)) {
                 match state {
-                    State::GameOver { won } => {
+                    State::Won => {
                         println!("{game}\n");
-
-                        if won {
-                            println!("\nYou won the game.\nTime: {:?}", game.duration());
-                            return ExitCode::SUCCESS;
-                        }
-
+                        println!("\nYou won the game.\nTime: {:?}", game.duration());
+                        return ExitCode::SUCCESS;
+                    }
+                    State::Lost => {
+                        println!("{game}\n");
                         println!("\nYou lost the game.");
                         return ExitCode::FAILURE;
                     }
