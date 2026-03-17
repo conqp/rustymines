@@ -14,9 +14,9 @@ categories = ["games", "game-engines"]
 exclude = [".gitignore"]
 
 [dependencies]
-bitflags = "2.10"
-grid2d = "1.2"
-rand = "0.9"
+bitflags = "2.11"
+grid2d = "2.0"
+rand = "0.10"
 
 [lints]
 workspace = true
