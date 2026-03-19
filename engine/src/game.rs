@@ -1,6 +1,6 @@
 use std::fmt;
 use std::num::NonZero;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use grid2d::Coordinate;
 
@@ -99,6 +99,14 @@ impl Game {
     #[must_use]
     pub const fn outcome(&self) -> Option<Outcome> {
         self.outcome
+    }
+
+    /// Return the duration for which the game has been running.
+    #[must_use]
+    pub fn duration(&self) -> Duration {
+        self.outcome
+            .map_or_else(Instant::now, Outcome::end)
+            .duration_since(self.start)
     }
 
     /// Returns `true` if the game is over.
