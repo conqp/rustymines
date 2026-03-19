@@ -42,9 +42,7 @@ impl GarbageCollector {
             .write()
             .unwrap_or_else(PoisonError::into_inner)
             .retain(|key, wrapper| {
-                if wrapper.outcome().is_some_and(|outcome| {
-                    wrapper.start().duration_since(outcome.end()) > MAX_GAME_DURATION
-                }) {
+                if wrapper.duration() > MAX_GAME_DURATION {
                     info!("Dropping game: {key}");
                     false
                 } else {
