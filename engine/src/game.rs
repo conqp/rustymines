@@ -31,7 +31,7 @@ impl Game {
     ///
     /// # Errors
     ///
-    /// Returns an [`Error`] if the grid size or amount of mines and duds is out of bounds.
+    /// Return an [`Error`] if the grid size or amount of mines and duds is out of bounds.
     pub fn new(
         width: NonZero<usize>,
         height: NonZero<usize>,
@@ -71,13 +71,13 @@ impl Game {
             .map(|field| field.view(self.is_over()))
     }
 
-    /// Returns the amount of mines in the game.
+    /// Return the amount of mines in the game.
     #[must_use]
     pub const fn mines(&self) -> u8 {
         self.mines
     }
 
-    /// Returns the amount of duds in the game.
+    /// Return the amount of duds in the game.
     #[must_use]
     pub const fn duds(&self) -> u8 {
         self.duds
@@ -89,13 +89,13 @@ impl Game {
         self.board.flags()
     }
 
-    /// Returns the instance of when the game was started.
+    /// Return the instance of when the game was started.
     #[must_use]
     pub const fn start(&self) -> Instant {
         self.start
     }
 
-    /// Returns the outcome, if the game has ended.
+    /// Return the outcome, if the game has ended.
     #[must_use]
     pub const fn outcome(&self) -> Option<Outcome> {
         self.outcome
@@ -109,7 +109,7 @@ impl Game {
             .duration_since(self.start)
     }
 
-    /// Returns `true` if the game is over.
+    /// Return `true` if the game is over.
     #[must_use]
     pub const fn is_over(&self) -> bool {
         self.outcome.is_some()
