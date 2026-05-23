@@ -7,7 +7,7 @@ use rocket::info;
 
 use crate::Games;
 
-const MAX_GAME_DURATION: Duration = Duration::from_secs(60 * 60 * 24); // One day.
+const MAX_GAME_DURATION: Duration = Duration::from_hours(24);
 const TICK_DURATION: Duration = Duration::from_secs(1);
 
 /// A garbage collector to remove timed-out games.
