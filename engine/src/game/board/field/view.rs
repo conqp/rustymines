@@ -23,9 +23,8 @@ pub enum View {
 
 impl View {
     /// Returns a char representation of the field's view.
-    #[expect(clippy::missing_panics_doc)]
     #[must_use]
-    pub const fn as_char(self) -> char {
+    fn as_char(self) -> char {
         match self {
             Self::Covered => '■',
             Self::Flag => '⚐',
@@ -33,7 +32,7 @@ impl View {
             Self::SteppedOnMine => '☠',
             Self::Clear { adjacent_mines } => match adjacent_mines {
                 0 => ' ',
-                mines => char::from_digit(mines as u32, 10)
+                mines => char::from_digit(mines.into(), 10)
                     .expect("Amount of adjacent mines should be a single decimal digit."),
             },
             Self::Mine => '*',
