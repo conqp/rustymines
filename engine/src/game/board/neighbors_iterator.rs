@@ -31,8 +31,9 @@ impl<'grid> SafeNeighbors<'grid> {
         if self.fields.get(starting_point)?.adjacent_mines() == 0 {
             self.starting_points.extend(
                 self.fields
-                    .neighbors(starting_point)
-                    .map(|(coordinate, _)| coordinate.into())
+                    .neighbor_coordinates(starting_point)
+                    .into_iter()
+                    .map(Into::into)
                     .filter(|starting_point| !self.processed.contains(starting_point)),
             );
         }
