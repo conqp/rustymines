@@ -130,13 +130,8 @@ impl Board {
     /// Return the amount of adjacent mines of the respective coordinate on the field.
     fn count_adjacent_mines(&self, coordinate: &Coordinate) -> u8 {
         self.fields
-            .neighbor_coordinates(coordinate)
-            .into_iter()
-            .filter(|coordinate| {
-                self.fields
-                    .get(*coordinate)
-                    .is_some_and(|field| field.has_mine())
-            })
+            .neighbors(coordinate)
+            .filter(|(_, field)| field.has_mine())
             .count()
             .try_into()
             .expect("Amount of neighbors should fit into u8.")

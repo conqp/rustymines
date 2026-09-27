@@ -15,7 +15,7 @@ exclude = [".gitignore"]
 
 [dependencies]
 bitflags = "2.11"
-grid2d = "2.0"
+grid2d = "3"
 rand = "0.10"
 
 [lints]
