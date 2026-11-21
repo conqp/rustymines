@@ -1,5 +1,5 @@
 [workspace]
-members = ["engine", "cli", "web"]
+members = ["engine", "cli", "tui", "web"]
 resolver = "3"
 
 [profile.release]

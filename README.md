@@ -10,6 +10,10 @@ The game engine can be found [here](./engine).
 
 A CLI game for the console is available [here](./cli).
 
+## TUI
+
+A keyboard-driven terminal game is available [here](./tui).
+
 ## Web
 
 A server-side web application without the use of JavaScript is available [here](./web).

@@ -2,11 +2,9 @@ use std::fmt;
 use std::num::NonZero;
 use std::time::{Duration, Instant};
 
-use grid2d::Coordinate;
-
 use self::action::Action;
+use self::board::Board;
 use self::board::field::View;
-use self::board::{Board, MoveResult};
 use self::outcome::Outcome;
 use self::state::State;
 use crate::Error;
@@ -123,26 +121,18 @@ impl Game {
             return None;
         }
 
-        Some(match action {
-            Action::Visit(coordinate) => self.visit(coordinate).into(),
-            Action::ToggleFlag(coordinate) => self.board.toggle_flag(coordinate).into(),
-            Action::VisitAllNonFlaggedFields => self.board.visit_non_flagged_fields().into(),
-        })
-    }
-
-    /// Visit the given coordinate.
-    fn visit(&mut self, coordinate: Coordinate) -> MoveResult {
-        match self.board.visit(coordinate) {
-            MoveResult::Lost => {
-                self.outcome.replace(Outcome::Lost(Instant::now()));
-                MoveResult::Lost
-            }
-            MoveResult::Won => {
-                self.outcome.replace(Outcome::Won(Instant::now()));
-                MoveResult::Won
-            }
-            result => result,
+        let state = match action {
+            Action::Visit(coordinate) => self.board.visit(coordinate),
+            Action::ToggleFlag(coordinate) => self.board.toggle_flag(coordinate),
+            Action::VisitAllNonFlaggedFields => self.board.visit_non_flagged_fields(),
         }
+        .into();
+
+        if let State::GameOver(outcome) = state {
+            self.outcome = Some(outcome);
+        }
+
+        Some(state)
     }
 }
 
@@ -153,6 +143,27 @@ impl fmt::Display for Game {
         } else {
             writeln!(f, "{}", self.board)?;
             writeln!(f, "\nFlags: {}", self.board.flags())
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bulk_reveal_records_the_outcome() {
+        for mines in [0, 1] {
+            let mut game =
+                Game::new(NonZero::<usize>::MIN, NonZero::new(2).unwrap(), mines, 0).unwrap();
+            let Some(State::GameOver(outcome)) = game.next_round(Action::VisitAllNonFlaggedFields)
+            else {
+                panic!("Bulk reveal should end the game");
+            };
+
+            assert_eq!(game.outcome(), Some(outcome));
+            assert_eq!(matches!(outcome, Outcome::Won(_)), mines == 0);
+            assert!(game.next_round(Action::VisitAllNonFlaggedFields).is_none());
         }
     }
 }
